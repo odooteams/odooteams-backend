@@ -66,7 +66,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
       };
       setMessages([welcomeMessage]);
     }
-  }, [isOpen, messages.length, t]);
+  }, [isOpen, messages.length]);
 
   useEffect(() => {
     if (inputValue.trim().length > 2 && chatbotData.length > 0) {
