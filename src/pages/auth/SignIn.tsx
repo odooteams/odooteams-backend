@@ -12,8 +12,8 @@ import SEOHead from '@/components/seo/SEOHead';
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { signIn, user, isAdmin } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { signIn, user, isAdmin, isLoading } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -32,9 +32,9 @@ export default function SignIn() {
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
     const { error } = await signIn(email, password);
-    setIsLoading(false);
+    setIsSubmitting(false);
 
     if (error) {
       toast.error(error.message || 'Failed to sign in');
@@ -92,8 +92,8 @@ export default function SignIn() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
                   <span className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                     Signing in...

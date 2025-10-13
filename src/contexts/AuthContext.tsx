@@ -40,12 +40,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        AuthService.isAdmin().then(setIsAdmin);
+        const adminStatus = await AuthService.isAdmin();
+        setIsAdmin(adminStatus);
       }
       setIsLoading(false);
     });
