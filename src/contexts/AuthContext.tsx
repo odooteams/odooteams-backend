@@ -8,6 +8,7 @@ interface AuthContextType {
   session: Session | null;
   isAdmin: boolean;
   isLoading: boolean;
+  authReady: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -20,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener
@@ -27,14 +29,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        setAuthReady(false);
         
         // Check admin status after state update
         if (session?.user) {
           setTimeout(() => {
-            AuthService.isAdmin().then(setIsAdmin);
+            AuthService.isAdmin().then((isAdminVal) => {
+              setIsAdmin(isAdminVal);
+              setAuthReady(true);
+            });
           }, 0);
         } else {
           setIsAdmin(false);
+          setAuthReady(true);
         }
       }
     );
@@ -47,8 +54,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         const adminStatus = await AuthService.isAdmin();
         setIsAdmin(adminStatus);
+      } else {
+        setIsAdmin(false);
       }
       setIsLoading(false);
+      setAuthReady(true);
     });
 
     return () => subscription.unsubscribe();
@@ -67,10 +77,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     await AuthService.signOut();
     setIsAdmin(false);
+    setAuthReady(true);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, isLoading, authReady, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

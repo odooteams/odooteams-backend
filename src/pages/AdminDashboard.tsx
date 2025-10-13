@@ -17,8 +17,8 @@ import {
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 
 export default function AdminDashboard() {
   const { user, signOut } = useAuth();
@@ -114,63 +114,64 @@ export default function AdminDashboard() {
         title="Admin Dashboard"
         description="Manage your website content and users"
       />
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="max-w-6xl mx-auto space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-                <p className="text-muted-foreground mt-1">
-                  Manage your website content and settings
-                </p>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AdminSidebar />
+          <div className="flex-1 flex flex-col">
+            <header className="h-16 border-b flex items-center justify-between px-6 bg-background">
+              <div className="flex items-center">
+                <SidebarTrigger />
+                <h1 className="text-2xl font-bold ml-4">Admin Dashboard</h1>
               </div>
               <Button variant="outline" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
-            </div>
+            </header>
 
-            <Card className="border-primary/20">
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 border-2 border-primary">
-                    <AvatarFallback className="text-lg bg-primary text-primary-foreground">
-                      {getInitials(user?.user_metadata?.full_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      {user?.user_metadata?.full_name || 'Admin'}
-                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">
-                        Admin
-                      </span>
-                    </CardTitle>
-                    <CardDescription>{user?.email}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {adminCards.map((card, index) => (
-                <Card 
-                  key={index}
-                  className="hover:shadow-lg transition-all cursor-pointer hover:scale-105"
-                  onClick={card.onClick}
-                >
+            <main className="flex-1 p-6 overflow-auto">
+              <div className="max-w-6xl mx-auto space-y-6">
+                <Card className="border-primary/20">
                   <CardHeader>
-                    <card.icon className={`h-8 w-8 mb-2 ${card.color}`} />
-                    <CardTitle className="text-lg">{card.title}</CardTitle>
-                    <CardDescription>{card.description}</CardDescription>
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-16 w-16 border-2 border-primary">
+                        <AvatarFallback className="text-lg bg-primary text-primary-foreground">
+                          {getInitials(user?.user_metadata?.full_name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          {user?.user_metadata?.full_name || 'Admin'}
+                          <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">
+                            Admin
+                          </span>
+                        </CardTitle>
+                        <CardDescription>{user?.email}</CardDescription>
+                      </div>
+                    </div>
                   </CardHeader>
                 </Card>
-              ))}
-            </div>
+
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {adminCards.map((card, index) => (
+                    <Card 
+                      key={index}
+                      className="hover:shadow-lg transition-all cursor-pointer hover:scale-105"
+                      onClick={card.onClick}
+                    >
+                      <CardHeader>
+                        <card.icon className={`h-8 w-8 mb-2 ${card.color}`} />
+                        <CardTitle className="text-lg">{card.title}</CardTitle>
+                        <CardDescription>{card.description}</CardDescription>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </main>
           </div>
-        </main>
-        <Footer />
-      </div>
+        </div>
+      </SidebarProvider>
     </>
   );
 }

@@ -23,6 +23,12 @@ import Orders from '@/pages/dashboard/Orders';
 import Support from '@/pages/dashboard/Support';
 import Profile from '@/pages/dashboard/Profile';
 import AdminDashboard from '@/pages/AdminDashboard';
+import AdminServices from '@/pages/admin/Services';
+import AdminProjects from '@/pages/admin/Projects';
+import AdminFAQs from '@/pages/admin/FAQs';
+import AdminResources from '@/pages/admin/Resources';
+import AdminAnalytics from '@/pages/admin/Analytics';
+import AdminUsers from '@/pages/admin/Users';
 import NotFound from '@/pages/NotFound';
 import './App.css';
 import AdvancedAnalytics from '@/components/analytics/AdvancedAnalytics';
@@ -87,6 +93,54 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/users" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminUsers />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/services" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminServices />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/projects" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminProjects />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/faqs" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminFAQs />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/resources" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminResources />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/analytics" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminAnalytics />
                 </ProtectedRoute>
               } 
             />

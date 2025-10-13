@@ -13,16 +13,16 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { signIn, user, isAdmin, isLoading } = useAuth();
+  const { signIn, user, isAdmin, authReady } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user && !isLoading) {
+    if (user && authReady) {
       const redirectPath = isAdmin ? '/admin' : '/dashboard';
       navigate(redirectPath, { replace: true });
     }
-  }, [user, isAdmin, navigate, isLoading]);
+  }, [user, isAdmin, navigate, authReady]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
