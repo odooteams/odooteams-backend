@@ -19,6 +19,9 @@ import ResourceDetails from '@/pages/ResourceDetails';
 import SignIn from '@/pages/auth/SignIn';
 import SignUp from '@/pages/auth/SignUp';
 import ClientDashboard from '@/pages/ClientDashboard';
+import Orders from '@/pages/dashboard/Orders';
+import Support from '@/pages/dashboard/Support';
+import Profile from '@/pages/dashboard/Profile';
 import AdminDashboard from '@/pages/AdminDashboard';
 import NotFound from '@/pages/NotFound';
 import './App.css';
@@ -52,6 +55,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ClientDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/orders" 
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/support" 
+              element={
+                <ProtectedRoute>
+                  <Support />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               } 
             />
