@@ -38,6 +38,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [welcomeShown, setWelcomeShown] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { chatbotData, isLoading } = useChatbot();
@@ -53,7 +54,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    if (isOpen && !welcomeShown) {
       // Add welcome message when chatbot opens for the first time
       const welcomeMessage: Message = {
         id: 1,
@@ -65,8 +66,9 @@ const Chatbot: React.FC<ChatbotProps> = ({
         timestamp: new Date(),
       };
       setMessages([welcomeMessage]);
+      setWelcomeShown(true);
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen, welcomeShown, t]);
 
   useEffect(() => {
     if (inputValue.trim().length > 2 && chatbotData.length > 0) {

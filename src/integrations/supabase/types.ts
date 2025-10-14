@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      blogs: {
+        Row: {
+          author_id: string | null
+          category_ar: string | null
+          category_en: string | null
+          content_ar: string
+          content_en: string
+          created_at: string
+          created_by: string | null
+          excerpt_ar: string | null
+          excerpt_en: string | null
+          id: string
+          image: string | null
+          is_featured: boolean | null
+          is_published: boolean | null
+          published_at: string | null
+          slug: string
+          tags: string[] | null
+          title_ar: string
+          title_en: string
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          category_ar?: string | null
+          category_en?: string | null
+          content_ar: string
+          content_en: string
+          created_at?: string
+          created_by?: string | null
+          excerpt_ar?: string | null
+          excerpt_en?: string | null
+          id?: string
+          image?: string | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          published_at?: string | null
+          slug: string
+          tags?: string[] | null
+          title_ar: string
+          title_en: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          category_ar?: string | null
+          category_en?: string | null
+          content_ar?: string
+          content_en?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt_ar?: string | null
+          excerpt_en?: string | null
+          id?: string
+          image?: string | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          tags?: string[] | null
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
       chatbot_responses: {
         Row: {
           answer_ar: string
@@ -245,6 +314,54 @@ export type Database = {
         }
         Relationships: []
       }
+      policies: {
+        Row: {
+          content_ar: string
+          content_en: string
+          created_at: string
+          created_by: string | null
+          effective_date: string | null
+          id: string
+          is_active: boolean | null
+          policy_type: string
+          slug: string
+          title_ar: string
+          title_en: string
+          updated_at: string
+          version: string | null
+        }
+        Insert: {
+          content_ar: string
+          content_en: string
+          created_at?: string
+          created_by?: string | null
+          effective_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          policy_type: string
+          slug: string
+          title_ar: string
+          title_en: string
+          updated_at?: string
+          version?: string | null
+        }
+        Update: {
+          content_ar?: string
+          content_en?: string
+          created_at?: string
+          created_by?: string | null
+          effective_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          policy_type?: string
+          slug?: string
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+          version?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -407,6 +524,39 @@ export type Database = {
           title_ar?: string
           title_en?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          setting_key: string
+          setting_type: string
+          setting_value: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          setting_key: string
+          setting_type: string
+          setting_value: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          setting_key?: string
+          setting_type?: string
+          setting_value?: Json
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }

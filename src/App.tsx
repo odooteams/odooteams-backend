@@ -29,6 +29,9 @@ import AdminFAQs from '@/pages/admin/FAQs';
 import AdminResources from '@/pages/admin/Resources';
 import AdminAnalytics from '@/pages/admin/Analytics';
 import AdminUsers from '@/pages/admin/Users';
+import AdminBlogs from '@/pages/admin/Blogs';
+import AdminPolicies from '@/pages/admin/Policies';
+import AdminSettings from '@/pages/admin/Settings';
 import NotFound from '@/pages/NotFound';
 import './App.css';
 import AdvancedAnalytics from '@/components/analytics/AdvancedAnalytics';
@@ -141,6 +144,30 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminAnalytics />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/blogs" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminBlogs />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/policies" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminPolicies />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/settings" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminSettings />
                 </ProtectedRoute>
               } 
             />

@@ -5,31 +5,31 @@ import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle } from 'lucide-react';
+import { FileEdit } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export default function AdminFAQs() {
-  const [faqs, setFaqs] = useState<any[]>([]);
+export default function AdminBlogs() {
+  const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadFAQs();
+    loadBlogs();
   }, []);
 
-  const loadFAQs = async () => {
+  const loadBlogs = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('faqs')
+        .from('blogs')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
-      setFaqs(data || []);
+      setBlogs(data || []);
     } catch (error) {
-      console.error('Error loading FAQs:', error);
-      toast.error('Failed to load FAQs');
+      console.error('Error loading blogs:', error);
+      toast.error('Failed to load blogs');
     } finally {
       setLoading(false);
     }
@@ -37,53 +37,55 @@ export default function AdminFAQs() {
 
   return (
     <>
-      <SEOHead title="Admin • FAQs" description="Manage frequently asked questions" />
+      <SEOHead title="Admin • Blogs" description="Manage blog posts" />
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
               <SidebarTrigger />
-              <h1 className="text-2xl font-bold ml-4">FAQs</h1>
+              <h1 className="text-2xl font-bold ml-4">Blogs</h1>
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
                     <div className="flex items-center gap-3">
-                      <HelpCircle className="h-6 w-6 text-primary" />
+                      <FileEdit className="h-6 w-6 text-primary" />
                       <div>
-                        <CardTitle>Manage FAQs</CardTitle>
-                        <CardDescription>View and manage frequently asked questions</CardDescription>
+                        <CardTitle>Manage Blogs</CardTitle>
+                        <CardDescription>View and manage blog posts</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     {loading ? (
-                      <p className="text-sm text-muted-foreground">Loading FAQs...</p>
-                    ) : faqs.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">No FAQs found.</p>
+                      <p className="text-sm text-muted-foreground">Loading blogs...</p>
+                    ) : blogs.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No blogs found.</p>
                     ) : (
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead>Question</TableHead>
+                            <TableHead>Title</TableHead>
                             <TableHead>Category</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Order</TableHead>
+                            <TableHead>Published</TableHead>
+                            <TableHead>Views</TableHead>
+                            <TableHead>Created</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {faqs.map((faq) => (
-                            <TableRow key={faq.id}>
-                              <TableCell className="max-w-md truncate">{faq.question_en}</TableCell>
-                              <TableCell>{faq.category_en}</TableCell>
+                          {blogs.map((blog) => (
+                            <TableRow key={blog.id}>
+                              <TableCell className="max-w-md truncate">{blog.title_en}</TableCell>
+                              <TableCell>{blog.category_en || 'N/A'}</TableCell>
                               <TableCell>
-                                <Badge variant={faq.is_active ? "default" : "secondary"}>
-                                  {faq.is_active ? 'Active' : 'Inactive'}
+                                <Badge variant={blog.is_published ? "default" : "secondary"}>
+                                  {blog.is_published ? 'Published' : 'Draft'}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{faq.sort_order}</TableCell>
+                              <TableCell>{blog.views_count || 0}</TableCell>
+                              <TableCell>{new Date(blog.created_at).toLocaleDateString()}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

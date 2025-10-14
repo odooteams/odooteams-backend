@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Briefcase, FileText, HelpCircle, BookOpen, BarChart3, LogOut, Users } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, HelpCircle, BookOpen, BarChart3, LogOut, Users, FileEdit, Shield, Settings } from 'lucide-react';
 
 const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
@@ -21,6 +21,9 @@ const menuItems = [
   { title: 'Projects', url: '/admin/projects', icon: FileText },
   { title: 'FAQs', url: '/admin/faqs', icon: HelpCircle },
   { title: 'Resources', url: '/admin/resources', icon: BookOpen },
+  { title: 'Blogs', url: '/admin/blogs', icon: FileEdit },
+  { title: 'Policies', url: '/admin/policies', icon: Shield },
+  { title: 'Settings', url: '/admin/settings', icon: Settings },
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
 ];
 

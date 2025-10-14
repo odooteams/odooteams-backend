@@ -1,10 +1,35 @@
+import { useState, useEffect } from 'react';
 import SEOHead from '@/components/seo/SEOHead';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { Users } from 'lucide-react';
+import { adminQueries } from '@/lib/supabase/admin';
+import { toast } from 'sonner';
 
 export default function AdminUsers() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const data = await adminQueries.getAllUsersWithRoles();
+      setUsers(data || []);
+    } catch (error) {
+      console.error('Error loading users:', error);
+      toast.error('Failed to load users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • Users" description="Manage users and roles" />
@@ -24,12 +49,43 @@ export default function AdminUsers() {
                       <Users className="h-6 w-6 text-primary" />
                       <div>
                         <CardTitle>Manage Users</CardTitle>
-                        <CardDescription>View and update user roles (coming soon)</CardDescription>
+                        <CardDescription>View and manage user accounts and roles</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">Coming soon.</p>
+                    {loading ? (
+                      <p className="text-sm text-muted-foreground">Loading users...</p>
+                    ) : users.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No users found.</p>
+                    ) : (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Roles</TableHead>
+                            <TableHead>Joined</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {users.map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell>{user.full_name || 'N/A'}</TableCell>
+                              <TableCell>{user.email}</TableCell>
+                              <TableCell>
+                                <div className="flex gap-1">
+                                  {user.user_roles?.map((ur: any, idx: number) => (
+                                    <Badge key={idx} variant="secondary">{ur.role}</Badge>
+                                  )) || <Badge variant="outline">user</Badge>}
+                                </div>
+                              </TableCell>
+                              <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
                   </CardContent>
                 </Card>
               </div>
