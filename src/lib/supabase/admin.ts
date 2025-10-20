@@ -55,18 +55,28 @@ export const adminQueries = {
 
   // Get all users with their roles (admin only)
   getAllUsersWithRoles: async () => {
-    const { data, error } = await supabase
+    // Fetch profiles
+    const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select(`
-        *,
-        user_roles (
-          role,
-          created_at
-        )
-      `);
+      .select('*')
+      .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data;
+    if (profilesError) throw profilesError;
+
+    // Fetch all user roles
+    const { data: userRoles, error: rolesError } = await supabase
+      .from('user_roles')
+      .select('*');
+
+    if (rolesError) throw rolesError;
+
+    // Manually join the data
+    const usersWithRoles = profiles?.map(profile => ({
+      ...profile,
+      user_roles: userRoles?.filter(role => role.user_id === profile.id) || []
+    }));
+
+    return usersWithRoles;
   }
 };
 
