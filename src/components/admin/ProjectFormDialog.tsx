@@ -9,29 +9,31 @@ import { Plus, Pencil } from 'lucide-react';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 
-interface ServiceFormDialogProps {
-  service?: any;
+interface ProjectFormDialogProps {
+  project?: any;
   onSuccess: () => void;
 }
 
-export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps) {
+export function ProjectFormDialog({ project, onSuccess }: ProjectFormDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title_en: service?.title_en || '',
-    title_ar: service?.title_ar || '',
-    category_en: service?.category_en || '',
-    category_ar: service?.category_ar || '',
-    details_en: service?.details_en || '',
-    details_ar: service?.details_ar || '',
-    processing_steps_en: service?.processing_steps_en || '',
-    processing_steps_ar: service?.processing_steps_ar || '',
-    image: service?.image || '',
-    price: service?.price || '',
-    duration: service?.duration || '',
-    keywords: service?.keywords?.join(', ') || '',
-    is_active: service?.is_active ?? true,
-    is_featured: service?.is_featured ?? false,
+    title_en: project?.title_en || '',
+    title_ar: project?.title_ar || '',
+    category_en: project?.category_en || '',
+    category_ar: project?.category_ar || '',
+    description_en: project?.description_en || '',
+    description_ar: project?.description_ar || '',
+    processing_steps_en: project?.processing_steps_en || '',
+    processing_steps_ar: project?.processing_steps_ar || '',
+    client_name: project?.client_name || '',
+    images: project?.images?.join(', ') || '',
+    technologies: project?.technologies?.join(', ') || '',
+    completion_date: project?.completion_date || '',
+    cost: project?.cost || '',
+    project_url: project?.project_url || '',
+    is_active: project?.is_active ?? true,
+    is_featured: project?.is_featured ?? false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,21 +43,22 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
     try {
       const submitData = {
         ...formData,
-        keywords: formData.keywords.split(',').map(k => k.trim()).filter(Boolean),
+        images: formData.images.split(',').map(i => i.trim()).filter(Boolean),
+        technologies: formData.technologies.split(',').map(t => t.trim()).filter(Boolean),
       };
       
-      if (service) {
-        await contentManagement.updateService(service.id, submitData);
-        toast.success('Service updated successfully');
+      if (project) {
+        await contentManagement.updateProject(project.id, submitData);
+        toast.success('Project updated successfully');
       } else {
-        await contentManagement.createService(submitData);
-        toast.success('Service created successfully');
+        await contentManagement.createProject(submitData);
+        toast.success('Project created successfully');
       }
       setOpen(false);
       onSuccess();
     } catch (error) {
-      console.error('Error saving service:', error);
-      toast.error('Failed to save service');
+      console.error('Error saving project:', error);
+      toast.error('Failed to save project');
     } finally {
       setLoading(false);
     }
@@ -64,15 +67,15 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {service ? (
+        {project ? (
           <Button variant="ghost" size="sm"><Pencil className="h-4 w-4" /></Button>
         ) : (
-          <Button><Plus className="h-4 w-4 mr-2" />Add Service</Button>
+          <Button><Plus className="h-4 w-4 mr-2" />Add Project</Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{service ? 'Edit Service' : 'Create Service'}</DialogTitle>
+          <DialogTitle>{project ? 'Edit Project' : 'Create Project'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -118,22 +121,24 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
           </div>
 
           <div>
-            <Label htmlFor="details_en">Details (English)</Label>
+            <Label htmlFor="description_en">Description (English)</Label>
             <Textarea
-              id="details_en"
-              value={formData.details_en}
-              onChange={(e) => setFormData({ ...formData, details_en: e.target.value })}
+              id="description_en"
+              value={formData.description_en}
+              onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
               required
+              rows={3}
             />
           </div>
 
           <div>
-            <Label htmlFor="details_ar">Details (Arabic)</Label>
+            <Label htmlFor="description_ar">Description (Arabic)</Label>
             <Textarea
-              id="details_ar"
-              value={formData.details_ar}
-              onChange={(e) => setFormData({ ...formData, details_ar: e.target.value })}
+              id="description_ar"
+              value={formData.description_ar}
+              onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
               required
+              rows={3}
             />
           </div>
 
@@ -143,7 +148,7 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
               id="processing_steps_en"
               value={formData.processing_steps_en}
               onChange={(e) => setFormData({ ...formData, processing_steps_en: e.target.value })}
-              rows={3}
+              rows={2}
             />
           </div>
 
@@ -153,46 +158,68 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
               id="processing_steps_ar"
               value={formData.processing_steps_ar}
               onChange={(e) => setFormData({ ...formData, processing_steps_ar: e.target.value })}
-              rows={3}
+              rows={2}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="client_name">Client Name</Label>
+              <Input
+                id="client_name"
+                value={formData.client_name}
+                onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="completion_date">Completion Date</Label>
+              <Input
+                id="completion_date"
+                type="date"
+                value={formData.completion_date}
+                onChange={(e) => setFormData({ ...formData, completion_date: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="cost">Cost</Label>
+              <Input
+                id="cost"
+                value={formData.cost}
+                onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+                placeholder="$3500"
+              />
+            </div>
+            <div>
+              <Label htmlFor="project_url">Project URL</Label>
+              <Input
+                id="project_url"
+                value={formData.project_url}
+                onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="images">Images URLs (comma-separated)</Label>
+            <Input
+              id="images"
+              value={formData.images}
+              onChange={(e) => setFormData({ ...formData, images: e.target.value })}
+              placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg"
             />
           </div>
 
           <div>
-            <Label htmlFor="keywords">Keywords (comma-separated)</Label>
+            <Label htmlFor="technologies">Technologies (comma-separated)</Label>
             <Input
-              id="keywords"
-              value={formData.keywords}
-              onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
-              placeholder="odoo, erp, consulting"
+              id="technologies"
+              value={formData.technologies}
+              onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
+              placeholder="React, TypeScript, Supabase"
             />
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="price">Price</Label>
-              <Input
-                id="price"
-                type="number"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label htmlFor="duration">Duration</Label>
-              <Input
-                id="duration"
-                value={formData.duration}
-                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-              />
-            </div>
           </div>
 
           <div className="flex gap-4">
@@ -219,7 +246,7 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : service ? 'Update' : 'Create'}
+              {loading ? 'Saving...' : project ? 'Update' : 'Create'}
             </Button>
           </div>
         </form>

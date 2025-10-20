@@ -5,9 +5,23 @@ import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
+import { ProjectFormDialog } from '@/components/admin/ProjectFormDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -35,6 +49,17 @@ export default function AdminProjects() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await contentManagement.deleteProject(id);
+      toast.success('Project deleted successfully');
+      loadProjects();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast.error('Failed to delete project');
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • Projects" description="Create and manage projects" />
@@ -50,12 +75,15 @@ export default function AdminProjects() {
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-6 w-6 text-primary" />
-                      <div>
-                        <CardTitle>Manage Projects</CardTitle>
-                        <CardDescription>View and manage all projects</CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-6 w-6 text-primary" />
+                        <div>
+                          <CardTitle>Manage Projects</CardTitle>
+                          <CardDescription>View and manage all projects</CardDescription>
+                        </div>
                       </div>
+                      <ProjectFormDialog onSuccess={loadProjects} />
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -72,6 +100,7 @@ export default function AdminProjects() {
                             <TableHead>Client</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Created</TableHead>
+                            <TableHead>Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -86,6 +115,32 @@ export default function AdminProjects() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{new Date(project.created_at).toLocaleDateString()}</TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <ProjectFormDialog project={project} onSuccess={loadProjects} />
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="sm">
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this project? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(project.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
