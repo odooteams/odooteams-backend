@@ -5,9 +5,23 @@ import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { HelpCircle, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
+import { FAQFormDialog } from '@/components/admin/FAQFormDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function AdminFAQs() {
   const [faqs, setFaqs] = useState<any[]>([]);
@@ -35,6 +49,17 @@ export default function AdminFAQs() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await contentManagement.deleteFAQ(id);
+      toast.success('FAQ deleted successfully');
+      loadFAQs();
+    } catch (error) {
+      console.error('Error deleting FAQ:', error);
+      toast.error('Failed to delete FAQ');
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • FAQs" description="Manage frequently asked questions" />
@@ -50,12 +75,15 @@ export default function AdminFAQs() {
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <HelpCircle className="h-6 w-6 text-primary" />
-                      <div>
-                        <CardTitle>Manage FAQs</CardTitle>
-                        <CardDescription>View and manage frequently asked questions</CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <HelpCircle className="h-6 w-6 text-primary" />
+                        <div>
+                          <CardTitle>Manage FAQs</CardTitle>
+                          <CardDescription>View and manage frequently asked questions</CardDescription>
+                        </div>
                       </div>
+                      <FAQFormDialog onSuccess={loadFAQs} />
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -71,6 +99,7 @@ export default function AdminFAQs() {
                             <TableHead>Category</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Order</TableHead>
+                            <TableHead>Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -84,6 +113,32 @@ export default function AdminFAQs() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{faq.sort_order}</TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <FAQFormDialog faq={faq} onSuccess={loadFAQs} />
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="sm">
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete FAQ</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this FAQ? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(faq.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
