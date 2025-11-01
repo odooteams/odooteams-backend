@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import { ArrowRight, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
@@ -13,7 +13,8 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from '@/hooks/use-toast';
 import useWhatsAppShare from '@/hooks/useWhatsAppShare';
-import { GOOGLE_SHEETS_CONFIG, fetchSheetData } from '@/lib/googleSheets';
+import { useQuery } from '@tanstack/react-query';
+import { projectsQueries } from '@/lib/supabase/queries';
 import { createProjectSlug } from '@/lib/projectUtils';
 
 interface ProjectItem {
@@ -45,10 +46,30 @@ const FeaturedProjects = () => {
   const { t, language, dir } = useLanguage();
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
   const ChevronIcon = dir === 'rtl' ? ChevronUp : ChevronDown;
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [expandedQuote, setExpandedQuote] = useState<number | null>(null);
   const { shareToWhatsApp } = useWhatsAppShare();
+
+  const { data: rawProjects = [], isLoading: loading } = useQuery({
+    queryKey: ['projects', language],
+    queryFn: () => projectsQueries.getAll(),
+  });
+
+  const projects = useMemo(() => {
+    const allProjects = rawProjects.map((p: any, i: number) => ({
+      id: i + 1,
+      title: language === 'ar' ? p.title_ar : p.title_en,
+      category: language === 'ar' ? p.category_ar : p.category_en,
+      description: language === 'ar' ? p.description_ar : p.description_en,
+      technologies: p.technologies || [],
+      image: (p.images && p.images[0]) || '/placeholder.svg',
+      featured: p.is_featured,
+      cost: p.cost,
+      projectUrl: p.project_url,
+    }));
+    
+    // Filter featured projects and take up to 3
+    return allProjects.filter((p: any) => p.featured).slice(0, 3);
+  }, [rawProjects, language]);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -99,57 +120,6 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
     // Use the hash to select a color from the list
     return colors[hash % colors.length];
   };
-  
-  useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          "projects"
-        );
-        
-        // Map Google Sheet row to our project format
-        const allProjects = data.map((row: any, i: number) => {
-          const title = language === 'ar' ? (row.Title_ar || row.Title_en) : (row.Title_en || row.Title_ar);
-          const category = language === 'ar' ? (row.Category_ar || row.Category_en) : (row.Category_en || row.Category_ar);
-          const description = language === 'ar'
-            ? (row['project-details_ar'] || row['project-details_en'] || '')
-            : (row['project-details_en'] || row['project-details_ar'] || '');
-            
-          const technologies = language === 'ar'
-            ? (row['prog_lang_ar'] ? row['prog_lang_ar'].split(',').map((s: string) => s.trim()) : [])
-            : (row['prog_lang_en'] ? row['prog_lang_en'].split(',').map((s: string) => s.trim()) : []);
-            
-          // Use the first image as the main image for card display
-          const images = [row["Gallery-1"], row["Gallery-2"], row["Gallery-3"]].filter(Boolean);
-          const mainImage = images[0] || row.image || '/placeholder.svg';
-          
-          return {
-            id: i + 1,
-            title,
-            category,
-            description,
-            technologies,
-            image: mainImage,
-            featured: true, // Show all in featured for simplicity, can be filtered later
-            cost: row.cost,
-            projectUrl: row.projectUrl || row.project_url,
-          };
-        });
-
-        // Take only the last 3 projects for featured section
-        setProjects(allProjects.slice(-3));
-      } catch (error) {
-        console.error("Failed to load projects:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    loadProjects();
-  }, [language]);
   
   if (loading) {
     return (

@@ -1,11 +1,11 @@
-
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { GOOGLE_SHEETS_CONFIG, fetchSheetData } from '@/lib/googleSheets';
 import useWhatsAppShare from './useWhatsAppShare';
+import { useQuery } from '@tanstack/react-query';
+import { projectsQueries } from '@/lib/supabase/queries';
 
 export interface Project {
-  id: number;
+  id: string;
   title: string;
   category: string;
   clientName?: string;
@@ -22,8 +22,29 @@ export const useProjects = () => {
   const { t, language } = useLanguage();
   const { requestServiceViaWhatsApp } = useWhatsAppShare();
 
-  const [sheetProjects, setSheetProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Fetch projects from Supabase
+  const { data: rawProjects = [], isLoading: loading } = useQuery({
+    queryKey: ['projects', language],
+    queryFn: () => projectsQueries.getAll(),
+  });
+
+  // Transform to match the expected format
+  const sheetProjects = useMemo(() => 
+    rawProjects.map((p: any) => ({
+      id: p.id,
+      title: language === 'ar' ? p.title_ar : p.title_en,
+      category: language === 'ar' ? p.category_ar : p.category_en,
+      description: language === 'ar' ? p.description_ar : p.description_en,
+      processingSteps: language === 'ar' ? p.processing_steps_ar : p.processing_steps_en,
+      images: p.images || [],
+      technologies: p.technologies || [],
+      cost: p.cost,
+      projectUrl: p.project_url,
+      completionDate: p.completion_date,
+      clientName: p.client_name,
+      featured: p.is_featured,
+    })), 
+  [rawProjects, language]);
 
   // States for filtering and view
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,54 +52,6 @@ export const useProjects = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      const data = await fetchSheetData(
-        GOOGLE_SHEETS_CONFIG.API_KEY,
-        GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-        "projects"
-      );
-
-      // Map Google Sheet row to our project format
-      const projects: Project[] = data.map((row: any, i: number) => {
-        const title = language === 'ar' ? (row.Title_ar || row.Title_en) : (row.Title_en || row.Title_ar);
-        const category = language === 'ar' ? (row.Category_ar || row.Category_en) : (row.Category_en || row.Category_ar);
-        const description = language === 'ar'
-          ? (row['project-details_ar'] || row['project-details_en'] || '')
-          : (row['project-details_en'] || row['project-details_ar'] || '');
-
-        const processing_steps = language === 'ar'
-          ? (row['Processing_steps_ar'] || row['Processing_steps_en'] || '')
-          : (row['Processing_steps_en'] || row['Processing_steps_ar'] || '');
-
-        const technologies = language === 'ar'
-          ? (row['prog_lang_ar'] ? row['prog_lang_ar'].split(',').map((s: string) => s.trim()) : [])
-          : (row['prog_lang_en'] ? row['prog_lang_en'].split(',').map((s: string) => s.trim()) : []);
-
-        const images = [row["Gallery-1"], row["Gallery-2"], row["Gallery-3"]].filter(Boolean);
-
-        return {
-          id: i + 1, // no "id" column, fallback to index
-          title,
-          category,
-          description,
-          technologies,
-          images: images.length ? images : [row.image].filter(Boolean),
-          cost: row.cost,
-          projectUrl: row.project_url,
-          // Optional fields:
-          clientName: row.clientName || '', // Map if exists
-          featured: false,
-        };
-      });
-
-      setSheetProjects(projects);
-      setLoading(false);
-    }
-    load();
-  }, [language]);
 
   // Extract unique categories for dropdown
   const categories = useMemo(() =>
@@ -124,11 +97,10 @@ export const useProjects = () => {
     setCategoryFilter,
     isGridView,
     setIsGridView,
-    categories,
+    categories: categories as string[],
     currentPage,
     setCurrentPage,
     totalPages,
     handleContactRequest
   };
 };
-

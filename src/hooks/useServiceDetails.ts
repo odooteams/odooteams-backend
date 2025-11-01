@@ -1,10 +1,10 @@
-
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import useWhatsAppShare from './useWhatsAppShare';
-import { useServiceSheet } from './useServiceSheet';
 import { findServiceBySlug } from '@/lib/serviceUtils';
+import { useQuery } from '@tanstack/react-query';
+import { servicesQueries } from '@/lib/supabase/queries';
 
 export interface ProcessStep {
   step: number;
@@ -13,7 +13,7 @@ export interface ProcessStep {
 }
 
 export interface ServiceDetails {
-  id: number;
+  id: string;
   category: string;
   title: string;
   details: string;
@@ -22,49 +22,80 @@ export interface ServiceDetails {
   process: ProcessStep[];
   image: string;
   gallery: string[];
+  processingSteps?: string;
 }
 
 export const useServiceDetails = () => {
   const { slug } = useParams();
   const { t, language } = useLanguage();
   const { requestServiceViaWhatsApp } = useWhatsAppShare();
-  const { services, isLoading, error } = useServiceSheet();
-  const [service, setService] = useState<ServiceDetails>({
-    id: 0,
-    category: '',
-    title: '',
-    details: '',
-    fullDescription: '',
-    benefits: [],
-    process: [],
-    image: '/placeholder.svg',
-    gallery: []
+
+  const { data: rawServices = [], isLoading, error } = useQuery({
+    queryKey: ['services', language],
+    queryFn: () => servicesQueries.getAll(language),
   });
 
-  useEffect(() => {
-    if (!isLoading && services.length > 0) {
-      const foundService = findServiceBySlug(services, slug || "");
-      
-      if (foundService) {
-        // Extract gallery images, ensuring they exist
-        const galleryImages = (foundService.gallery || [])
-          .filter(img => img && img.trim() !== '');
-            
-        // Create a full service object with all details
-        setService({
-          id: foundService.id,
-          category: foundService.category,
-          title: foundService.title,
-          details: foundService.details,
-          fullDescription: foundService.details, // Using details as full description since it's already localized
-          benefits: foundService.benefits || [],
-          process: foundService.process || [],
-          image: foundService.image || '/placeholder.svg',
-          gallery: galleryImages.length > 0 ? galleryImages : [foundService.image].filter(Boolean)
-        });
-      }
+  const services = useMemo(() => 
+    rawServices.map((s: any) => ({
+      id: s.id,
+      title: language === 'ar' ? s.title_ar : s.title_en,
+      category: language === 'ar' ? s.category_ar : s.category_en,
+      details: language === 'ar' ? s.details_ar : s.details_en,
+      processingSteps: language === 'ar' ? s.processing_steps_ar : s.processing_steps_en,
+      image: s.image,
+      gallery: s.images || [],
+      benefits: [],
+      process: [],
+    })), 
+  [rawServices, language]);
+
+  const service = useMemo(() => {
+    if (!slug || isLoading || services.length === 0) {
+      return {
+        id: '0',
+        category: '',
+        title: '',
+        details: '',
+        fullDescription: '',
+        benefits: [],
+        process: [],
+        image: '/placeholder.svg',
+        gallery: []
+      };
     }
-  }, [slug, isLoading, services, language]);
+
+    const foundService = findServiceBySlug(services, slug);
+    
+    if (foundService) {
+      const galleryImages = (foundService.gallery || [])
+        .filter((img: string) => img && img.trim() !== '');
+        
+      return {
+        id: foundService.id,
+        category: foundService.category,
+        title: foundService.title,
+        details: foundService.details,
+        fullDescription: foundService.details,
+        benefits: foundService.benefits || [],
+        process: foundService.process || [],
+        image: foundService.image || '/placeholder.svg',
+        gallery: galleryImages.length > 0 ? galleryImages : [foundService.image].filter(Boolean),
+        processingSteps: foundService.processingSteps,
+      };
+    }
+
+    return {
+      id: '0',
+      category: '',
+      title: '',
+      details: '',
+      fullDescription: '',
+      benefits: [],
+      process: [],
+      image: '/placeholder.svg',
+      gallery: []
+    };
+  }, [slug, isLoading, services]);
   
   // Handle WhatsApp request
   const handleWhatsAppRequest = () => {

@@ -1,14 +1,13 @@
-
 import { useParams } from "react-router-dom";
 import { useLanguage } from "@/lib/LanguageContext";
 import useWhatsAppShare from "@/hooks/useWhatsAppShare";
-import { GOOGLE_SHEETS_CONFIG, fetchSheetData } from "@/lib/googleSheets";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { findProjectBySlug } from "@/lib/projectUtils";
+import { projectsQueries } from "@/lib/supabase/queries";
 
 export interface ProjectData {
-  id: number;
+  id: string;
   title: string;
   category: string;
   clientName?: string;
@@ -27,6 +26,7 @@ export interface ProjectData {
     position: string;
   };
   cost?: string;
+  processingSteps?: string;
 }
 
 export const useProjectDetails = () => {
@@ -35,78 +35,34 @@ export const useProjectDetails = () => {
   const { requestServiceViaWhatsApp } = useWhatsAppShare();
 
   const {
-    data: sheetProjects = [],
+    data: rawProjects = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["projects-sheet", language],
-    queryFn: async () => {
-      const data = await fetchSheetData(
-        GOOGLE_SHEETS_CONFIG.API_KEY,
-        GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-        "projects"
-      );
-
-      return data.map((row: any, i: number): ProjectData => {
-        const title =
-          language === "ar" ? row.Title_ar || row.Title_en : row.Title_en || row.Title_ar;
-        const category =
-          language === "ar"
-            ? row.Category_ar || row.Category_en
-            : row.Category_en || row.Category_ar;
-        const description =
-          language === "ar"
-            ? row["project-details_ar"] || row["project-details_en"] || ""
-            : row["project-details_en"] || row["project-details_ar"] || "";
-        const technologies =
-          language === "ar"
-            ? row["prog_lang_ar"]
-              ? row["prog_lang_ar"].split(",").map((s: string) => s.trim())
-              : []
-            : row["prog_lang_en"]
-            ? row["prog_lang_en"].split(",").map((s: string) => s.trim())
-            : [];
-        const images = [
-          row["Gallery-1"],
-          row["Gallery-2"],
-          row["Gallery-3"]
-        ].filter(Boolean);
-
-        const projectUrl = row.project_url || "";
-        const clientName = row.clientName || "";
-        const cost = row.cost || "";
-
-        // Processing steps as challenge/solution/results (if present)
-        let challenges = row["Processing_steps_en"] || "";
-        let solutions = "";
-        let results = "";
-        if (language === "ar") {
-          challenges = row["Processing_steps_ar"] || challenges;
-        }
-        // Optionally: you might want to parse real structure based on your sheet layout
-
-        return {
-          id: i + 1,
-          title,
-          category,
-          description,
-          technologies,
-          images: images.length ? images : [row.image].filter(Boolean),
-          projectUrl,
-          clientName,
-          cost,
-          // These can be expanded if sheet provides:
-          challenges,
-          solutions,
-          results,
-          testimonial: undefined,
-          featured: false,
-        };
-      });
-    },
-    // Fetch only once per language
-    staleTime: 1000 * 60 * 5,
+    queryKey: ["projects", language],
+    queryFn: () => projectsQueries.getAll(),
   });
+
+  const sheetProjects = useMemo(() => 
+    rawProjects.map((p: any): ProjectData => ({
+      id: p.id,
+      title: language === 'ar' ? p.title_ar : p.title_en,
+      category: language === 'ar' ? p.category_ar : p.category_en,
+      description: language === 'ar' ? p.description_ar : p.description_en,
+      processingSteps: language === 'ar' ? p.processing_steps_ar : p.processing_steps_en,
+      technologies: p.technologies || [],
+      images: p.images || [],
+      projectUrl: p.project_url,
+      clientName: p.client_name,
+      cost: p.cost,
+      completionDate: p.completion_date,
+      featured: p.is_featured,
+      challenges: '',
+      solutions: '',
+      results: '',
+      testimonial: undefined,
+    })), 
+  [rawProjects, language]);
 
   const project: ProjectData | undefined = useMemo(() => {
     if (!slug || isLoading) return undefined;

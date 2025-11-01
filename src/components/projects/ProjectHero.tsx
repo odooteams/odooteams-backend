@@ -9,7 +9,7 @@ import ProjectContactDialog from './ProjectContactDialog';
 import useWhatsAppShare from '@/hooks/useWhatsAppShare';
 interface ProjectHeroProps {
   project: {
-    id: number;
+    id: string;
     title: string;
     category: string;
     description: string;

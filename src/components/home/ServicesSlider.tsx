@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useServiceSheet } from '@/hooks/useServiceSheet';
+import { useQuery } from '@tanstack/react-query';
+import { servicesQueries } from '@/lib/supabase/queries';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { createServiceSlug } from '@/lib/serviceUtils';
 
 const ServicesSlider = () => {
   const { t, language, dir } = useLanguage();
-  const { services, isLoading, error } = useServiceSheet();
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
+
+  const { data: rawServices = [], isLoading, error } = useQuery({
+    queryKey: ['services', language],
+    queryFn: () => servicesQueries.getAll(language),
+  });
+
+  const services = useMemo(() => 
+    rawServices.map((s: any) => ({
+      id: s.id,
+      title: language === 'ar' ? s.title_ar : s.title_en,
+      category: language === 'ar' ? s.category_ar : s.category_en,
+      details: language === 'ar' ? s.details_ar : s.details_en,
+      image: s.image,
+      price: s.price,
+      duration: s.duration,
+    })), 
+  [rawServices, language]);
 
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
