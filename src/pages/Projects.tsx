@@ -41,7 +41,7 @@ const Projects = () => {
           onViewChange={setIsGridView}
         />
 
-        <section className="py-16">
+        <section className="py-20 bg-gradient-to-b from-background to-muted/20">
           <div className="container mx-auto px-4">
             <ProjectsList 
               projects={projects}
@@ -50,11 +50,13 @@ const Projects = () => {
             />
             
             {totalPages > 1 && (
-              <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
+              <div className="mt-16">
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             )}
           </div>
         </section>
