@@ -3,13 +3,27 @@ import SEOHead from '@/components/seo/SEOHead';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings as SettingsIcon, Building2, Phone, Share2, Users } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Settings as SettingsIcon, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { SettingFormDialog } from '@/components/admin/SettingFormDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function AdminSettings() {
-  const [settings, setSettings] = useState<any>({});
+  const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,20 +35,32 @@ export default function AdminSettings() {
       setLoading(true);
       const { data, error } = await supabase
         .from('site_settings')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
-      
-      const settingsMap: any = {};
-      data?.forEach(item => {
-        settingsMap[item.setting_key] = item.setting_value;
-      });
-      setSettings(settingsMap);
+      setSettings(data || []);
     } catch (error) {
       console.error('Error loading settings:', error);
       toast.error('Failed to load settings');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      toast.success('Setting deleted successfully');
+      loadSettings();
+    } catch (error: any) {
+      console.error('Error deleting setting:', error);
+      toast.error(error.message || 'Failed to delete setting');
     }
   };
 
@@ -53,76 +79,74 @@ export default function AdminSettings() {
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <SettingsIcon className="h-6 w-6 text-primary" />
-                      <div>
-                        <CardTitle>Site Settings</CardTitle>
-                        <CardDescription>Manage company information, contact details, and social media</CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <SettingsIcon className="h-6 w-6 text-primary" />
+                        <div>
+                          <CardTitle>Site Settings</CardTitle>
+                          <CardDescription>Manage company information, contact details, and configuration</CardDescription>
+                        </div>
                       </div>
+                      <SettingFormDialog onSuccess={loadSettings} />
                     </div>
                   </CardHeader>
                   <CardContent>
                     {loading ? (
                       <p className="text-sm text-muted-foreground">Loading settings...</p>
+                    ) : settings.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No settings found. Add your first setting to get started.</p>
                     ) : (
-                      <Tabs defaultValue="company" className="w-full">
-                        <TabsList className="grid w-full grid-cols-4">
-                          <TabsTrigger value="company">
-                            <Building2 className="h-4 w-4 mr-2" />
-                            Company
-                          </TabsTrigger>
-                          <TabsTrigger value="contact">
-                            <Phone className="h-4 w-4 mr-2" />
-                            Contact
-                          </TabsTrigger>
-                          <TabsTrigger value="social">
-                            <Share2 className="h-4 w-4 mr-2" />
-                            Social Media
-                          </TabsTrigger>
-                          <TabsTrigger value="team">
-                            <Users className="h-4 w-4 mr-2" />
-                            Team
-                          </TabsTrigger>
-                        </TabsList>
-                        
-                        <TabsContent value="company" className="space-y-4">
-                          <div className="space-y-2">
-                            <h3 className="font-medium">Company Information</h3>
-                            <p className="text-sm text-muted-foreground">Configure company details and branding</p>
-                            <pre className="p-4 bg-muted rounded-lg overflow-auto">
-                              {JSON.stringify(settings.company_info || {}, null, 2)}
-                            </pre>
-                          </div>
-                        </TabsContent>
-                        
-                        <TabsContent value="contact" className="space-y-4">
-                          <div className="space-y-2">
-                            <h3 className="font-medium">Contact Information</h3>
-                            <p className="text-sm text-muted-foreground">Manage contact details and addresses</p>
-                            <pre className="p-4 bg-muted rounded-lg overflow-auto">
-                              {JSON.stringify(settings.contact_info || {}, null, 2)}
-                            </pre>
-                          </div>
-                        </TabsContent>
-                        
-                        <TabsContent value="social" className="space-y-4">
-                          <div className="space-y-2">
-                            <h3 className="font-medium">Social Media Links</h3>
-                            <p className="text-sm text-muted-foreground">Configure social media profiles</p>
-                            <pre className="p-4 bg-muted rounded-lg overflow-auto">
-                              {JSON.stringify(settings.social_media || {}, null, 2)}
-                            </pre>
-                          </div>
-                        </TabsContent>
-                        
-                        <TabsContent value="team" className="space-y-4">
-                          <div className="space-y-2">
-                            <h3 className="font-medium">Team Management</h3>
-                            <p className="text-sm text-muted-foreground">View team members (managed in database)</p>
-                            <p className="text-sm text-muted-foreground">Team members are stored in the team_members table</p>
-                          </div>
-                        </TabsContent>
-                      </Tabs>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Setting Key</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Last Updated</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {settings.map((setting) => (
+                            <TableRow key={setting.id}>
+                              <TableCell className="font-medium">{setting.setting_key}</TableCell>
+                              <TableCell className="capitalize">{setting.setting_type?.replace('_', ' ')}</TableCell>
+                              <TableCell>
+                                <Badge variant={setting.is_active ? "default" : "secondary"}>
+                                  {setting.is_active ? 'Active' : 'Inactive'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{new Date(setting.updated_at).toLocaleDateString()}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <SettingFormDialog setting={setting} onSuccess={loadSettings} />
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="icon">
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Setting</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this setting? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(setting.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     )}
                   </CardContent>
                 </Card>
