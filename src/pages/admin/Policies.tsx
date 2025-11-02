@@ -5,9 +5,23 @@ import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Shield, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
+import { PolicyFormDialog } from '@/components/admin/PolicyFormDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function AdminPolicies() {
   const [policies, setPolicies] = useState<any[]>([]);
@@ -35,6 +49,17 @@ export default function AdminPolicies() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await contentManagement.deletePolicy(id);
+      toast.success('Policy deleted successfully');
+      loadPolicies();
+    } catch (error: any) {
+      console.error('Error deleting policy:', error);
+      toast.error(error.message || 'Failed to delete policy');
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • Policies" description="Manage policies and terms" />
@@ -50,12 +75,15 @@ export default function AdminPolicies() {
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <Shield className="h-6 w-6 text-primary" />
-                      <div>
-                        <CardTitle>Manage Policies</CardTitle>
-                        <CardDescription>View and manage policies, terms, and legal documents</CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Shield className="h-6 w-6 text-primary" />
+                        <div>
+                          <CardTitle>Manage Policies</CardTitle>
+                          <CardDescription>View and manage policies, terms, and legal documents</CardDescription>
+                        </div>
                       </div>
+                      <PolicyFormDialog onSuccess={loadPolicies} />
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -64,7 +92,7 @@ export default function AdminPolicies() {
                     ) : policies.length === 0 ? (
                       <p className="text-sm text-muted-foreground">No policies found.</p>
                     ) : (
-                      <Table>
+                       <Table>
                         <TableHeader>
                           <TableRow>
                             <TableHead>Title</TableHead>
@@ -72,6 +100,7 @@ export default function AdminPolicies() {
                             <TableHead>Version</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Effective Date</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -86,6 +115,32 @@ export default function AdminPolicies() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{policy.effective_date ? new Date(policy.effective_date).toLocaleDateString() : 'N/A'}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <PolicyFormDialog policy={policy} onSuccess={loadPolicies} />
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="icon">
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Policy</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this policy? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(policy.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

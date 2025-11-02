@@ -242,5 +242,39 @@ export const contentManagement = {
 
     if (error) throw error;
     return data;
+  },
+
+  // Policies
+  createPolicy: async (policy: any) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from('policies')
+      .insert({ ...policy, created_by: user?.id })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  updatePolicy: async (id: string, updates: any) => {
+    const { data, error } = await supabase
+      .from('policies')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  deletePolicy: async (id: string) => {
+    const { error } = await supabase
+      .from('policies')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
   }
 };
