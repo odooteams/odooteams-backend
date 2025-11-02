@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <footer className={`bg-odoo-purple text-white mt-16 hidden md:block ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
       <div className="max-w-none mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo and description */}
           <div>
             <Link to="/" className="flex items-center">
@@ -56,6 +56,22 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/faqs" className="hover:text-odoo-gold transition duration-300">{t('FAQs', 'الأسئلة الشائعة')}</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="text-xl font-bold mb-4">{t('Legal', 'قانوني')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/policy/privacy-policy" className="hover:text-odoo-gold transition duration-300">{t('Privacy Policy', 'سياسة الخصوصية')}</Link>
+              </li>
+              <li>
+                <Link to="/policy/terms-of-service" className="hover:text-odoo-gold transition duration-300">{t('Terms of Service', 'شروط الخدمة')}</Link>
+              </li>
+              <li>
+                <Link to="/policy/cookie-policy" className="hover:text-odoo-gold transition duration-300">{t('Cookie Policy', 'سياسة ملفات تعريف الارتباط')}</Link>
               </li>
             </ul>
           </div>
