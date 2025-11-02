@@ -32,6 +32,7 @@ import AdminUsers from '@/pages/admin/Users';
 import AdminBlogs from '@/pages/admin/Blogs';
 import AdminPolicies from '@/pages/admin/Policies';
 import AdminSettings from '@/pages/admin/Settings';
+import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
 import AdvancedAnalytics from '@/components/analytics/AdvancedAnalytics';
@@ -53,6 +54,7 @@ function App() {
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/learn-odoo" element={<LearnOdoo />} />
             <Route path="/learn-odoo/:id" element={<ResourceDetails />} />
+            <Route path="/policy/:slug" element={<Policy />} />
             
             {/* Auth Routes */}
             <Route path="/auth/signin" element={<SignIn />} />
