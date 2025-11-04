@@ -12,16 +12,21 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Briefcase, FileText, HelpCircle, BookOpen, BarChart3, LogOut, Users, FileEdit, Shield, Settings } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, HelpCircle, BookOpen, BarChart3, LogOut, Users, FileEdit, Shield, Settings, MessageSquare, UsersRound, MessageCircle, Calendar, Bot } from 'lucide-react';
 
 const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
   { title: 'Users', url: '/admin/users', icon: Users },
+  { title: 'Messages', url: '/admin/messages', icon: MessageSquare },
   { title: 'Services', url: '/admin/services', icon: Briefcase },
   { title: 'Projects', url: '/admin/projects', icon: FileText },
   { title: 'FAQs', url: '/admin/faqs', icon: HelpCircle },
   { title: 'Resources', url: '/admin/resources', icon: BookOpen },
   { title: 'Blogs', url: '/admin/blogs', icon: FileEdit },
+  { title: 'Team Members', url: '/admin/team', icon: UsersRound },
+  { title: 'Testimonials', url: '/admin/testimonials', icon: MessageCircle },
+  { title: 'Timeline', url: '/admin/timeline', icon: Calendar },
+  { title: 'Chatbot', url: '/admin/chatbot', icon: Bot },
   { title: 'Policies', url: '/admin/policies', icon: Shield },
   { title: 'Settings', url: '/admin/settings', icon: Settings },
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },

@@ -32,6 +32,11 @@ import AdminUsers from '@/pages/admin/Users';
 import AdminBlogs from '@/pages/admin/Blogs';
 import AdminPolicies from '@/pages/admin/Policies';
 import AdminSettings from '@/pages/admin/Settings';
+import AdminMessages from '@/pages/admin/Messages';
+import AdminTeamMembers from '@/pages/admin/TeamMembers';
+import AdminTestimonials from '@/pages/admin/Testimonials';
+import AdminTimeline from '@/pages/admin/Timeline';
+import AdminChatbot from '@/pages/admin/Chatbot';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
@@ -110,6 +115,14 @@ function App() {
               } 
             />
             <Route 
+              path="/admin/messages" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminMessages />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
               path="/admin/services" 
               element={
                 <ProtectedRoute requireAdmin>
@@ -154,6 +167,38 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminBlogs />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/team" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminTeamMembers />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/testimonials" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminTestimonials />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/timeline" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminTimeline />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/chatbot" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminChatbot />
                 </ProtectedRoute>
               } 
             />
