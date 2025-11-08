@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 import { FAQFormDialog } from '@/components/admin/FAQFormDialog';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -83,7 +84,10 @@ export default function AdminFAQs() {
                           <CardDescription>View and manage frequently asked questions</CardDescription>
                         </div>
                       </div>
-                      <FAQFormDialog onSuccess={loadFAQs} />
+                      <div className="flex gap-2">
+                        <ExcelImportExport type="faqs" data={faqs} onImportComplete={loadFAQs} />
+                        <FAQFormDialog onSuccess={loadFAQs} />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>

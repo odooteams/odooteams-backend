@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 import { ProjectFormDialog } from '@/components/admin/ProjectFormDialog';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -83,7 +84,10 @@ export default function AdminProjects() {
                           <CardDescription>View and manage all projects</CardDescription>
                         </div>
                       </div>
-                      <ProjectFormDialog onSuccess={loadProjects} />
+                      <div className="flex gap-2">
+                        <ExcelImportExport type="projects" data={projects} onImportComplete={loadProjects} />
+                        <ProjectFormDialog onSuccess={loadProjects} />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>

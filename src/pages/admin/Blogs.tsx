@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { FileEdit } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 
 export default function AdminBlogs() {
   const [blogs, setBlogs] = useState<any[]>([]);
@@ -50,12 +51,15 @@ export default function AdminBlogs() {
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <FileEdit className="h-6 w-6 text-primary" />
-                      <div>
-                        <CardTitle>Manage Blogs</CardTitle>
-                        <CardDescription>View and manage blog posts</CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <FileEdit className="h-6 w-6 text-primary" />
+                        <div>
+                          <CardTitle>Manage Blogs</CardTitle>
+                          <CardDescription>View and manage blog posts</CardDescription>
+                        </div>
                       </div>
+                      <ExcelImportExport type="blogs" data={blogs} onImportComplete={loadBlogs} />
                     </div>
                   </CardHeader>
                   <CardContent>

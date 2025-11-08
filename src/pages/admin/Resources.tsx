@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { BookOpen } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 
 export default function AdminResources() {
   const [resources, setResources] = useState<any[]>([]);
@@ -50,12 +51,15 @@ export default function AdminResources() {
               <div className="max-w-6xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <BookOpen className="h-6 w-6 text-primary" />
-                      <div>
-                        <CardTitle>Manage Resources</CardTitle>
-                        <CardDescription>View and manage learning resources</CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <BookOpen className="h-6 w-6 text-primary" />
+                        <div>
+                          <CardTitle>Manage Resources</CardTitle>
+                          <CardDescription>View and manage learning resources</CardDescription>
+                        </div>
                       </div>
+                      <ExcelImportExport type="resources" data={resources} onImportComplete={loadResources} />
                     </div>
                   </CardHeader>
                   <CardContent>

@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 import { ServiceFormDialog } from '@/components/admin/ServiceFormDialog';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -83,7 +84,10 @@ export default function AdminServices() {
                           <CardDescription>View and manage all services</CardDescription>
                         </div>
                       </div>
-                      <ServiceFormDialog onSuccess={loadServices} />
+                      <div className="flex gap-2">
+                        <ExcelImportExport type="services" data={services} onImportComplete={loadServices} />
+                        <ServiceFormDialog onSuccess={loadServices} />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
