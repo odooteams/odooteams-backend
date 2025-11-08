@@ -151,24 +151,31 @@ export const processServiceImport = (data: any[]) => {
 
 // Process imported data for projects
 export const processProjectImport = (data: any[]) => {
-  return data.map((row: any) => ({
-    title_en: row.title_en,
-    title_ar: row.title_ar,
-    category_en: row.category_en,
-    category_ar: row.category_ar,
-    description_en: row.description_en,
-    description_ar: row.description_ar,
-    processing_steps_en: row.processing_steps_en || null,
-    processing_steps_ar: row.processing_steps_ar || null,
-    client_name: row.client_name || null,
-    completion_date: row.completion_date || null,
-    cost: row.cost || null,
-    project_url: row.project_url || null,
-    technologies: row.technologies ? row.technologies.split(',').map((t: string) => t.trim()) : null,
-    images: row.images ? row.images.split(',').map((i: string) => i.trim()) : null,
-    is_featured: row.is_featured === 'true',
-    is_active: row.is_active === 'true'
-  }));
+  return data.map((row: any, index: number) => {
+    // Validate required fields
+    if (!row.title_en || !row.title_ar || !row.category_en || !row.category_ar || !row.description_en || !row.description_ar) {
+      throw new Error(`Row ${index + 2}: Missing required fields. Please ensure title_en, title_ar, category_en, category_ar, description_en, and description_ar are filled.`);
+    }
+
+    return {
+      title_en: String(row.title_en).trim(),
+      title_ar: String(row.title_ar).trim(),
+      category_en: String(row.category_en).trim(),
+      category_ar: String(row.category_ar).trim(),
+      description_en: String(row.description_en).trim(),
+      description_ar: String(row.description_ar).trim(),
+      processing_steps_en: row.processing_steps_en ? String(row.processing_steps_en).trim() : null,
+      processing_steps_ar: row.processing_steps_ar ? String(row.processing_steps_ar).trim() : null,
+      client_name: row.client_name ? String(row.client_name).trim() : null,
+      completion_date: row.completion_date || null,
+      cost: row.cost ? String(row.cost).trim() : null,
+      project_url: row.project_url ? String(row.project_url).trim() : null,
+      technologies: row.technologies ? String(row.technologies).split(',').map((t: string) => t.trim()).filter(Boolean) : [],
+      images: row.images ? String(row.images).split(',').map((i: string) => i.trim()).filter(Boolean) : [],
+      is_featured: String(row.is_featured).toLowerCase() === 'true',
+      is_active: String(row.is_active).toLowerCase() === 'true'
+    };
+  });
 };
 
 // Process imported data for blogs
