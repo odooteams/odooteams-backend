@@ -5,11 +5,23 @@ import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { FileEdit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileEdit, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
-
+import { BlogFormDialog } from '@/components/admin/BlogFormDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 export default function AdminBlogs() {
   const [blogs, setBlogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +48,32 @@ export default function AdminBlogs() {
     }
   };
 
+  const handleTogglePublish = async (id: string, current: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('blogs')
+        .update({ is_published: !current })
+        .eq('id', id);
+      if (error) throw error;
+      toast.success(`Blog ${!current ? 'published' : 'unpublished'} successfully`);
+      loadBlogs();
+    } catch (error) {
+      console.error('Toggle publish error:', error);
+      toast.error('Failed to update publish status');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase.from('blogs').delete().eq('id', id);
+      if (error) throw error;
+      toast.success('Blog deleted successfully');
+      loadBlogs();
+    } catch (error) {
+      console.error('Delete blog error:', error);
+      toast.error('Failed to delete blog');
+    }
+  };
   return (
     <>
       <SEOHead title="Admin • Blogs" description="Manage blog posts" />
@@ -59,7 +97,10 @@ export default function AdminBlogs() {
                           <CardDescription>View and manage blog posts</CardDescription>
                         </div>
                       </div>
-                      <ExcelImportExport type="blogs" data={blogs} onImportComplete={loadBlogs} />
+                      <div className="flex gap-2">
+                        <ExcelImportExport type="blogs" data={blogs} onImportComplete={loadBlogs} />
+                        <BlogFormDialog onSuccess={loadBlogs} />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -76,6 +117,7 @@ export default function AdminBlogs() {
                             <TableHead>Published</TableHead>
                             <TableHead>Views</TableHead>
                             <TableHead>Created</TableHead>
+                            <TableHead>Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -84,12 +126,45 @@ export default function AdminBlogs() {
                               <TableCell className="max-w-md truncate">{blog.title_en}</TableCell>
                               <TableCell>{blog.category_en || 'N/A'}</TableCell>
                               <TableCell>
-                                <Badge variant={blog.is_published ? "default" : "secondary"}>
+                                <Badge variant={blog.is_published ? 'default' : 'secondary'}>
                                   {blog.is_published ? 'Published' : 'Draft'}
                                 </Badge>
                               </TableCell>
                               <TableCell>{blog.views_count || 0}</TableCell>
                               <TableCell>{new Date(blog.created_at).toLocaleDateString()}</TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <BlogFormDialog blog={blog} onSuccess={loadBlogs} />
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleTogglePublish(blog.id, blog.is_published)}
+                                  >
+                                    {blog.is_published ? 'Unpublish' : 'Publish'}
+                                  </Button>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="sm">
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Blog</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this blog? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(blog.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

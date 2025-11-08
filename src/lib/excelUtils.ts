@@ -157,6 +157,25 @@ export const processProjectImport = (data: any[]) => {
       throw new Error(`Row ${index + 2}: Missing required fields. Please ensure title_en, title_ar, category_en, category_ar, description_en, and description_ar are filled.`);
     }
 
+    // Normalize completion_date to YYYY-MM-DD if provided (supports Excel serials and common strings)
+    let completionDate: string | null = null;
+    const rawDate = row.completion_date;
+    if (rawDate !== undefined && rawDate !== null && String(rawDate).trim() !== '') {
+      if (typeof rawDate === 'number') {
+        // Excel serial date to JS Date
+        const jsDate = new Date(Math.round((rawDate - 25569) * 86400 * 1000));
+        if (!isNaN(jsDate.getTime())) completionDate = jsDate.toISOString().split('T')[0];
+      } else {
+        const jsDate = new Date(String(rawDate));
+        if (!isNaN(jsDate.getTime())) {
+          completionDate = jsDate.toISOString().split('T')[0];
+        } else {
+          // Fallback: keep as string (Supabase may accept if valid)
+          completionDate = String(rawDate);
+        }
+      }
+    }
+
     return {
       title_en: String(row.title_en).trim(),
       title_ar: String(row.title_ar).trim(),
@@ -167,7 +186,7 @@ export const processProjectImport = (data: any[]) => {
       processing_steps_en: row.processing_steps_en ? String(row.processing_steps_en).trim() : null,
       processing_steps_ar: row.processing_steps_ar ? String(row.processing_steps_ar).trim() : null,
       client_name: row.client_name ? String(row.client_name).trim() : null,
-      completion_date: row.completion_date || null,
+      completion_date: completionDate,
       cost: row.cost ? String(row.cost).trim() : null,
       project_url: row.project_url ? String(row.project_url).trim() : null,
       technologies: row.technologies ? String(row.technologies).split(',').map((t: string) => t.trim()).filter(Boolean) : [],

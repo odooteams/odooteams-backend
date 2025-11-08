@@ -120,9 +120,9 @@ export const ExcelImportExport = ({ type, data, onImportComplete }: ExcelImportE
     } catch (error) {
       console.error('Import error:', error);
       toast({
-        title: "Import Failed",
-        description: error instanceof Error ? error.message : "Failed to import data. Please check the file format.",
-        variant: "destructive"
+        title: 'Import Failed',
+        description: error instanceof Error ? error.message : 'Failed to import data. Please check the file format and required columns.',
+        variant: 'destructive'
       });
     }
   };
