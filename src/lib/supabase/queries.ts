@@ -397,3 +397,32 @@ export const policiesQueries = {
     return data as Policy;
   }
 };
+
+// ============================================
+// SITE SETTINGS
+// ============================================
+
+export const siteSettingsQueries = {
+  getBySetting: async (settingKey: string) => {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .eq('setting_key', settingKey)
+      .eq('is_active', true)
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  getByType: async (settingType: string) => {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .eq('setting_type', settingType)
+      .eq('is_active', true);
+    
+    if (error) throw error;
+    return data;
+  }
+};

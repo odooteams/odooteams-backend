@@ -1,16 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
+import { timelineQueries } from '@/lib/supabase/queries';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Clock } from 'lucide-react';
 
 interface TimelineItem {
-  year: string;
-  Title_en: string;
-  Title_ar: string;
-  contents_en: string;
-  contents_ar: string;
+  year: number;
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
 }
 
 const TimelineSection = () => {
@@ -23,24 +22,16 @@ const TimelineSection = () => {
     const fetchTimeline = async () => {
       try {
         setLoading(true);
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          GOOGLE_SHEETS_CONFIG.SHEETS.TIMELINE
-        );
+        const data = await timelineQueries.getAll();
         
         if (data && data.length > 0) {
-          // Type assertion to convert Record<string, string>[] to TimelineItem[]
-          // Making sure the fetched data has all required properties
-          const typedData = data.map(item => {
-            return {
-              year: item.year || '',
-              Title_en: item.Title_en || '',
-              Title_ar: item.Title_ar || '',
-              contents_en: item.contents_en || '',
-              contents_ar: item.contents_ar || ''
-            } as TimelineItem;
-          });
+          const typedData = data.map(item => ({
+            year: item.year,
+            title_en: item.title_en,
+            title_ar: item.title_ar,
+            description_en: item.description_en,
+            description_ar: item.description_ar
+          }));
           
           setTimelineData(typedData);
         } else {
@@ -100,10 +91,10 @@ const TimelineSection = () => {
                   <div className={`bg-white rounded-lg shadow-md p-6 w-5/12 ${index % 2 === 0 ? (dir === 'rtl' ? 'mr-auto pr-8' : 'ml-auto pl-8') : (dir === 'rtl' ? 'ml-0 pl-8' : 'mr-auto pr-8')}`}>
                     <div className="font-bold text-odoo-magenta mb-2">{item.year}</div>
                     <h3 className="text-xl font-bold text-odoo-purple mb-2">
-                      {language === 'en' ? item.Title_en : item.Title_ar}
+                      {language === 'en' ? item.title_en : item.title_ar}
                     </h3>
                     <p className="text-gray-600">
-                      {language === 'en' ? item.contents_en : item.contents_ar}
+                      {language === 'en' ? item.description_en : item.description_ar}
                     </p>
                   </div>
                 </div>
@@ -147,10 +138,10 @@ const TimelineSection = () => {
                   <div className={`bg-white rounded-lg shadow-md p-4 ${dir === 'rtl' ? 'mr-12' : 'ml-12'} w-full transition-all duration-300 hover:shadow-lg`}>
                     <div className="font-bold text-odoo-magenta text-sm mb-1">{item.year}</div>
                     <h3 className="text-lg font-bold text-odoo-purple mb-2 leading-tight">
-                      {language === 'en' ? item.Title_en : item.Title_ar}
+                      {language === 'en' ? item.title_en : item.title_ar}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      {language === 'en' ? item.contents_en : item.contents_ar}
+                      {language === 'en' ? item.description_en : item.description_ar}
                     </p>
                   </div>
                 </div>
