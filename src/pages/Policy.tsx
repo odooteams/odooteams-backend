@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
-import { supabase } from '@/integrations/supabase/client';
+import { policiesQueries } from '@/lib/supabase/queries';
+import type { Policy as PolicyType } from '@/lib/supabase/types';
 import SEOHead from '@/components/seo/SEOHead';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,7 @@ export default function Policy() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const [policy, setPolicy] = useState<any>(null);
+  const [policy, setPolicy] = useState<PolicyType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,14 +23,7 @@ export default function Policy() {
   const loadPolicy = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('policies')
-        .select('*')
-        .eq('slug', slug)
-        .eq('is_active', true)
-        .single();
-
-      if (error) throw error;
+      const data = await policiesQueries.getBySlug(slug!);
       setPolicy(data);
     } catch (error) {
       console.error('Error loading policy:', error);

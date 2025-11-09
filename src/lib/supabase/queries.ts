@@ -9,7 +9,8 @@ import type {
   TeamMember, 
   ContactSubmission,
   Testimonial,
-  TimelineEvent
+  TimelineEvent,
+  Policy
 } from "./types";
 
 // ============================================
@@ -351,5 +352,48 @@ export const analyticsQueries = {
       });
     
     if (error) console.error('Analytics tracking error:', error);
+  }
+};
+
+// ============================================
+// POLICIES
+// ============================================
+
+export const policiesQueries = {
+  getAll: async () => {
+    const { data, error } = await supabase
+      .from('policies')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return data as Policy[];
+  },
+
+  getBySlug: async (slug: string) => {
+    const { data, error } = await supabase
+      .from('policies')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_active', true)
+      .single();
+    
+    if (error) throw error;
+    return data as Policy;
+  },
+
+  getByType: async (policyType: string) => {
+    const { data, error } = await supabase
+      .from('policies')
+      .select('*')
+      .eq('policy_type', policyType)
+      .eq('is_active', true)
+      .order('version', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (error) throw error;
+    return data as Policy;
   }
 };

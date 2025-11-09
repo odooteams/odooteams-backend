@@ -181,6 +181,22 @@ export interface TimelineEvent {
   created_by: string | null;
 }
 
+export interface Policy {
+  id: string;
+  policy_type: string;
+  slug: string;
+  title_en: string;
+  title_ar: string;
+  content_en: string;
+  content_ar: string;
+  version: string | null;
+  effective_date: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+}
+
 export interface PageView {
   id: string;
   page_path: string;

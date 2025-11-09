@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { GOOGLE_SHEETS_CONFIG, fetchSheetData } from '@/lib/googleSheets';
+import { faqsQueries } from '@/lib/supabase/queries';
+import type { FAQ as SupabaseFAQ } from '@/lib/supabase/types';
 
 export interface FAQ {
-  id: number;
+  id: string;
   category: string;
   question: string;
   contents: string;
@@ -21,20 +21,16 @@ export const useFaqs = (categoryFilter: string = '') => {
     const loadFaqs = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          "faq"
-        );
+        const data = await faqsQueries.getAll();
 
         // Process the FAQs data
-        const processedFaqs: FAQ[] = data.map((row: any, index: number) => {
-          const category = language === 'ar' ? (row.Category_ar || row.Category_en) : (row.Category_en || row.Category_ar);
-          const question = language === 'ar' ? (row.question_ar || row.question_en) : (row.question_en || row.question_ar);
-          const contents = language === 'ar' ? (row.contents_ar || row.contents_en) : (row.contents_en || row.contents_ar);
+        const processedFaqs: FAQ[] = data.map((faq: SupabaseFAQ) => {
+          const category = language === 'ar' ? faq.category_ar : faq.category_en;
+          const question = language === 'ar' ? faq.question_ar : faq.question_en;
+          const contents = language === 'ar' ? faq.answer_ar : faq.answer_en;
           
           return {
-            id: index + 1,
+            id: faq.id,
             category,
             question,
             contents
