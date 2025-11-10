@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { siteSettingsQueries } from '@/lib/supabase/queries';
+
+interface ContactInfo {
+  email: string;
+  phone: string;
+  facebook?: string;
+  twitter?: string;
+  linkedin?: string;
+  instagram?: string;
+}
 
 const TopHeader = () => {
   const { language, setLanguage, t, dir } = useLanguage();
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+    email: 'info@odooteams.com',
+    phone: '+966 12 345 6789'
+  });
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const data = await siteSettingsQueries.getBySetting('contact_info');
+        if (data?.setting_value) {
+          setContactInfo(data.setting_value as unknown as ContactInfo);
+        }
+      } catch (error) {
+        console.error('Error fetching contact info:', error);
+      }
+    };
+    fetchContactInfo();
+  }, []);
 
   const toggleLanguage = () => setLanguage(language === 'en' ? 'ar' : 'en');
 
@@ -14,18 +42,18 @@ const TopHeader = () => {
           {/* Left side: Contact info */}
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             <a 
-              href="mailto:info@odooteams.com" 
+              href={`mailto:${contactInfo.email}`}
               className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
             >
               <Mail className="h-4 w-4" />
-              <span className="hidden sm:inline">info@odooteams.com</span>
+              <span className="hidden sm:inline">{contactInfo.email}</span>
             </a>
             <a 
-              href="tel:+966123456789" 
+              href={`tel:${contactInfo.phone}`}
               className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
             >
               <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline">+966 12 345 6789</span>
+              <span className="hidden sm:inline">{contactInfo.phone}</span>
             </a>
           </div>
 
@@ -33,42 +61,50 @@ const TopHeader = () => {
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             {/* Social media */}
             <div className={`flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-primary-foreground/80 transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-primary-foreground/80 transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-primary-foreground/80 transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-primary-foreground/80 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
+              {contactInfo.facebook && (
+                <a 
+                  href={contactInfo.facebook}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground/80 transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-4 w-4" />
+                </a>
+              )}
+              {contactInfo.twitter && (
+                <a 
+                  href={contactInfo.twitter}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground/80 transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-4 w-4" />
+                </a>
+              )}
+              {contactInfo.linkedin && (
+                <a 
+                  href={contactInfo.linkedin}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground/80 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-4 w-4" />
+                </a>
+              )}
+              {contactInfo.instagram && (
+                <a 
+                  href={contactInfo.instagram}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground/80 transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-4 w-4" />
+                </a>
+              )}
             </div>
 
             {/* Language switcher */}
