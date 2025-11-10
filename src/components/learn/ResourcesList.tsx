@@ -37,27 +37,27 @@ const ResourcesList: React.FC<ResourcesListProps> = ({
               <Link to={`/learn-odoo/${resource.id}`} className="block relative h-48">
                 <img 
                   src={resource.image || '/placeholder.svg'} 
-                  alt={language === 'en' ? resource.Title_en : resource.Title_ar} 
+                  alt={language === 'en' ? resource.title_en : resource.title_ar} 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center p-4">
                   <span className="bg-odoo-purple text-white px-3 py-1 text-sm rounded">
-                    {language === 'en' ? resource.Category_en : resource.Category_ar}
+                    {language === 'en' ? resource.category_en : resource.category_ar}
                   </span>
                   <div className="flex items-center text-white">
                     <Calendar className="h-4 w-4 mr-1 ml-reverse:rtl" />
-                    <span className="text-sm">{formatDate(resource.date)}</span>
+                    <span className="text-sm">{formatDate(resource.published_date || '')}</span>
                   </div>
                 </div>
               </Link>
               <div className="p-6">
                 <Link to={`/learn-odoo/${resource.id}`} className="block">
                   <h3 className="text-xl font-bold mb-2 text-odoo-purple group-hover:text-odoo-magenta transition-colors">
-                    {language === 'en' ? resource.Title_en : resource.Title_ar}
+                    {language === 'en' ? resource.title_en : resource.title_ar}
                   </h3>
                 </Link>
                 <p className="text-gray-700 text-sm mb-3">
-                  {t('By', 'بواسطة')}: {language === 'en' ? resource.Auther_en : resource.Auther_ar}
+                  {t('By', 'بواسطة')}: {language === 'en' ? resource.author_en : resource.author_ar}
                 </p>
                 <p className="text-gray-600 mb-6 line-clamp-3">
                   {language === 'en' ? resource.contents_en : resource.contents_ar}
@@ -69,9 +69,9 @@ const ResourcesList: React.FC<ResourcesListProps> = ({
                   >
                     {t('View Details', 'عرض التفاصيل')}
                   </Link>
-                  {resource.download && (
+                  {resource.download_url && (
                     <a 
-                      href={resource.download}
+                      href={resource.download_url}
                       className="bg-odoo-gold hover:bg-yellow-400 text-odoo-purple font-medium py-2 px-4 rounded flex items-center justify-center transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -93,25 +93,25 @@ const ResourcesList: React.FC<ResourcesListProps> = ({
                 <Link to={`/learn-odoo/${resource.id}`} className="relative h-64 md:h-auto md:w-1/3 block">
                   <img 
                     src={resource.image || '/placeholder.svg'} 
-                    alt={language === 'en' ? resource.Title_en : resource.Title_ar}
+                    alt={language === 'en' ? resource.title_en : resource.title_ar}
                     className="w-full h-full object-cover"
                   />
                   <span className="absolute top-4 left-4 right-reverse:rtl bg-odoo-purple text-white px-3 py-1 text-sm rounded">
-                    {language === 'en' ? resource.Category_en : resource.Category_ar}
+                    {language === 'en' ? resource.category_en : resource.category_ar}
                   </span>
                 </Link>
                 <div className="p-6 md:w-2/3">
                   <div className="flex items-center text-gray-500 text-sm mb-2">
                     <Calendar className="h-4 w-4 mr-1 ml-reverse:rtl" />
-                    <time dateTime={resource.date}>{formatDate(resource.date)}</time>
+                    <time dateTime={resource.published_date || ''}>{formatDate(resource.published_date || '')}</time>
                   </div>
                   <Link to={`/learn-odoo/${resource.id}`} className="block">
                     <h3 className="text-2xl font-bold mb-2 text-odoo-purple hover:text-odoo-magenta transition-colors">
-                      {language === 'en' ? resource.Title_en : resource.Title_ar}
+                      {language === 'en' ? resource.title_en : resource.title_ar}
                     </h3>
                   </Link>
                   <p className="text-gray-700 text-sm mb-3">
-                    {t('By', 'بواسطة')}: {language === 'en' ? resource.Auther_en : resource.Auther_ar}
+                    {t('By', 'بواسطة')}: {language === 'en' ? resource.author_en : resource.author_ar}
                   </p>
                   <p className="text-gray-600 mb-6">
                     {language === 'en' ? resource.contents_en : resource.contents_ar}
@@ -123,9 +123,9 @@ const ResourcesList: React.FC<ResourcesListProps> = ({
                     >
                       {t('View Details', 'عرض التفاصيل')}
                     </Link>
-                    {resource.download && (
+                    {resource.download_url && (
                       <a 
-                        href={resource.download}
+                        href={resource.download_url}
                         className="bg-odoo-gold hover:bg-yellow-400 text-odoo-purple font-medium py-2 px-6 rounded inline-flex items-center transition-colors"
                         target="_blank"
                         rel="noopener noreferrer"

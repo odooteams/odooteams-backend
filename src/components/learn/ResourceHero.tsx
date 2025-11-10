@@ -15,10 +15,10 @@ const ResourceHero: React.FC<ResourceHeroProps> = ({ resource, formatDate, handl
   const { language } = useLanguage();
   
   // Extract title and content based on language
-  const title = language === 'en' ? resource.Title_en : resource.Title_ar;
+  const title = language === 'en' ? resource.title_en : resource.title_ar;
   const content = language === 'en' ? resource.contents_en : resource.contents_ar;
-  const category = language === 'en' ? resource.Category_en : resource.Category_ar;
-  const author = language === 'en' ? resource.Auther_en : resource.Auther_ar;
+  const category = language === 'en' ? resource.category_en : resource.category_ar;
+  const author = language === 'en' ? resource.author_en : resource.author_ar;
   
   return (
     <section className="py-12 bg-white">
@@ -31,7 +31,7 @@ const ResourceHero: React.FC<ResourceHeroProps> = ({ resource, formatDate, handl
               </span>
               <div className="flex items-center text-gray-500 text-sm">
                 <Calendar className="h-4 w-4 mr-1 ml-reverse:rtl" />
-                <time dateTime={resource.date}>{formatDate(resource.date)}</time>
+                <time dateTime={resource.published_date || ''}>{formatDate(resource.published_date || '')}</time>
               </div>
             </div>
             
@@ -42,7 +42,7 @@ const ResourceHero: React.FC<ResourceHeroProps> = ({ resource, formatDate, handl
             <div className="flex items-center mb-6">
               <img 
                 src={resource.image || '/placeholder.svg'} 
-                alt={author}
+                alt={author || ''}
                 className="w-10 h-10 rounded-full mr-3 ml-reverse:rtl object-cover"
                 onError={(e) => {
                   e.currentTarget.src = '/placeholder.svg';
@@ -65,9 +65,9 @@ const ResourceHero: React.FC<ResourceHeroProps> = ({ resource, formatDate, handl
             </p>
             
             <div className="flex flex-wrap gap-3">
-              {resource.download && (
+              {resource.download_url && (
                 <a 
-                  href={resource.download}
+                  href={resource.download_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-odoo-gold hover:bg-yellow-400 text-odoo-purple font-medium py-2 px-6 rounded inline-flex items-center transition-colors"

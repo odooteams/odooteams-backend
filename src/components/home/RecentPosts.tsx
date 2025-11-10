@@ -16,9 +16,11 @@ const RecentPosts = () => {
       try {
         setLoading(true);
         const data = await fetchLearnResources();
-        // Get the most recent 3 resources based on date
+        // Get the most recent 3 resources based on published_date
         const sortedResources = [...data].sort((a, b) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
+          const dateA = a.published_date ? new Date(a.published_date).getTime() : 0;
+          const dateB = b.published_date ? new Date(b.published_date).getTime() : 0;
+          return dateB - dateA;
         });
         setResources(sortedResources.slice(0, 3));
       } catch (error) {
@@ -85,17 +87,17 @@ const RecentPosts = () => {
               <div className="relative overflow-hidden h-48">
                 <img 
                   src={resource.image || '/placeholder.svg'} 
-                  alt={language === 'en' ? resource.Title_en : resource.Title_ar} 
+                  alt={language === 'en' ? resource.title_en : resource.title_ar} 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
               <div className="p-6">
                 <div className="flex items-center text-gray-500 text-sm mb-3">
                   <Calendar className="h-4 w-4 mr-2 ml-reverse:rtl" />
-                  <time dateTime={resource.date}>{formatDate(resource.date)}</time>
+                  <time dateTime={resource.published_date || ''}>{formatDate(resource.published_date || '')}</time>
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-odoo-purple group-hover:text-odoo-magenta transition-colors">
-                  {language === 'en' ? resource.Title_en : resource.Title_ar}
+                  {language === 'en' ? resource.title_en : resource.title_ar}
                 </h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   {language === 'en' ? resource.contents_en : resource.contents_ar}

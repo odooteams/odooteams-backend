@@ -1,35 +1,42 @@
-
-import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from './googleSheets';
+import { learnResourcesQueries } from './supabase/queries';
 
 export interface LearnResource {
   id: string;
-  Category_en: string;
-  Category_ar: string;
-  mainheaders_en: string;
-  mainheaders_ar: string;
-  Title_en: string;
-  Title_ar: string;
+  category_en: string;
+  category_ar: string;
+  main_header_en: string;
+  main_header_ar: string;
+  title_en: string;
+  title_ar: string;
   contents_en: string;
   contents_ar: string;
-  image: string;
-  Auther_en: string;
-  Auther_ar: string;
-  date: string;
-  download: string;
+  image: string | null;
+  author_en: string | null;
+  author_ar: string | null;
+  published_date: string | null;
+  download_url: string | null;
 }
 
 export async function fetchLearnResources(): Promise<LearnResource[]> {
   try {
-    const data = await fetchSheetData(
-      GOOGLE_SHEETS_CONFIG.API_KEY,
-      GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-      GOOGLE_SHEETS_CONFIG.SHEETS.LEARN
-    );
+    const data = await learnResourcesQueries.getAll();
     
-    // Add an ID to each resource based on its index
-    return data.map((item, index) => ({
-      ...item as unknown as LearnResource,
-      id: (index + 1).toString()
+    // Map database fields to expected format
+    return data.map((item) => ({
+      id: item.id,
+      category_en: item.category_en,
+      category_ar: item.category_ar,
+      main_header_en: item.main_header_en,
+      main_header_ar: item.main_header_ar,
+      title_en: item.title_en,
+      title_ar: item.title_ar,
+      contents_en: item.contents_en,
+      contents_ar: item.contents_ar,
+      image: item.image,
+      author_en: item.author_en,
+      author_ar: item.author_ar,
+      published_date: item.published_date,
+      download_url: item.download_url,
     }));
   } catch (error) {
     console.error('Error fetching learn resources:', error);

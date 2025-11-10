@@ -59,22 +59,22 @@ const LearnOdoo = () => {
   
   // Extract unique categories for dropdown
   const categories = resources.length > 0 
-    ? Array.from(new Set(resources.map(resource => language === 'en' ? resource.Category_en : resource.Category_ar)))
+    ? Array.from(new Set(resources.map(resource => language === 'en' ? resource.category_en : resource.category_ar)))
       .filter(category => category && category.trim() !== '') // Filter out empty strings
     : [];
   
   // Extract unique authors for dropdown
   const authors = resources.length > 0
-    ? Array.from(new Set(resources.map(resource => language === 'en' ? resource.Auther_en : resource.Auther_ar)))
+    ? Array.from(new Set(resources.map(resource => language === 'en' ? resource.author_en : resource.author_ar)))
       .filter(author => author && author.trim() !== '') // Filter out empty strings
     : [];
 
   // Filter resources based on search term, category, and author
   const filteredResources = resources.filter(resource => {
-    const title = language === 'en' ? resource.Title_en : resource.Title_ar;
+    const title = language === 'en' ? resource.title_en : resource.title_ar;
     const content = language === 'en' ? resource.contents_en : resource.contents_ar;
-    const category = language === 'en' ? resource.Category_en : resource.Category_ar;
-    const author = language === 'en' ? resource.Auther_en : resource.Auther_ar;
+    const category = language === 'en' ? resource.category_en : resource.category_ar;
+    const author = language === 'en' ? resource.author_en : resource.author_ar;
     
     const matchesTerm = title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         content.toLowerCase().includes(searchTerm.toLowerCase());

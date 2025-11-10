@@ -25,9 +25,9 @@ const RelatedResources: React.FC<RelatedResourcesProps> = ({ relatedResources })
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {relatedResources.map((relResource, index) => {
-            const relTitle = language === 'en' ? relResource.Title_en : relResource.Title_ar;
-            const relCategory = language === 'en' ? relResource.Category_en : relResource.Category_ar;
-            const relAuthor = language === 'en' ? relResource.Auther_en : relResource.Auther_ar;
+            const relTitle = language === 'en' ? relResource.title_en : relResource.title_ar;
+            const relCategory = language === 'en' ? relResource.category_en : relResource.category_ar;
+            const relAuthor = language === 'en' ? relResource.author_en : relResource.author_ar;
             const relContent = language === 'en' ? relResource.contents_en : relResource.contents_ar;
             
             return (

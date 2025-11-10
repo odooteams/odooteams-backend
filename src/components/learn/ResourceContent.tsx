@@ -87,13 +87,13 @@ const ResourceContent: React.FC<ResourceContentProps> = ({
               {t('About the Author', 'عن المؤلف')}
             </h4>
             <p className="font-medium text-gray-800">{author}</p>
-            <p className="text-sm text-gray-600">{t('Published on', 'نُشر في')}: {formatDate(resource.date)}</p>
+            <p className="text-sm text-gray-600">{t('Published on', 'نُشر في')}: {formatDate(resource.published_date || '')}</p>
           </div>
         </div>
       </div>
       
       {/* Download call to action */}
-      {resource.download && (
+      {resource.download_url && (
         <div className="bg-odoo-purple text-white p-6 rounded-lg text-center">
           <h3 className="text-xl font-bold mb-2">
             {t('Ready to get started with Odoo?', 'هل أنت جاهز للبدء مع أودو؟')}
@@ -102,7 +102,7 @@ const ResourceContent: React.FC<ResourceContentProps> = ({
             {t('Download this resource to keep learning and improving your Odoo skills.', 'قم بتنزيل هذا المورد لمواصلة التعلم وتحسين مهاراتك في أودو.')}
           </p>
           <a 
-            href={resource.download}
+            href={resource.download_url}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-odoo-gold hover:bg-yellow-400 text-odoo-purple font-medium py-2 px-6 rounded inline-flex items-center transition-colors"

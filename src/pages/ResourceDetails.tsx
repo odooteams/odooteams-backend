@@ -37,8 +37,8 @@ const ResourceDetails = () => {
           const related = data
             .filter(item => {
               const sameCategory = language === 'en' 
-                ? item.Category_en === foundResource.Category_en
-                : item.Category_ar === foundResource.Category_ar;
+                ? item.category_en === foundResource.category_en
+                : item.category_ar === foundResource.category_ar;
               return sameCategory && item.id !== id;
             })
             .slice(0, 3);
@@ -98,7 +98,7 @@ const ResourceDetails = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: language === 'en' ? resource.Title_en : resource.Title_ar,
+          title: language === 'en' ? resource.title_en : resource.title_ar,
           text: language === 'en' ? resource.contents_en : resource.contents_ar,
           url: window.location.href,
         });
@@ -128,10 +128,10 @@ const ResourceDetails = () => {
   }
   
   // Extract title and content based on language
-  const title = language === 'en' ? resource.Title_en : resource.Title_ar;
+  const title = language === 'en' ? resource.title_en : resource.title_ar;
   const content = language === 'en' ? resource.contents_en : resource.contents_ar;
-  const author = language === 'en' ? resource.Auther_en : resource.Auther_ar;
-  const mainHeaders = parseMainHeaders(language === 'en' ? resource.mainheaders_en : resource.mainheaders_ar);
+  const author = language === 'en' ? resource.author_en : resource.author_ar;
+  const mainHeaders = parseMainHeaders(language === 'en' ? resource.main_header_en : resource.main_header_ar);
   
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
