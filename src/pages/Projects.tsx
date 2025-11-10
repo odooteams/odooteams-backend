@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -29,6 +30,7 @@ const Projects = () => {
   
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <TopHeader />
       <Navbar />
       <main>
         <ProjectHeroSection 

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { fetchLearnResources, LearnResource } from '@/lib/learnResources';
@@ -114,6 +115,7 @@ const ResourceDetails = () => {
   if (loading || error || !resource) {
     return (
       <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+        <TopHeader />
         <Navbar />
         <ResourcesLoadingState 
           loading={loading} 
@@ -133,6 +135,7 @@ const ResourceDetails = () => {
   
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <TopHeader />
       <Navbar />
       <main>
         {/* Breadcrumb */}

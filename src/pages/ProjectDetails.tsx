@@ -1,5 +1,6 @@
 
 import React from 'react';
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -59,6 +60,7 @@ const ProjectDetails = () => {
         structuredData={projectStructuredData}
         alternateUrls={generateAlternateUrls(`/projects/${createProjectSlug(project.title)}`)}
       />
+      <TopHeader />
       <Navbar />
       <main>
         <ProjectBreadcrumb projectTitle={project.title} />

@@ -1,15 +1,13 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
-  const { language, setLanguage, t, dir } = useLanguage();
+  const { t, dir } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleLanguage = () => setLanguage(language === 'en' ? 'ar' : 'en');
 
   const navLinks = [
     { to: '/', label: t('Home', 'الرئيسية') },
@@ -43,29 +41,10 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            <button 
-              onClick={toggleLanguage} 
-              className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition duration-300 ms-2 flex items-center justify-center"
-              aria-label={t('Switch to Arabic', 'Switch to English')}
-            >
-              <img 
-                src={language === 'en' ? '/lovable-uploads/68c19eac-d969-40d2-9cfd-df3db46f59a5.png' : '/lovable-uploads/97aadb3f-bfe5-4f3f-b1f0-235706013355.png'} 
-                alt={language === 'en' ? 'English Flag' : 'Saudi Arabia Flag'} 
-                className="h-5 w-5 rounded-full object-cover"
-              />
-              <span className="sr-only">{t('Switch language', 'تغيير اللغة')}</span>
-            </button>
           </nav>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-4 space-x-reverse:rtl">
-            <button onClick={toggleLanguage} className="p-1" aria-label={t('Switch language', 'تغيير اللغة')}>
-              <img 
-                src={language === 'en' ? '/lovable-uploads/68c19eac-d969-40d2-9cfd-df3db46f59a5.png' : '/lovable-uploads/97aadb3f-bfe5-4f3f-b1f0-235706013355.png'} 
-                alt={language === 'en' ? 'English Flag' : 'Saudi Arabia Flag'} 
-                className="h-5 w-5 rounded-full object-cover"
-              />
-            </button>
+          <div className="md:hidden">
             <button onClick={toggleMenu} className="p-1">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

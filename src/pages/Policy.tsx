@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
+import TopHeader from '@/components/layout/TopHeader';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import { policiesQueries } from '@/lib/supabase/queries';
 import type { Policy as PolicyType } from '@/lib/supabase/types';
 import SEOHead from '@/components/seo/SEOHead';
@@ -38,6 +41,8 @@ export default function Policy() {
     return (
       <>
         <SEOHead title="Loading..." description="Loading policy" />
+        <TopHeader />
+        <Navbar />
         <div className="min-h-screen py-20">
           <div className="container max-w-4xl mx-auto px-4">
             <Skeleton className="h-12 w-3/4 mb-4" />
@@ -45,6 +50,7 @@ export default function Policy() {
             <Skeleton className="h-64 w-full" />
           </div>
         </div>
+        <Footer />
       </>
     );
   }
@@ -62,6 +68,8 @@ export default function Policy() {
         title={title}
         description={`${title} - Read our ${policy.policy_type} policy`}
       />
+      <TopHeader />
+      <Navbar />
       <div className="min-h-screen py-20 bg-gradient-to-b from-background to-muted/20">
         <div className="container max-w-4xl mx-auto px-4">
           <Button
@@ -118,6 +126,7 @@ export default function Policy() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

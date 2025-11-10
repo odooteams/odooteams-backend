@@ -1,5 +1,6 @@
 
 import React from 'react';
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BreadcrumbNav from '@/components/services/BreadcrumbNav';
@@ -40,6 +41,7 @@ const ServiceDetails = () => {
         structuredData={serviceStructuredData}
         alternateUrls={generateAlternateUrls(`/services/${createServiceSlug(service.title)}`)}
       />
+      <TopHeader />
       <Navbar />
       <main>
         {/* Breadcrumb */}

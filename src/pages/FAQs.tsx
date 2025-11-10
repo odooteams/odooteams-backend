@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from '@/lib/LanguageContext';
 import FAQsSection from "@/components/common/FAQsSection";
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNavigation from "@/components/layout/BottomNavigation";
@@ -23,6 +24,7 @@ const FAQs = () => {
     setActiveCategory(category);
   };
   return <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <TopHeader />
       <Navbar />
       <main>
         <div className="bg-gray-50 py-12">

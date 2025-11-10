@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -105,6 +106,7 @@ const LearnOdoo = () => {
   
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <TopHeader />
       <Navbar />
       <main>
         {loading || error ? (

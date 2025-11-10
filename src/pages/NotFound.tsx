@@ -1,6 +1,7 @@
 
 import { useLocation, Link, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -90,6 +91,7 @@ const NotFound = () => {
 
   return (
     <div className={dir === 'rtl' ? 'rtl min-h-screen flex flex-col' : 'ltr min-h-screen flex flex-col'}>
+      <TopHeader />
       <Navbar />
       <div className="flex-grow flex items-center justify-center bg-gray-100">
         <div className="text-center p-5">

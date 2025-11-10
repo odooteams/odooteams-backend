@@ -7,6 +7,7 @@ import AboutPreview from '@/components/home/AboutPreview';
 import TestimonialsSlider from '@/components/home/TestimonialsSlider';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
 import { useLanguage } from '@/lib/LanguageContext';
+import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
@@ -47,6 +48,7 @@ const Index = () => {
         structuredData={homeStructuredData}
         alternateUrls={generateAlternateUrls('/')}
       />
+      <TopHeader />
       <Navbar />
       <main>
         <HeroSection />
