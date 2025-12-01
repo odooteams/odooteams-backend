@@ -98,42 +98,58 @@ const TeamSection = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {team.map(member => (
-            <div key={member.id} className="card group hover:-translate-y-2 transition-transform duration-300">
-              <div className="relative overflow-hidden h-64 rounded-t-lg">
+            <div key={member.id} className="group bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-border/50">
+              <div className="relative overflow-hidden h-72">
                 <img 
                   src={member.image} 
                   alt={language === 'en' ? member.name_en : member.name_ar}
-                  className="w-full h-full object-cover rounded-t-lg" 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-odoo-purple to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 rounded-t-lg"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="flex justify-center space-x-4 space-x-reverse:rtl">
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="flex justify-center gap-3">
                     {member.linkedin_url && (
-                      <a href={member.linkedin_url} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-full text-odoo-purple hover:text-odoo-magenta transition-colors" aria-label="LinkedIn">
+                      <a 
+                        href={member.linkedin_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="bg-background/90 backdrop-blur-sm p-3 rounded-full text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110" 
+                        aria-label="LinkedIn"
+                      >
                         <Linkedin className="h-5 w-5" />
                       </a>
                     )}
                     {member.twitter_url && (
-                      <a href={member.twitter_url} target="_blank" rel="noopener noreferrer" className="bg-white p-2 rounded-full text-odoo-purple hover:text-odoo-magenta transition-colors" aria-label="Twitter">
+                      <a 
+                        href={member.twitter_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="bg-background/90 backdrop-blur-sm p-3 rounded-full text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110" 
+                        aria-label="Twitter"
+                      >
                         <Twitter className="h-5 w-5" />
                       </a>
                     )}
                     {member.email && (
-                      <a href={`mailto:${member.email}`} className="bg-white p-2 rounded-full text-odoo-purple hover:text-odoo-magenta transition-colors" aria-label="Email">
+                      <a 
+                        href={`mailto:${member.email}`} 
+                        className="bg-background/90 backdrop-blur-sm p-3 rounded-full text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110" 
+                        aria-label="Email"
+                      >
                         <Mail className="h-5 w-5" />
                       </a>
                     )}
                   </div>
                 </div>
               </div>
-              <div className="p-6 text-center">
-                <h3 className="text-xl font-bold mb-1 text-odoo-purple">
+              <div className="p-6 text-center bg-card">
+                <h3 className="text-xl font-bold mb-2 text-foreground">
                   {language === 'en' ? member.name_en : member.name_ar}
                 </h3>
-                <p className="text-odoo-magenta font-medium mb-3">
+                <p className="text-primary font-semibold mb-4 text-sm uppercase tracking-wide">
                   {language === 'en' ? member.position_en : member.position_ar}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {language === 'en' ? member.bio_en : member.bio_ar}
                 </p>
               </div>
