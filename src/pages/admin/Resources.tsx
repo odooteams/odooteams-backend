@@ -5,10 +5,24 @@ import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BookOpen, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
+import { ResourceFormDialog } from '@/components/admin/ResourceFormDialog';
+import { contentManagement } from '@/lib/supabase/admin';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export default function AdminResources() {
   const [resources, setResources] = useState<any[]>([]);
@@ -36,6 +50,17 @@ export default function AdminResources() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await contentManagement.deleteLearnResource(id);
+      toast.success('Resource deleted successfully');
+      loadResources();
+    } catch (error) {
+      console.error('Error deleting resource:', error);
+      toast.error('Failed to delete resource');
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • Resources" description="Manage learning resources" />
@@ -59,7 +84,10 @@ export default function AdminResources() {
                           <CardDescription>View and manage learning resources</CardDescription>
                         </div>
                       </div>
-                      <ExcelImportExport type="resources" data={resources} onImportComplete={loadResources} />
+                      <div className="flex gap-2">
+                        <ResourceFormDialog onSuccess={loadResources} />
+                        <ExcelImportExport type="resources" data={resources} onImportComplete={loadResources} />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -76,6 +104,7 @@ export default function AdminResources() {
                             <TableHead>Views</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Published</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -90,6 +119,32 @@ export default function AdminResources() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{resource.published_date ? new Date(resource.published_date).toLocaleDateString() : 'N/A'}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <ResourceFormDialog resource={resource} onSuccess={loadResources} />
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="sm">
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Resource</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this resource? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(resource.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
