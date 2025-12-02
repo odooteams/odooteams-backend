@@ -9,10 +9,24 @@ import { Button } from '@/components/ui/button';
 import { Bot, Plus, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { ChatbotFormDialog } from '@/components/admin/ChatbotFormDialog';
+
+interface ChatbotResponse {
+  id: string;
+  question_en: string;
+  question_ar: string;
+  answer_en: string;
+  answer_ar: string;
+  keywords: string[];
+  is_active: boolean;
+  usage_count: number;
+}
 
 export default function AdminChatbot() {
-  const [responses, setResponses] = useState<any[]>([]);
+  const [responses, setResponses] = useState<ChatbotResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingResponse, setEditingResponse] = useState<ChatbotResponse | null>(null);
 
   useEffect(() => {
     loadResponses();
@@ -70,6 +84,16 @@ export default function AdminChatbot() {
     }
   };
 
+  const handleAdd = () => {
+    setEditingResponse(null);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (response: ChatbotResponse) => {
+    setEditingResponse(response);
+    setDialogOpen(true);
+  };
+
   return (
     <>
       <SEOHead title="Admin • Chatbot" description="Manage chatbot responses" />
@@ -93,7 +117,7 @@ export default function AdminChatbot() {
                           <CardDescription>Manage automated chatbot responses and keywords</CardDescription>
                         </div>
                       </div>
-                      <Button>
+                      <Button onClick={handleAdd}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add Response
                       </Button>
@@ -103,7 +127,14 @@ export default function AdminChatbot() {
                     {loading ? (
                       <p className="text-sm text-muted-foreground">Loading chatbot responses...</p>
                     ) : responses.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">No chatbot responses found.</p>
+                      <div className="text-center py-8">
+                        <Bot className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">No chatbot responses found.</p>
+                        <Button onClick={handleAdd}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Your First Response
+                        </Button>
+                      </div>
                     ) : (
                       <Table>
                         <TableHeader>
@@ -143,7 +174,7 @@ export default function AdminChatbot() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex gap-2">
-                                  <Button size="sm" variant="ghost">
+                                  <Button size="sm" variant="ghost" onClick={() => handleEdit(response)}>
                                     <Pencil className="h-4 w-4" />
                                   </Button>
                                   <Button size="sm" variant="ghost" onClick={() => deleteResponse(response.id)}>
@@ -163,6 +194,13 @@ export default function AdminChatbot() {
           </div>
         </div>
       </SidebarProvider>
+
+      <ChatbotFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        response={editingResponse}
+        onSuccess={loadResponses}
+      />
     </>
   );
 }
