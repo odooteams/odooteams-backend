@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Users, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Users, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { TeamMemberFormDialog } from '@/components/admin/TeamMemberFormDialog';
 
 export default function AdminTeamMembers() {
   const [members, setMembers] = useState<any[]>([]);
@@ -93,10 +95,7 @@ export default function AdminTeamMembers() {
                           <CardDescription>Manage your team members</CardDescription>
                         </div>
                       </div>
-                      <Button>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Member
-                      </Button>
+                      <TeamMemberFormDialog onSuccess={loadMembers} />
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -108,6 +107,7 @@ export default function AdminTeamMembers() {
                       <Table>
                         <TableHeader>
                           <TableRow>
+                            <TableHead>Photo</TableHead>
                             <TableHead>Name (EN)</TableHead>
                             <TableHead>Name (AR)</TableHead>
                             <TableHead>Position (EN)</TableHead>
@@ -120,6 +120,12 @@ export default function AdminTeamMembers() {
                         <TableBody>
                           {members.map((member) => (
                             <TableRow key={member.id}>
+                              <TableCell>
+                                <Avatar className="h-10 w-10">
+                                  <AvatarImage src={member.image} alt={member.name_en} />
+                                  <AvatarFallback>{member.name_en?.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                              </TableCell>
                               <TableCell className="font-medium">{member.name_en}</TableCell>
                               <TableCell>{member.name_ar}</TableCell>
                               <TableCell>{member.position_en}</TableCell>
@@ -136,9 +142,7 @@ export default function AdminTeamMembers() {
                               <TableCell>{member.sort_order}</TableCell>
                               <TableCell>
                                 <div className="flex gap-2">
-                                  <Button size="sm" variant="ghost">
-                                    <Pencil className="h-4 w-4" />
-                                  </Button>
+                                  <TeamMemberFormDialog member={member} onSuccess={loadMembers} />
                                   <Button size="sm" variant="ghost" onClick={() => deleteMember(member.id)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
                                   </Button>
