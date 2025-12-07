@@ -11,16 +11,18 @@ import {
   processBlogImport,
   processFaqImport,
   processResourceImport,
+  processChatbotImport,
   bulkInsert,
   serviceTemplate,
   projectTemplate,
   blogTemplate,
   faqTemplate,
-  resourceTemplate
+  resourceTemplate,
+  chatbotTemplate
 } from "@/lib/excelUtils";
 
 interface ExcelImportExportProps {
-  type: 'services' | 'projects' | 'blogs' | 'faqs' | 'resources';
+  type: 'services' | 'projects' | 'blogs' | 'faqs' | 'resources' | 'chatbot';
   data: any[];
   onImportComplete: () => void;
 }
@@ -55,6 +57,12 @@ const typeConfig = {
     processor: processResourceImport,
     table: 'learn_resources',
     label: 'Resources'
+  },
+  chatbot: {
+    template: chatbotTemplate,
+    processor: processChatbotImport,
+    table: 'chatbot_responses',
+    label: 'Chatbot Responses'
   }
 };
 
@@ -104,7 +112,7 @@ export const ExcelImportExport = ({ type, data, onImportComplete }: ExcelImportE
       }
 
       const processedData = config.processor(importedData);
-      await bulkInsert(config.table as 'services' | 'projects' | 'blogs' | 'faqs' | 'learn_resources', processedData);
+      await bulkInsert(config.table as 'services' | 'projects' | 'blogs' | 'faqs' | 'learn_resources' | 'chatbot_responses', processedData);
 
       toast({
         title: "Import Successful",

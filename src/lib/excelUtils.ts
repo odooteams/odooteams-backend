@@ -92,6 +92,17 @@ export const resourceTemplate = [
   }
 ];
 
+export const chatbotTemplate = [
+  {
+    question_en: 'What services do you offer?',
+    question_ar: 'ما هي الخدمات التي تقدمونها؟',
+    answer_en: 'We offer comprehensive services including...',
+    answer_ar: 'نقدم خدمات شاملة تشمل...',
+    keywords: 'services,offer,provide,خدمات,نقدم',
+    is_active: 'true'
+  }
+];
+
 // Export template
 export const downloadTemplate = (templateData: any[], fileName: string) => {
   const ws = XLSX.utils.json_to_sheet(templateData);
@@ -250,8 +261,20 @@ export const processResourceImport = (data: any[]) => {
   }));
 };
 
+// Process imported data for chatbot responses
+export const processChatbotImport = (data: any[]) => {
+  return data.map((row: any) => ({
+    question_en: row.question_en,
+    question_ar: row.question_ar,
+    answer_en: row.answer_en,
+    answer_ar: row.answer_ar,
+    keywords: row.keywords ? row.keywords.split(',').map((k: string) => k.trim()) : null,
+    is_active: row.is_active === 'true'
+  }));
+};
+
 // Bulk insert data
-export const bulkInsert = async (table: 'services' | 'projects' | 'blogs' | 'faqs' | 'learn_resources', data: any[]) => {
+export const bulkInsert = async (table: 'services' | 'projects' | 'blogs' | 'faqs' | 'learn_resources' | 'chatbot_responses', data: any[]) => {
   const { data: result, error } = await supabase
     .from(table)
     .insert(data as any);
