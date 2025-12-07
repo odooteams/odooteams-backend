@@ -10,6 +10,7 @@ import { Bot, Plus, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ChatbotFormDialog } from '@/components/admin/ChatbotFormDialog';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 
 interface ChatbotResponse {
   id: string;
@@ -109,18 +110,25 @@ export default function AdminChatbot() {
               <div className="max-w-7xl mx-auto space-y-6">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Bot className="h-6 w-6 text-primary" />
-                        <div>
-                          <CardTitle>Chatbot Responses</CardTitle>
-                          <CardDescription>Manage automated chatbot responses and keywords</CardDescription>
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Bot className="h-6 w-6 text-primary" />
+                          <div>
+                            <CardTitle>Chatbot Responses</CardTitle>
+                            <CardDescription>Manage automated chatbot responses and keywords</CardDescription>
+                          </div>
                         </div>
+                        <Button onClick={handleAdd}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Response
+                        </Button>
                       </div>
-                      <Button onClick={handleAdd}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Response
-                      </Button>
+                      <ExcelImportExport 
+                        type="chatbot" 
+                        data={responses} 
+                        onImportComplete={loadResponses} 
+                      />
                     </div>
                   </CardHeader>
                   <CardContent>
