@@ -41,7 +41,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
   const [welcomeShown, setWelcomeShown] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  const { chatbotData, isLoading } = useChatbot();
+  const { chatbotData, isLoading, incrementUsage } = useChatbot();
   const { t, language, dir } = useLanguage();
   const { contactViaWhatsApp } = useWhatsAppShare({ phoneNumber: '201007419344' });
 
@@ -93,7 +93,7 @@ const Chatbot: React.FC<ChatbotProps> = ({
     if (!chatbotData.length) return null;
 
     const userWords = userMessage.toLowerCase().split(' ');
-    let bestMatch = null;
+    let bestMatch: (typeof chatbotData[0]) | null = null;
     let highestScore = 0;
 
     chatbotData.forEach((item) => {
@@ -145,13 +145,15 @@ const Chatbot: React.FC<ChatbotProps> = ({
     setIsTyping(true);
 
     // Simulate typing delay
-    setTimeout(() => {
+    setTimeout(async () => {
       const bestMatch = findBestMatch(textToSend);
       let botResponse = '';
       let showWhatsApp = false;
 
       if (bestMatch) {
         botResponse = bestMatch.answer;
+        // Increment usage count for matched response
+        await incrementUsage(bestMatch.id);
       } else {
         botResponse = t(
           "I'm sorry, I couldn't find a specific answer to your question. Please contact our team for more detailed assistance.",
