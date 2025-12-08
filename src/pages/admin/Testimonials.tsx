@@ -9,10 +9,13 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare, Plus, Pencil, Trash2, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { TestimonialFormDialog } from '@/components/admin/TestimonialFormDialog';
 
 export default function AdminTestimonials() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<any>(null);
 
   useEffect(() => {
     loadTestimonials();
@@ -86,6 +89,16 @@ export default function AdminTestimonials() {
     }
   };
 
+  const handleAdd = () => {
+    setSelectedTestimonial(null);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (testimonial: any) => {
+    setSelectedTestimonial(testimonial);
+    setDialogOpen(true);
+  };
+
   return (
     <>
       <SEOHead title="Admin • Testimonials" description="Manage testimonials" />
@@ -109,7 +122,7 @@ export default function AdminTestimonials() {
                           <CardDescription>Manage client testimonials and reviews</CardDescription>
                         </div>
                       </div>
-                      <Button>
+                      <Button onClick={handleAdd}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add Testimonial
                       </Button>
@@ -165,7 +178,7 @@ export default function AdminTestimonials() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex gap-2">
-                                  <Button size="sm" variant="ghost">
+                                  <Button size="sm" variant="ghost" onClick={() => handleEdit(testimonial)}>
                                     <Pencil className="h-4 w-4" />
                                   </Button>
                                   <Button size="sm" variant="ghost" onClick={() => deleteTestimonial(testimonial.id)}>
@@ -185,6 +198,13 @@ export default function AdminTestimonials() {
           </div>
         </div>
       </SidebarProvider>
+
+      <TestimonialFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        testimonial={selectedTestimonial}
+        onSuccess={loadTestimonials}
+      />
     </>
   );
 }

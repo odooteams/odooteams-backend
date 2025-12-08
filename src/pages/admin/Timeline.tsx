@@ -9,10 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Plus, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { TimelineFormDialog } from '@/components/admin/TimelineFormDialog';
 
 export default function AdminTimeline() {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   useEffect(() => {
     loadEvents();
@@ -70,6 +73,16 @@ export default function AdminTimeline() {
     }
   };
 
+  const handleAdd = () => {
+    setSelectedEvent(null);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (event: any) => {
+    setSelectedEvent(event);
+    setDialogOpen(true);
+  };
+
   return (
     <>
       <SEOHead title="Admin • Timeline" description="Manage timeline events" />
@@ -93,7 +106,7 @@ export default function AdminTimeline() {
                           <CardDescription>Manage company timeline and milestones</CardDescription>
                         </div>
                       </div>
-                      <Button>
+                      <Button onClick={handleAdd}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add Event
                       </Button>
@@ -136,7 +149,7 @@ export default function AdminTimeline() {
                               <TableCell>{event.sort_order}</TableCell>
                               <TableCell>
                                 <div className="flex gap-2">
-                                  <Button size="sm" variant="ghost">
+                                  <Button size="sm" variant="ghost" onClick={() => handleEdit(event)}>
                                     <Pencil className="h-4 w-4" />
                                   </Button>
                                   <Button size="sm" variant="ghost" onClick={() => deleteEvent(event.id)}>
@@ -156,6 +169,13 @@ export default function AdminTimeline() {
           </div>
         </div>
       </SidebarProvider>
+
+      <TimelineFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        event={selectedEvent}
+        onSuccess={loadEvents}
+      />
     </>
   );
 }
