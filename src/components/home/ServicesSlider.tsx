@@ -53,8 +53,8 @@ const ServicesSlider = () => {
   }
 
   return (
-    <section className={`py-16 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
-      <div className="container mx-auto px-4 animate-fade-in">
+    <section className={`py-20 bg-muted/30 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 animate-fade-in">
         <div className="text-center mb-12">
           <h2 className="section-title animate-slide-up">{t('Our Services', 'خدماتنا')}</h2>
           <p className="section-subtitle max-w-3xl mx-auto">
@@ -74,47 +74,43 @@ const ServicesSlider = () => {
             direction: dir === 'rtl' ? 'rtl' : 'ltr',
           }}
         >
-          <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-4">
             {services.map((service) => (
-              <CarouselItem key={service.id} className="pl-2 md:pl-4 basis-full">
-                <div className="card p-6 h-full hover:border-l-4 hover:border-primary transition-all duration-300 animate-scale-in hover:animate-pulse-glow">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    {service.image && (
-                      <div className="md:w-2/5 flex-shrink-0">
-                        <img 
-                          src={service.image} 
-                          alt={service.title}
-                          className="w-full h-48 md:h-full object-cover rounded-lg"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-xl font-bold mb-3 text-primary">
-                          {service.title}
-                        </h3>
-                        <p className="text-muted-foreground mb-4 line-clamp-4">
-                          {service.details}
-                        </p>
-                      </div>
-                      <Link 
-                        to={`/services/${createServiceSlug(service.title)}`} 
-                        className="inline-flex items-center font-medium text-primary hover:text-primary/80 transition-colors w-fit"
-                      >
-                        {t('Learn more', 'اعرف المزيد')}
-                        <Arrow className="ml-2 mr-reverse:rtl h-4 w-4" />
-                      </Link>
+              <CarouselItem key={service.id} className="pl-4 basis-full md:basis-1/2 lg:basis-1/3">
+                <div className="card p-0 h-full flex flex-col bg-card border border-border/50 hover:border-primary/50 transition-all duration-300">
+                  {service.image && (
+                    <div className="aspect-video overflow-hidden">
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-lg font-bold mb-3 text-foreground">
+                      {service.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4 line-clamp-3 flex-1">
+                      {service.details}
+                    </p>
+                    <Link 
+                      to={`/services/${createServiceSlug(service.title)}`} 
+                      className="inline-flex items-center font-medium text-primary hover:text-primary/80 transition-colors w-fit"
+                    >
+                      {t('Learn more', 'اعرف المزيد')}
+                      <Arrow className="ml-2 mr-reverse:rtl h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
+          <CarouselPrevious className="hidden md:flex -left-4" />
+          <CarouselNext className="hidden md:flex -right-4" />
         </Carousel>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-12">
           <Link 
             to="/services" 
             className="btn-primary inline-flex items-center"
