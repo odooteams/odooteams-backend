@@ -143,8 +143,8 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
   }
 
   return (
-    <section className={`py-16 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
-      <div className="container mx-auto px-4 animate-fade-in">
+    <section className={`py-20 bg-muted/30 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 animate-fade-in">
         <div className="text-center mb-12">
           <h2 className="section-title animate-slide-up">{t('Featured Projects', 'مشاريع مميزة')}</h2>
           <p className="section-subtitle max-w-3xl mx-auto">
@@ -189,25 +189,25 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
                     </div>
                     
                     {/* Content Section */}
-                    <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-gray-50">
+                    <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-card">
                       <div className="space-y-6">
-                        <h3 className="text-2xl lg:text-3xl font-bold text-odoo-purple group-hover:text-odoo-magenta transition-colors duration-300">
+                        <h3 className="text-2xl lg:text-3xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
                           {project.title}
                         </h3>
                         
-                        <p className="text-gray-600 text-lg leading-relaxed">
+                        <p className="text-muted-foreground text-lg leading-relaxed">
                           {project.description}
                         </p>
                         
                         {/* Technologies */}
                         <div className="flex flex-wrap gap-3">
                           {project.technologies.slice(0, 4).map((tech, idx) => (
-                            <Badge key={idx} variant="secondary" className="px-3 py-1 text-sm bg-gray-100 text-gray-700 hover:bg-odoo-purple hover:text-white transition-colors">
+                            <Badge key={idx} variant="secondary" className="px-3 py-1 text-sm">
                               {tech}
                             </Badge>
                           ))}
                           {project.technologies.length > 4 && (
-                            <Badge variant="secondary" className="px-3 py-1 text-sm bg-gray-100 text-gray-700">
+                            <Badge variant="secondary" className="px-3 py-1 text-sm">
                               +{project.technologies.length - 4} more
                             </Badge>
                           )}
@@ -252,8 +252,8 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
                         
                         {/* Expandable Quote Form */}
                         {expandedQuote === project.id && (
-                          <div className="mt-6 p-6 bg-gray-50 rounded-lg border animate-fade-in">
-                            <h4 className="text-lg font-semibold mb-4 text-odoo-purple">
+                          <div className="mt-6 p-6 bg-muted/50 rounded-lg border border-border animate-fade-in">
+                            <h4 className="text-lg font-semibold mb-4 text-foreground">
                               {t('Request Quote for', 'طلب عرض أسعار لـ')} {project.title}
                             </h4>
                             <Form {...form}>

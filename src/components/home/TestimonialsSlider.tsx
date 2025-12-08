@@ -68,9 +68,9 @@ const TestimonialsSlider = () => {
   );
 
   return (
-    <section className="py-14 bg-gray-50">
-      <div className="container mx-auto px-4 animate-fade-in">
-        <div className="text-center mb-10">
+    <section className="py-20 bg-background">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 animate-fade-in">
+        <div className="text-center mb-12">
           <h2 className="section-title animate-slide-up">{t('What Our Clients Say', 'ماذا يقول عملاؤنا')}</h2>
           <p className="section-subtitle">
             {t('Hear from businesses that have transformed with our Odoo solutions', 'استمع إلى الشركات التي تحولت مع حلول أودو الخاصة بنا')}
@@ -94,8 +94,8 @@ const TestimonialsSlider = () => {
                 const rating = testimonial.rating || 5;
                 
                 return (
-                  <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3">
-                    <Card className="h-full border border-gray-200 hover:border-odoo-magenta transition-colors animate-scale-in seo-highlight"
+                  <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                    <Card className="h-full border border-border hover:border-primary/50 transition-colors animate-scale-in bg-card"
                           style={{ animationDelay: `${index * 0.1}s` }}>
                       <CardHeader className="pb-2">
                         <div className="flex justify-between items-center">
@@ -118,15 +118,15 @@ const TestimonialsSlider = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="py-4">
-                        <p className="text-gray-700 mb-4 line-clamp-4">{testimonialText}</p>
+                        <p className="text-muted-foreground mb-4 line-clamp-4">{testimonialText}</p>
                       </CardContent>
-                      <CardFooter className="border-t border-gray-100 pt-4 flex items-center">
-                        <div className="h-10 w-10 rounded-full bg-odoo-purple/10 flex items-center justify-center mr-3">
-                          <User className="h-5 w-5 text-odoo-purple" />
+                      <CardFooter className="border-t border-border pt-4 flex items-center">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                          <User className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <h4 className="font-medium text-sm">{name}</h4>
-                          <p className="text-xs text-gray-500">
+                          <h4 className="font-medium text-sm text-foreground">{name}</h4>
+                          <p className="text-xs text-muted-foreground">
                             {position}{company ? ` - ${company}` : ''}
                           </p>
                         </div>

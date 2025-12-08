@@ -75,14 +75,14 @@ const AboutPreview = () => {
   }, []);
   
   return (
-    <section className={`py-16 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
-      <div className="container mx-auto px-4 animate-fade-in">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+    <section className={`py-20 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className={`${dir === 'rtl' ? 'lg:order-2' : ''}`}>
             <img 
               src="/lovable-uploads/e8433aef-9332-4de5-a325-42043909dbab.png" 
               alt={t('About OdooTeams', 'عن أودو تيمز')} 
-              className="rounded-lg shadow-xl w-full h-auto object-cover animate-scale-in hover:animate-pulse-glow transition-all duration-300"
+              className="rounded-2xl shadow-xl w-full h-auto object-cover animate-scale-in"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null;
@@ -92,11 +92,11 @@ const AboutPreview = () => {
           </div>
           
           <div className={`${dir === 'rtl' ? 'lg:order-1' : ''}`}>
-            <h2 className="text-3xl md:text-4xl font-bold text-odoo-purple mb-6 animate-slide-in-right">
+            <h2 className="section-title animate-slide-in-right">
               {t('We Are OdooTeams', 'نحن أودو تيمز')}
             </h2>
             
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
               {t(
                 'OdooTeams is a specialized consultancy providing top-tier Odoo ERP solutions for businesses across various industries. With years of experience and a passion for excellence, our team ensures successful implementation and continued support for all your Odoo needs.',
                 'أودو تيمز هي شركة استشارية متخصصة تقدم حلول أودو ERP عالية المستوى للشركات عبر مختلف الصناعات. بفضل سنوات من الخبرة وشغف بالتميز، يضمن فريقنا التنفيذ الناجح والدعم المستمر لجميع احتياجات أودو الخاصة بك.'
@@ -104,43 +104,43 @@ const AboutPreview = () => {
             </p>
             
             {teamLeader && (
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-odoo-magenta mb-3">
+              <div className="mb-8 p-6 bg-muted/50 rounded-xl">
+                <h3 className="text-xl font-bold text-primary mb-2">
                   {language === 'en' ? teamLeader.name.en : teamLeader.name.ar}
                 </h3>
-                <p className="text-gray-500 mb-2">{language === 'en' ? teamLeader.title.en : teamLeader.title.ar}</p>
-                <p className="text-gray-600 mb-4">
+                <p className="text-muted-foreground mb-3">{language === 'en' ? teamLeader.title.en : teamLeader.title.ar}</p>
+                <p className="text-foreground/80 mb-4">
                   {language === 'en' ? teamLeader.bio.en : teamLeader.bio.ar}
                 </p>
                 
-                <div className="flex items-center space-x-4 space-x-reverse:rtl">
+                <div className="flex items-center gap-4">
                   {teamLeader.facebook && (
-                    <a href={teamLeader.facebook} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-odoo-magenta transition duration-300" aria-label="Facebook">
+                    <a href={teamLeader.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Facebook">
                       <Facebook className="h-5 w-5" />
                     </a>
                   )}
                   {teamLeader.linkedin && (
-                    <a href={teamLeader.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-odoo-magenta transition duration-300" aria-label="LinkedIn">
+                    <a href={teamLeader.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="LinkedIn">
                       <Linkedin className="h-5 w-5" />
                     </a>
                   )}
                   {teamLeader.twitter && (
-                    <a href={teamLeader.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-odoo-magenta transition duration-300" aria-label="Twitter">
+                    <a href={teamLeader.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Twitter">
                       <Twitter className="h-5 w-5" />
                     </a>
                   )}
                   {teamLeader.instagram && (
-                    <a href={teamLeader.instagram} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-odoo-magenta transition duration-300" aria-label="Instagram">
+                    <a href={teamLeader.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Instagram">
                       <Instagram className="h-5 w-5" />
                     </a>
                   )}
                   {teamLeader.whatsapp && (
-                    <a href={`https://wa.me/${teamLeader.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-odoo-magenta transition duration-300" aria-label="WhatsApp">
+                    <a href={`https://wa.me/${teamLeader.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="WhatsApp">
                       <MessageSquare className="h-5 w-5" />
                     </a>
                   )}
                   {teamLeader.email && (
-                    <a href={`mailto:${teamLeader.email}`} className="text-gray-600 hover:text-odoo-magenta transition duration-300" aria-label="Email">
+                    <a href={`mailto:${teamLeader.email}`} className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Email">
                       <Mail className="h-5 w-5" />
                     </a>
                   )}
@@ -150,7 +150,7 @@ const AboutPreview = () => {
             
             <Link 
               to="/about" 
-              className="btn-primary inline-flex items-center animate-bounce-gentle hover:animate-pulse-glow"
+              className="btn-primary inline-flex items-center"
             >
               {t('Learn More About Us', 'تعرف علينا أكثر')}
               <Arrow className="ml-2 mr-reverse:rtl h-5 w-5" />

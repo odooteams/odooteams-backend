@@ -69,8 +69,8 @@ const RecentPosts = () => {
   }
 
   return (
-    <section className={`py-16 bg-gray-50 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
-      <div className="container mx-auto px-4">
+    <section className={`py-20 bg-muted/30 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="section-title">{t('Recent Articles', 'أحدث المقالات')}</h2>
           <p className="section-subtitle max-w-3xl mx-auto">
@@ -83,8 +83,8 @@ const RecentPosts = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {resources.map((resource) => (
-            <article key={resource.id} className="card group bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="relative overflow-hidden h-48">
+            <article key={resource.id} className="card group bg-card rounded-xl border border-border/50 overflow-hidden hover:border-primary/50">
+              <div className="relative overflow-hidden aspect-video">
                 <img 
                   src={resource.image || '/placeholder.svg'} 
                   alt={language === 'en' ? resource.title_en : resource.title_ar} 
@@ -92,19 +92,19 @@ const RecentPosts = () => {
                 />
               </div>
               <div className="p-6">
-                <div className="flex items-center text-gray-500 text-sm mb-3">
+                <div className="flex items-center text-muted-foreground text-sm mb-3">
                   <Calendar className="h-4 w-4 mr-2 ml-reverse:rtl" />
                   <time dateTime={resource.published_date || ''}>{formatDate(resource.published_date || '')}</time>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-odoo-purple group-hover:text-odoo-magenta transition-colors">
+                <h3 className="text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
                   {language === 'en' ? resource.title_en : resource.title_ar}
                 </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <p className="text-muted-foreground mb-4 line-clamp-3">
                   {language === 'en' ? resource.contents_en : resource.contents_ar}
                 </p>
                 <Link 
                   to={`/learn-odoo/${resource.id}`} 
-                  className="inline-flex items-center font-medium text-odoo-magenta hover:text-odoo-purple transition-colors"
+                  className="inline-flex items-center font-medium text-primary hover:text-primary/80 transition-colors"
                 >
                   {t('Read more', 'اقرأ المزيد')}
                   <Arrow className="ml-2 mr-reverse:rtl h-4 w-4" />
@@ -114,10 +114,10 @@ const RecentPosts = () => {
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-12">
           <Link 
             to="/learn-odoo" 
-            className="btn-outline inline-flex items-center bg-white px-6 py-3 rounded-md border border-odoo-purple text-odoo-purple hover:bg-odoo-purple hover:text-white transition-colors"
+            className="btn-outline inline-flex items-center"
           >
             {t('View All Articles', 'عرض جميع المقالات')}
             <Arrow className="ml-2 mr-reverse:rtl h-5 w-5" />
