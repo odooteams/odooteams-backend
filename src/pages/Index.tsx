@@ -51,12 +51,24 @@ const Index = () => {
       <TopHeader />
       <Navbar />
       <main>
-        <HeroSection />
-        <ServicesSlider />
-        <AboutPreview />
-        <FeaturedProjects />
-        <RecentPosts />
-        <TestimonialsSlider />
+        <section id="hero">
+          <HeroSection />
+        </section>
+        <section id="services">
+          <ServicesSlider />
+        </section>
+        <section id="about">
+          <AboutPreview />
+        </section>
+        <section id="projects">
+          <FeaturedProjects />
+        </section>
+        <section id="blog">
+          <RecentPosts />
+        </section>
+        <section id="testimonials">
+          <TestimonialsSlider />
+        </section>
       </main>
       <StickyContact />
       <Footer />

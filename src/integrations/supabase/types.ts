@@ -719,6 +719,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_permissions: {
+        Row: {
+          can_add: boolean | null
+          can_delete: boolean | null
+          can_edit: boolean | null
+          can_view: boolean | null
+          created_at: string | null
+          id: string
+          page_name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          can_add?: boolean | null
+          can_delete?: boolean | null
+          can_edit?: boolean | null
+          can_view?: boolean | null
+          created_at?: string | null
+          id?: string
+          page_name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          can_add?: boolean | null
+          can_delete?: boolean | null
+          can_edit?: boolean | null
+          can_view?: boolean | null
+          created_at?: string | null
+          id?: string
+          page_name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -745,6 +781,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_permission: {
+        Args: { _action: string; _page_name: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
