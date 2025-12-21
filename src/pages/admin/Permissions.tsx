@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Shield, Users, Save, Plus, Trash2 } from 'lucide-react';
 import { useLanguage } from '@/lib/LanguageContext';
+import { useAuditLog } from '@/hooks/useAuditLog';
 
 interface UserProfile {
   id: string;
@@ -47,9 +48,11 @@ const ADMIN_PAGES = [
 
 export default function AdminPermissions() {
   const { t } = useLanguage();
+  const { logAction } = useAuditLog();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [originalPermissions, setOriginalPermissions] = useState<Permission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -116,6 +119,7 @@ export default function AdminPermissions() {
       });
       
       setPermissions(allPermissions);
+      setOriginalPermissions(JSON.parse(JSON.stringify(allPermissions)));
     } catch (error) {
       console.error('Error loading permissions:', error);
       toast.error(t('Failed to load permissions', 'فشل في تحميل الصلاحيات'));
@@ -159,6 +163,23 @@ export default function AdminPermissions() {
         if (error) throw error;
       }
 
+      // Log the permission change to audit log
+      const selectedUserProfile = users.find(u => u.id === selectedUser);
+      await logAction({
+        action: 'update_permissions',
+        entity_type: 'user_permissions',
+        entity_id: selectedUser,
+        old_values: { 
+          user_email: selectedUserProfile?.email || null,
+          permissions: JSON.parse(JSON.stringify(originalPermissions))
+        } as Record<string, unknown>,
+        new_values: { 
+          user_email: selectedUserProfile?.email || null,
+          permissions: JSON.parse(JSON.stringify(permissions))
+        } as Record<string, unknown>,
+      });
+
+      setOriginalPermissions(JSON.parse(JSON.stringify(permissions)));
       toast.success(t('Permissions saved successfully', 'تم حفظ الصلاحيات بنجاح'));
     } catch (error) {
       console.error('Error saving permissions:', error);

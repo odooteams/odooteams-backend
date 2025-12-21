@@ -12,12 +12,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Briefcase, FileText, HelpCircle, BookOpen, BarChart3, LogOut, Users, FileEdit, Shield, Settings, MessageSquare, UsersRound, MessageCircle, Calendar, Bot, KeyRound } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, HelpCircle, BookOpen, BarChart3, LogOut, Users, FileEdit, Shield, Settings, MessageSquare, UsersRound, MessageCircle, Calendar, Bot, KeyRound, ClipboardList } from 'lucide-react';
 
 const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
   { title: 'Users', url: '/admin/users', icon: Users },
   { title: 'Permissions', url: '/admin/permissions', icon: KeyRound },
+  { title: 'Audit Logs', url: '/admin/audit-logs', icon: ClipboardList },
   { title: 'Messages', url: '/admin/messages', icon: MessageSquare },
   { title: 'Services', url: '/admin/services', icon: Briefcase },
   { title: 'Projects', url: '/admin/projects', icon: FileText },

@@ -38,6 +38,7 @@ import AdminTestimonials from '@/pages/admin/Testimonials';
 import AdminTimeline from '@/pages/admin/Timeline';
 import AdminChatbot from '@/pages/admin/Chatbot';
 import AdminPermissions from '@/pages/admin/Permissions';
+import AdminAuditLogs from '@/pages/admin/AuditLogs';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
@@ -216,6 +217,14 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminPolicies />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/audit-logs" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminAuditLogs />
                 </ProtectedRoute>
               } 
             />
