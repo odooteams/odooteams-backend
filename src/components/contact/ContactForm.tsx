@@ -100,20 +100,6 @@ const ContactForm: React.FC = () => {
         console.error('Database error:', dbError);
         throw new Error('Failed to save message');
       }
-
-      // Create WhatsApp message
-      const message = encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}${formData.company ? `\nCompany: ${formData.company}` : ''}${formData.subject ? `\nSubject: ${formData.subject}` : ''}\n\nMessage: ${formData.message}`
-      );
-      
-      // Open WhatsApp with pre-filled message
-      const whatsappUrl = `https://wa.me/201007419344?text=${message}`;
-      const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-      
-      // Fallback if popup blocked
-      if (!newWindow || newWindow.closed) {
-        window.location.href = whatsappUrl;
-      }
       
       // Show success toast
       toast({
@@ -269,7 +255,7 @@ const ContactForm: React.FC = () => {
           disabled={isSubmitting}
           className="w-full bg-odoo-purple hover:bg-odoo-magenta text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? (
+        {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               {t('Sending...', 'جاري الإرسال...')}
@@ -277,7 +263,7 @@ const ContactForm: React.FC = () => {
           ) : (
             <>
               <Send className="mr-2 ml-reverse:rtl h-5 w-5" />
-              {t('Send Message via WhatsApp', 'إرسال الرسالة عبر واتساب')}
+              {t('Send Message', 'إرسال الرسالة')}
             </>
           )}
         </button>
