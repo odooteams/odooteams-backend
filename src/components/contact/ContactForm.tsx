@@ -1,17 +1,20 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { Send } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactForm: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    company: '',
+    subject: '',
     message: ''
   });
   
@@ -34,18 +37,24 @@ const ContactForm: React.FC = () => {
   
   const validate = () => {
     let valid = true;
-    const newErrors = { ...errors };
+    const newErrors = { name: '', email: '', phone: '', message: '' };
     
     if (!formData.name.trim()) {
       newErrors.name = t('Name is required', 'الاسم مطلوب');
+      valid = false;
+    } else if (formData.name.trim().length > 100) {
+      newErrors.name = t('Name must be less than 100 characters', 'يجب أن يكون الاسم أقل من 100 حرف');
       valid = false;
     }
     
     if (!formData.email.trim()) {
       newErrors.email = t('Email is required', 'البريد الإلكتروني مطلوب');
       valid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t('Email is invalid', 'البريد الإلكتروني غير صالح');
+      valid = false;
+    } else if (formData.email.length > 255) {
+      newErrors.email = t('Email must be less than 255 characters', 'يجب أن يكون البريد الإلكتروني أقل من 255 حرف');
       valid = false;
     }
     
@@ -57,53 +66,80 @@ const ContactForm: React.FC = () => {
     if (!formData.message.trim()) {
       newErrors.message = t('Message is required', 'الرسالة مطلوبة');
       valid = false;
+    } else if (formData.message.trim().length > 2000) {
+      newErrors.message = t('Message must be less than 2000 characters', 'يجب أن تكون الرسالة أقل من 2000 حرف');
+      valid = false;
     }
     
     setErrors(newErrors);
     return valid;
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (validate()) {
-      try {
-        // Create WhatsApp message
-        const message = encodeURIComponent(
-          `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage: ${formData.message}`
-        );
-        
-        // Open WhatsApp with pre-filled message
-        const whatsappUrl = `https://wa.me/201007419344?text=${message}`;
-        const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-        
-        // Fallback if popup blocked
-        if (!newWindow || newWindow.closed) {
-          window.location.href = whatsappUrl;
-        }
-        
-        // Show success toast
-        toast({
-          title: t('Message Sent!', 'تم إرسال الرسالة!'),
-          description: t('Thank you for contacting us. We will respond soon.', 'شكرًا للتواصل معنا. سنرد قريبًا.'),
-          variant: 'default',
+    if (!validate()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          full_name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone.trim() || null,
+          company: formData.company.trim() || null,
+          subject: formData.subject.trim() || null,
+          message: formData.message.trim(),
+          status: 'new'
         });
-        
-        // Reset form
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          message: ''
-        });
-      } catch (error) {
-        console.warn('WhatsApp failed:', error);
-        toast({
-          title: t('WhatsApp unavailable', 'واتساب غير متاح'),
-          description: t('Please call us at +201007419344', 'يرجى الاتصال بنا على +201007419344'),
-          variant: 'destructive',
-        });
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to save message');
       }
+
+      // Create WhatsApp message
+      const message = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}${formData.company ? `\nCompany: ${formData.company}` : ''}${formData.subject ? `\nSubject: ${formData.subject}` : ''}\n\nMessage: ${formData.message}`
+      );
+      
+      // Open WhatsApp with pre-filled message
+      const whatsappUrl = `https://wa.me/201007419344?text=${message}`;
+      const newWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      
+      // Fallback if popup blocked
+      if (!newWindow || newWindow.closed) {
+        window.location.href = whatsappUrl;
+      }
+      
+      // Show success toast
+      toast({
+        title: t('Message Sent!', 'تم إرسال الرسالة!'),
+        description: t('Thank you for contacting us. We will respond soon.', 'شكرًا للتواصل معنا. سنرد قريبًا.'),
+        variant: 'default',
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: t('Error', 'خطأ'),
+        description: t('Failed to send message. Please try again.', 'فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.'),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -124,10 +160,12 @@ const ContactForm: React.FC = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
+            maxLength={100}
             className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 ${
               errors.name ? 'border-red-500 focus:ring-red-300' : 'border-gray-300 focus:ring-odoo-magenta/30'
             }`}
             placeholder={t('Enter your full name', 'أدخل اسمك الكامل')}
+            disabled={isSubmitting}
           />
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
         </div>
@@ -142,10 +180,12 @@ const ContactForm: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            maxLength={255}
             className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 ${
               errors.email ? 'border-red-500 focus:ring-red-300' : 'border-gray-300 focus:ring-odoo-magenta/30'
             }`}
             placeholder={t('Enter your email address', 'أدخل عنوان بريدك الإلكتروني')}
+            disabled={isSubmitting}
           />
           {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
         </div>
@@ -164,8 +204,43 @@ const ContactForm: React.FC = () => {
               errors.phone ? 'border-red-500 focus:ring-red-300' : 'border-gray-300 focus:ring-odoo-magenta/30'
             }`}
             placeholder={t('Enter your phone number', 'أدخل رقم هاتفك')}
+            disabled={isSubmitting}
           />
           {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="company" className="block mb-2 font-medium text-gray-700">
+            {t('Company', 'الشركة')}
+          </label>
+          <input
+            type="text"
+            id="company"
+            name="company"
+            value={formData.company}
+            onChange={handleChange}
+            maxLength={100}
+            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-odoo-magenta/30"
+            placeholder={t('Enter your company name', 'أدخل اسم شركتك')}
+            disabled={isSubmitting}
+          />
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="subject" className="block mb-2 font-medium text-gray-700">
+            {t('Subject', 'الموضوع')}
+          </label>
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+            maxLength={200}
+            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-odoo-magenta/30"
+            placeholder={t('Enter subject', 'أدخل الموضوع')}
+            disabled={isSubmitting}
+          />
         </div>
         
         <div className="mb-6">
@@ -178,20 +253,33 @@ const ContactForm: React.FC = () => {
             value={formData.message}
             onChange={handleChange}
             rows={5}
+            maxLength={2000}
             className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 ${
               errors.message ? 'border-red-500 focus:ring-red-300' : 'border-gray-300 focus:ring-odoo-magenta/30'
             }`}
             placeholder={t('Write your message here...', 'اكتب رسالتك هنا...')}
+            disabled={isSubmitting}
           ></textarea>
           {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
+          <p className="mt-1 text-xs text-gray-500 text-right">{formData.message.length}/2000</p>
         </div>
         
         <button
           type="submit"
-          className="w-full bg-odoo-purple hover:bg-odoo-magenta text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 flex items-center justify-center"
+          disabled={isSubmitting}
+          className="w-full bg-odoo-purple hover:bg-odoo-magenta text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Send className="mr-2 ml-reverse:rtl h-5 w-5" />
-          {t('Send Message via WhatsApp', 'إرسال الرسالة عبر واتساب')}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              {t('Sending...', 'جاري الإرسال...')}
+            </>
+          ) : (
+            <>
+              <Send className="mr-2 ml-reverse:rtl h-5 w-5" />
+              {t('Send Message via WhatsApp', 'إرسال الرسالة عبر واتساب')}
+            </>
+          )}
         </button>
         
         <p className="mt-4 text-sm text-gray-500 text-center">
