@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
-import { siteSettingsQueries } from '@/lib/supabase/queries';
+import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube } from 'lucide-react';
+import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
 
-interface ContactInfo {
-  email: string;
-  phone: string;
-  facebook?: string;
-  twitter?: string;
-  linkedin?: string;
-  instagram?: string;
+interface ContactData {
+  Email: string;
+  Call: string;
+  Facebook?: string;
+  Twitter?: string;
+  LinkedIn?: string;
+  Instagram?: string;
+  YouTube?: string;
 }
 
 const TopHeader = () => {
   const { language, setLanguage, t, dir } = useLanguage();
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    email: 'info@odooteams.com',
-    phone: '+966 12 345 6789'
-  });
+  const [contactData, setContactData] = useState<ContactData | null>(null);
 
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const data = await siteSettingsQueries.getBySetting('contact_info');
-        if (data?.setting_value) {
-          setContactInfo(data.setting_value as unknown as ContactInfo);
+        const data = await fetchSheetData(
+          GOOGLE_SHEETS_CONFIG.API_KEY,
+          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
+          GOOGLE_SHEETS_CONFIG.SHEETS.CONTACT
+        );
+        if (data && data.length > 0) {
+          setContactData(data[0] as unknown as ContactData);
         }
       } catch (error) {
         console.error('Error fetching contact info:', error);
@@ -41,29 +43,33 @@ const TopHeader = () => {
         <div className="flex justify-between items-center text-sm">
           {/* Left side: Contact info */}
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
-            <a 
-              href={`mailto:${contactInfo.email}`}
-              className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
-            >
-              <Mail className="h-4 w-4" />
-              <span className="hidden sm:inline">{contactInfo.email}</span>
-            </a>
-            <a 
-              href={`tel:${contactInfo.phone}`}
-              className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
-            >
-              <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline">{contactInfo.phone}</span>
-            </a>
+            {contactData?.Email && (
+              <a 
+                href={`mailto:${contactData.Email}`}
+                className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
+              >
+                <Mail className="h-4 w-4" />
+                <span className="hidden sm:inline">{contactData.Email}</span>
+              </a>
+            )}
+            {contactData?.Call && (
+              <a 
+                href={`tel:${contactData.Call}`}
+                className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
+              >
+                <Phone className="h-4 w-4" />
+                <span className="hidden sm:inline">{contactData.Call}</span>
+              </a>
+            )}
           </div>
 
           {/* Right side: Social media & Language switcher */}
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             {/* Social media */}
             <div className={`flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
-              {contactInfo.facebook && (
+              {contactData?.Facebook && (
                 <a 
-                  href={contactInfo.facebook}
+                  href={contactData.Facebook}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary-foreground/80 transition-colors"
@@ -72,9 +78,9 @@ const TopHeader = () => {
                   <Facebook className="h-4 w-4" />
                 </a>
               )}
-              {contactInfo.twitter && (
+              {contactData?.Twitter && (
                 <a 
-                  href={contactInfo.twitter}
+                  href={contactData.Twitter}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary-foreground/80 transition-colors"
@@ -83,9 +89,9 @@ const TopHeader = () => {
                   <Twitter className="h-4 w-4" />
                 </a>
               )}
-              {contactInfo.linkedin && (
+              {contactData?.LinkedIn && (
                 <a 
-                  href={contactInfo.linkedin}
+                  href={contactData.LinkedIn}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary-foreground/80 transition-colors"
@@ -94,15 +100,26 @@ const TopHeader = () => {
                   <Linkedin className="h-4 w-4" />
                 </a>
               )}
-              {contactInfo.instagram && (
+              {contactData?.Instagram && (
                 <a 
-                  href={contactInfo.instagram}
+                  href={contactData.Instagram}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary-foreground/80 transition-colors"
                   aria-label="Instagram"
                 >
                   <Instagram className="h-4 w-4" />
+                </a>
+              )}
+              {contactData?.YouTube && (
+                <a 
+                  href={contactData.YouTube}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground/80 transition-colors"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="h-4 w-4" />
                 </a>
               )}
             </div>
