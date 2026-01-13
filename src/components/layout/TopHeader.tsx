@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube } from 'lucide-react';
+import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, MessageCircle } from 'lucide-react';
 import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
 
 interface ContactData {
   Email: string;
   Call: string;
+  WhatsApp?: string;
   Facebook?: string;
   Twitter?: string;
   LinkedIn?: string;
@@ -66,7 +67,18 @@ const TopHeader = () => {
           {/* Right side: Social media & Language switcher */}
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             {/* Social media */}
-            <div className={`flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
+              {contactData?.WhatsApp && (
+                <a 
+                  href={`https://wa.me/${contactData.WhatsApp.replace(/[^0-9]/g, '')}`}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-foreground/80 transition-colors"
+                  aria-label="WhatsApp"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </a>
+              )}
               {contactData?.Facebook && (
                 <a 
                   href={contactData.Facebook}
