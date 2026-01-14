@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -22,9 +23,16 @@ const ADMIN_FEATURES = [
 ];
 
 export default function ClientDashboard() {
-  const { user } = useAuth();
+  const { user, isAdmin, authReady } = useAuth();
   const navigate = useNavigate();
   const { hasPermission, getAccessiblePages, isLoading } = usePermissions();
+
+  // Redirect admin users to admin panel
+  useEffect(() => {
+    if (authReady && isAdmin) {
+      navigate('/admin', { replace: true });
+    }
+  }, [authReady, isAdmin, navigate]);
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
