@@ -28,6 +28,7 @@ import AdminProjects from '@/pages/admin/Projects';
 import AdminFAQs from '@/pages/admin/FAQs';
 import AdminResources from '@/pages/admin/Resources';
 import AdminAnalytics from '@/pages/admin/Analytics';
+import AdminVisitors from '@/pages/admin/Visitors';
 import AdminUsers from '@/pages/admin/Users';
 import AdminBlogs from '@/pages/admin/Blogs';
 import AdminPolicies from '@/pages/admin/Policies';
@@ -163,6 +164,14 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminAnalytics />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/visitors" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminVisitors />
                 </ProtectedRoute>
               } 
             />
