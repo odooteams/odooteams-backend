@@ -3,6 +3,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { 
   LogOut, 
   Users, 
@@ -13,7 +15,11 @@ import {
   TrendingUp,
   Eye,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Globe,
+  Monitor,
+  Smartphone,
+  Tablet
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -21,22 +27,30 @@ import SEOHead from '@/components/seo/SEOHead';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
 import { supabase } from '@/integrations/supabase/client';
-import { AnalyticsService } from '@/backend/services/analytics.service';
+import { VisitorService } from '@/backend/services/visitor.service';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 interface DashboardStats {
   totalServices: number;
+  previousServices: number;
   totalProjects: number;
+  previousProjects: number;
   totalMessages: number;
+  previousMessages: number;
   totalFaqs: number;
+  previousFaqs: number;
   totalUsers: number;
-  totalPageViews: number;
-  viewsByDay: Array<{ date: string; count: number }>;
-  topPages: Array<{ page: string; count: number }>;
+  previousUsers: number;
+  totalVisitors: number;
+  previousVisitors: number;
+  visitorsByDay: Array<{ date: string; count: number }>;
+  browserStats: Array<{ name: string; count: number }>;
+  deviceStats: Array<{ name: string; count: number }>;
+  recentVisitors: Array<any>;
 }
 
-const CHART_COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
+const CHART_COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))', '#22c55e', '#f97316'];
 
 export default function AdminDashboard() {
   const { user, signOut } = useAuth();
@@ -52,32 +66,52 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       
-      // Fetch counts from all tables in parallel
+      const now = new Date();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+      
+      // Fetch current and previous period counts in parallel
       const [
-        servicesRes,
-        projectsRes,
-        messagesRes,
-        faqsRes,
-        usersRes,
-        analyticsRes
+        currentServicesRes,
+        previousServicesRes,
+        currentProjectsRes,
+        previousProjectsRes,
+        currentMessagesRes,
+        previousMessagesRes,
+        currentFaqsRes,
+        currentUsersRes,
+        previousUsersRes,
+        visitorStatsRes
       ] = await Promise.all([
         supabase.from('services').select('id', { count: 'exact', head: true }),
+        supabase.from('services').select('id', { count: 'exact', head: true }).lt('created_at', thirtyDaysAgo.toISOString()),
         supabase.from('projects').select('id', { count: 'exact', head: true }),
-        supabase.from('contact_submissions').select('id', { count: 'exact', head: true }),
+        supabase.from('projects').select('id', { count: 'exact', head: true }).lt('created_at', thirtyDaysAgo.toISOString()),
+        supabase.from('contact_submissions').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo.toISOString()),
+        supabase.from('contact_submissions').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo.toISOString()).lt('created_at', thirtyDaysAgo.toISOString()),
         supabase.from('faqs').select('id', { count: 'exact', head: true }),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        AnalyticsService.getStatistics(30)
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).lt('created_at', thirtyDaysAgo.toISOString()),
+        VisitorService.getVisitorStats(30)
       ]);
 
       setStats({
-        totalServices: servicesRes.count || 0,
-        totalProjects: projectsRes.count || 0,
-        totalMessages: messagesRes.count || 0,
-        totalFaqs: faqsRes.count || 0,
-        totalUsers: usersRes.count || 0,
-        totalPageViews: analyticsRes.stats?.totalViews || 0,
-        viewsByDay: analyticsRes.stats?.viewsByDay || [],
-        topPages: analyticsRes.stats?.topPages || []
+        totalServices: currentServicesRes.count || 0,
+        previousServices: previousServicesRes.count || 0,
+        totalProjects: currentProjectsRes.count || 0,
+        previousProjects: previousProjectsRes.count || 0,
+        totalMessages: currentMessagesRes.count || 0,
+        previousMessages: previousMessagesRes.count || 0,
+        totalFaqs: currentFaqsRes.count || 0,
+        previousFaqs: 0,
+        totalUsers: currentUsersRes.count || 0,
+        previousUsers: previousUsersRes.count || 0,
+        totalVisitors: visitorStatsRes.stats?.totalVisitors || 0,
+        previousVisitors: visitorStatsRes.stats?.previousTotalVisitors || 0,
+        visitorsByDay: visitorStatsRes.stats?.visitorsByDay || [],
+        browserStats: visitorStatsRes.stats?.browserStats || [],
+        deviceStats: visitorStatsRes.stats?.deviceStats || [],
+        recentVisitors: visitorStatsRes.stats?.recentVisitors || []
       });
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
@@ -98,13 +132,37 @@ export default function AdminDashboard() {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
+  const calculateChange = (current: number, previous: number): { value: string; trend: 'up' | 'down' | 'neutral' } => {
+    const change = VisitorService.calculatePercentageChange(current, previous);
+    if (change === 0) return { value: '0%', trend: 'neutral' };
+    return {
+      value: `${change > 0 ? '+' : ''}${change}%`,
+      trend: change > 0 ? 'up' : 'down'
+    };
+  };
+
+  const getDeviceIcon = (device: string) => {
+    switch (device?.toLowerCase()) {
+      case 'mobile': return Smartphone;
+      case 'tablet': return Tablet;
+      default: return Monitor;
+    }
+  };
+
   const statCards = [
+    {
+      title: 'Total Visitors',
+      value: stats?.totalVisitors || 0,
+      icon: Globe,
+      ...calculateChange(stats?.totalVisitors || 0, stats?.previousVisitors || 0),
+      color: 'text-cyan-500',
+      bgColor: 'bg-cyan-500/10'
+    },
     {
       title: 'Total Services',
       value: stats?.totalServices || 0,
       icon: Briefcase,
-      change: '+12%',
-      trend: 'up',
+      ...calculateChange(stats?.totalServices || 0, stats?.previousServices || 0),
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10'
     },
@@ -112,8 +170,7 @@ export default function AdminDashboard() {
       title: 'Total Projects',
       value: stats?.totalProjects || 0,
       icon: FileText,
-      change: '+8%',
-      trend: 'up',
+      ...calculateChange(stats?.totalProjects || 0, stats?.previousProjects || 0),
       color: 'text-purple-500',
       bgColor: 'bg-purple-500/10'
     },
@@ -121,8 +178,7 @@ export default function AdminDashboard() {
       title: 'Messages',
       value: stats?.totalMessages || 0,
       icon: MessageSquare,
-      change: '+24%',
-      trend: 'up',
+      ...calculateChange(stats?.totalMessages || 0, stats?.previousMessages || 0),
       color: 'text-orange-500',
       bgColor: 'bg-orange-500/10'
     },
@@ -130,34 +186,24 @@ export default function AdminDashboard() {
       title: 'Total Users',
       value: stats?.totalUsers || 0,
       icon: Users,
-      change: '+5%',
-      trend: 'up',
+      ...calculateChange(stats?.totalUsers || 0, stats?.previousUsers || 0),
       color: 'text-green-500',
       bgColor: 'bg-green-500/10'
-    },
-    {
-      title: 'Page Views',
-      value: stats?.totalPageViews || 0,
-      icon: Eye,
-      change: '+18%',
-      trend: 'up',
-      color: 'text-cyan-500',
-      bgColor: 'bg-cyan-500/10'
     },
     {
       title: 'FAQs',
       value: stats?.totalFaqs || 0,
       icon: HelpCircle,
-      change: '+2%',
-      trend: 'up',
+      value2: stats?.totalFaqs || 0,
+      trend: 'neutral' as const,
       color: 'text-pink-500',
       bgColor: 'bg-pink-500/10'
     }
   ];
 
   const chartConfig = {
-    views: {
-      label: "Page Views",
+    visitors: {
+      label: "Visitors",
       color: "hsl(var(--primary))",
     },
   };
@@ -228,13 +274,13 @@ export default function AdminDashboard() {
                         <div className="flex items-center text-xs mt-1">
                           {stat.trend === 'up' ? (
                             <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
-                          ) : (
+                          ) : stat.trend === 'down' ? (
                             <ArrowDownRight className="h-3 w-3 text-red-500 mr-1" />
-                          )}
-                          <span className={stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}>
-                            {stat.change}
+                          ) : null}
+                          <span className={stat.trend === 'up' ? 'text-green-500' : stat.trend === 'down' ? 'text-red-500' : 'text-muted-foreground'}>
+                            {stat.value2 ? '-' : stat.value}
                           </span>
-                          <span className="text-muted-foreground ml-1">vs last month</span>
+                          <span className="text-muted-foreground ml-1">vs last 30 days</span>
                         </div>
                       </CardContent>
                     </Card>
@@ -243,22 +289,22 @@ export default function AdminDashboard() {
 
                 {/* Charts Row */}
                 <div className="grid gap-6 md:grid-cols-2">
-                  {/* Page Views Chart */}
+                  {/* Visitors Trend Chart */}
                   <Card className="col-span-1">
                     <CardHeader>
-                      <CardTitle>Page Views Trend</CardTitle>
-                      <CardDescription>Daily page views over the last 30 days</CardDescription>
+                      <CardTitle>Visitors Trend</CardTitle>
+                      <CardDescription>Daily visitors over the last 30 days</CardDescription>
                     </CardHeader>
                     <CardContent>
                       {loading ? (
                         <div className="h-[250px] flex items-center justify-center">
                           <p className="text-muted-foreground">Loading chart...</p>
                         </div>
-                      ) : stats?.viewsByDay && stats.viewsByDay.length > 0 ? (
+                      ) : stats?.visitorsByDay && stats.visitorsByDay.length > 0 ? (
                         <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                          <AreaChart data={stats.viewsByDay}>
+                          <AreaChart data={stats.visitorsByDay}>
                             <defs>
-                              <linearGradient id="fillViews" x1="0" y1="0" x2="0" y2="1">
+                              <linearGradient id="fillVisitors" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
                                 <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
                               </linearGradient>
@@ -283,63 +329,132 @@ export default function AdminDashboard() {
                               type="monotone"
                               dataKey="count"
                               stroke="hsl(var(--primary))"
-                              fill="url(#fillViews)"
+                              fill="url(#fillVisitors)"
                               strokeWidth={2}
-                              name="views"
+                              name="visitors"
                             />
                           </AreaChart>
                         </ChartContainer>
                       ) : (
                         <div className="h-[250px] flex items-center justify-center">
-                          <p className="text-muted-foreground">No data available</p>
+                          <p className="text-muted-foreground">No visitor data yet</p>
                         </div>
                       )}
                     </CardContent>
                   </Card>
 
-                  {/* Top Pages Chart */}
+                  {/* Browser & Device Stats */}
                   <Card className="col-span-1">
                     <CardHeader>
-                      <CardTitle>Top Pages</CardTitle>
-                      <CardDescription>Most visited pages this month</CardDescription>
+                      <CardTitle>Visitor Analytics</CardTitle>
+                      <CardDescription>Browser and device distribution</CardDescription>
                     </CardHeader>
                     <CardContent>
                       {loading ? (
                         <div className="h-[250px] flex items-center justify-center">
                           <p className="text-muted-foreground">Loading chart...</p>
                         </div>
-                      ) : stats?.topPages && stats.topPages.length > 0 ? (
-                        <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                          <BarChart data={stats.topPages.slice(0, 5)} layout="vertical">
-                            <XAxis type="number" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-                            <YAxis 
-                              dataKey="page" 
-                              type="category" 
-                              tick={{ fontSize: 11 }}
-                              tickLine={false}
-                              axisLine={false}
-                              width={100}
-                              tickFormatter={(value) => value.length > 15 ? value.slice(0, 15) + '...' : value}
-                            />
-                            <ChartTooltip content={<ChartTooltipContent />} />
-                            <Bar 
-                              dataKey="count" 
-                              fill="hsl(var(--primary))" 
-                              radius={[0, 4, 4, 0]}
-                              name="views"
-                            />
-                          </BarChart>
-                        </ChartContainer>
                       ) : (
-                        <div className="h-[250px] flex items-center justify-center">
-                          <p className="text-muted-foreground">No data available</p>
+                        <div className="grid grid-cols-2 gap-4 h-[250px]">
+                          {/* Browser Stats */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-3">Browsers</h4>
+                            {stats?.browserStats && stats.browserStats.length > 0 ? (
+                              <div className="space-y-2">
+                                {stats.browserStats.slice(0, 4).map((browser, idx) => (
+                                  <div key={idx} className="flex items-center justify-between">
+                                    <span className="text-sm text-muted-foreground">{browser.name}</span>
+                                    <Badge variant="secondary">{browser.count}</Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">No data</p>
+                            )}
+                          </div>
+                          {/* Device Stats */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-3">Devices</h4>
+                            {stats?.deviceStats && stats.deviceStats.length > 0 ? (
+                              <div className="space-y-2">
+                                {stats.deviceStats.map((device, idx) => {
+                                  const Icon = getDeviceIcon(device.name);
+                                  return (
+                                    <div key={idx} className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <Icon className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm text-muted-foreground capitalize">{device.name}</span>
+                                      </div>
+                                      <Badge variant="secondary">{device.count}</Badge>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">No data</p>
+                            )}
+                          </div>
                         </div>
                       )}
                     </CardContent>
                   </Card>
                 </div>
 
-                {/* Quick Actions & Recent Activity */}
+                {/* Recent Visitors Table */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Recent Visitors</CardTitle>
+                    <CardDescription>Latest website visitors with details</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {loading ? (
+                      <p className="text-muted-foreground">Loading...</p>
+                    ) : stats?.recentVisitors && stats.recentVisitors.length > 0 ? (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Page</TableHead>
+                              <TableHead>Browser</TableHead>
+                              <TableHead>OS</TableHead>
+                              <TableHead>Device</TableHead>
+                              <TableHead>Time</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {stats.recentVisitors.slice(0, 10).map((visitor, index) => {
+                              const Icon = getDeviceIcon(visitor.device_type);
+                              return (
+                                <TableRow key={index}>
+                                  <TableCell className="font-medium max-w-[200px] truncate">
+                                    {visitor.page_url}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline">{visitor.browser_name || 'Unknown'}</Badge>
+                                  </TableCell>
+                                  <TableCell>{visitor.os_name || 'Unknown'}</TableCell>
+                                  <TableCell>
+                                    <div className="flex items-center gap-1">
+                                      <Icon className="h-4 w-4" />
+                                      <span className="capitalize">{visitor.device_type || 'desktop'}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="text-muted-foreground">
+                                    {new Date(visitor.created_at).toLocaleString()}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground">No visitor data yet. Visitors will appear here once tracking begins.</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions & Content Distribution */}
                 <div className="grid gap-6 md:grid-cols-3">
                   {/* Quick Actions */}
                   <Card className="md:col-span-1">
@@ -419,23 +534,18 @@ export default function AdminDashboard() {
                               <ChartTooltip content={<ChartTooltipContent />} />
                             </PieChart>
                           </ChartContainer>
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-primary" />
-                              <span className="text-sm">Services: {stats?.totalServices || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-secondary" />
-                              <span className="text-sm">Projects: {stats?.totalProjects || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-accent" />
-                              <span className="text-sm">FAQs: {stats?.totalFaqs || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full bg-muted" />
-                              <span className="text-sm">Messages: {stats?.totalMessages || 0}</span>
-                            </div>
+                          <div className="space-y-2">
+                            {[
+                              { name: 'Services', value: stats?.totalServices || 0, color: CHART_COLORS[0] },
+                              { name: 'Projects', value: stats?.totalProjects || 0, color: CHART_COLORS[1] },
+                              { name: 'FAQs', value: stats?.totalFaqs || 0, color: CHART_COLORS[2] },
+                              { name: 'Messages', value: stats?.totalMessages || 0, color: CHART_COLORS[3] }
+                            ].map((item, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                                <span className="text-sm">{item.name}: {item.value}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}

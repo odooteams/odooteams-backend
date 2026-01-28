@@ -43,6 +43,7 @@ import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
 import AdvancedAnalytics from '@/components/analytics/AdvancedAnalytics';
+import VisitorTracker from '@/components/analytics/VisitorTracker';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
       <AuthProvider>
         <div className="App">
           <AdvancedAnalytics />
+          <VisitorTracker />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
