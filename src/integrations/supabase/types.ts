@@ -815,6 +815,63 @@ export type Database = {
         }
         Relationships: []
       }
+      website_visitors: {
+        Row: {
+          browser_name: string | null
+          browser_version: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          ip_address: string | null
+          is_new_visitor: boolean | null
+          os_name: string | null
+          os_version: string | null
+          page_url: string
+          referrer_url: string | null
+          session_id: string | null
+          user_id: string | null
+          visit_duration: number | null
+        }
+        Insert: {
+          browser_name?: string | null
+          browser_version?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          is_new_visitor?: boolean | null
+          os_name?: string | null
+          os_version?: string | null
+          page_url: string
+          referrer_url?: string | null
+          session_id?: string | null
+          user_id?: string | null
+          visit_duration?: number | null
+        }
+        Update: {
+          browser_name?: string | null
+          browser_version?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          is_new_visitor?: boolean | null
+          os_name?: string | null
+          os_version?: string | null
+          page_url?: string
+          referrer_url?: string | null
+          session_id?: string | null
+          user_id?: string | null
+          visit_duration?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
