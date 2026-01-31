@@ -171,9 +171,13 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
         </div>
       </article>
 
-      {/* Other Projects Grid */}
+      {/* Other Projects Grid - 4 Cards Per Row */}
       {otherProjects.length > 0 && (
-        <div className={isGridView ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-8"}>
+        <div>
+          <h3 className="text-xl font-semibold text-foreground mb-6">
+            {t('More Projects', 'المزيد من المشاريع')}
+          </h3>
+          <div className={isGridView ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "space-y-8"}>
           {otherProjects.map((project, index) => {
             const mainImage = project.images && project.images.length > 0 ? project.images[0] : '/placeholder.svg';
             
@@ -297,6 +301,7 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
               </article>
             );
           })}
+          </div>
         </div>
       )}
       
