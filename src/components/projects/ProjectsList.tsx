@@ -75,6 +75,7 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
             <img 
               src={featuredImage} 
               alt={featuredProject.title} 
+              loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             
@@ -184,7 +185,7 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
             return (
               <article 
                 key={project.id} 
-                className={`group relative overflow-hidden rounded-2xl bg-card border transition-all duration-500 hover:shadow-2xl animate-fade-in ${isGridView ? 'flex flex-col' : 'flex flex-col md:flex-row'}`}
+                className={`group relative overflow-hidden rounded-2xl bg-card border transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 animate-fade-in ${isGridView ? 'flex flex-col' : 'flex flex-col md:flex-row'}`}
                 style={{ animationDelay: `${(index + 1) * 0.1}s` }}
               >
                 {/* Image Container */}
@@ -195,6 +196,7 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
                   <img 
                     src={mainImage} 
                     alt={project.title} 
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   
