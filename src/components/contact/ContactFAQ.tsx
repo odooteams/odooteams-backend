@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const ContactFAQ: React.FC = () => {
   const { t } = useLanguage();
-  const { faqs, isLoading, error } = useFaqs('contact'); // Filter FAQs for 'contact' category
+  const { faqs, isLoading, error } = useFaqs(); // Show all FAQs
   
   return (
     <section className="bg-gray-50 py-16">
