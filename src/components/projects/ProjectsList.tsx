@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import ProjectsContactDialog from './ProjectsContactDialog';
+import ProjectCardSkeleton from './ProjectCardSkeleton';
 import useWhatsAppShare from '@/hooks/useWhatsAppShare';
 import { createProjectSlug } from '@/lib/projectUtils';
 
@@ -13,12 +14,14 @@ interface ProjectsListProps {
   projects: Project[];
   isGridView: boolean;
   onContactRequest: () => void;
+  loading?: boolean;
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({
   projects,
   isGridView,
-  onContactRequest
+  onContactRequest,
+  loading = false
 }) => {
   const { t, language } = useLanguage();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
@@ -42,6 +45,23 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
     `.trim();
     shareToWhatsApp(message);
   };
+
+  // Show skeleton loading state
+  if (loading) {
+    return (
+      <>
+        <ProjectCardSkeleton isFeatured />
+        <div>
+          <div className="h-7 w-40 bg-muted rounded mb-6 animate-pulse" />
+          <div className={isGridView ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "space-y-8"}>
+            {[...Array(4)].map((_, index) => (
+              <ProjectCardSkeleton key={index} isGridView={isGridView} />
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   if (projects.length === 0) {
     return (

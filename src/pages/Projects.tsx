@@ -15,6 +15,7 @@ const Projects = () => {
   const { dir } = useLanguage();
   const { 
     projects,
+    loading,
     searchTerm,
     setSearchTerm,
     categoryFilter,
@@ -49,6 +50,7 @@ const Projects = () => {
               projects={projects}
               isGridView={isGridView}
               onContactRequest={handleContactRequest}
+              loading={loading}
             />
             
             {totalPages > 1 && (
