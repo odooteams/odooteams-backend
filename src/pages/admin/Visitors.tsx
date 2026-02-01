@@ -49,9 +49,12 @@ interface Filters {
 
 const CHART_COLORS = ['hsl(var(--primary))', '#22c55e', '#f97316', '#8b5cf6', '#ec4899', '#06b6d4'];
 
+const ITEMS_PER_PAGE = 75;
+
 export default function AdminVisitors() {
   const [stats, setStats] = useState<VisitorStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<Filters>({
     dateRange: '30',
     browser: 'all',
@@ -102,6 +105,17 @@ export default function AdminVisitors() {
     if (filters.search && !visitor.page_url?.toLowerCase().includes(filters.search.toLowerCase())) return false;
     return true;
   }) || [];
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredVisitors.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedVisitors = filteredVisitors.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters.browser, filters.device, filters.country, filters.search]);
 
   const uniqueBrowsers = [...new Set(stats?.recentVisitors?.map(v => v.browser_name).filter(Boolean))];
   const uniqueDevices = [...new Set(stats?.recentVisitors?.map(v => v.device_type).filter(Boolean))];
@@ -463,10 +477,10 @@ export default function AdminVisitors() {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {filteredVisitors.slice(0, 50).map((visitor, index) => {
+                            {paginatedVisitors.map((visitor, index) => {
                               const Icon = getDeviceIcon(visitor.device_type);
                               return (
-                                <TableRow key={index}>
+                                <TableRow key={startIndex + index}>
                                   <TableCell className="font-medium max-w-[250px] truncate">
                                     {visitor.page_url}
                                   </TableCell>
@@ -491,11 +505,76 @@ export default function AdminVisitors() {
                             })}
                           </TableBody>
                         </Table>
-                        {filteredVisitors.length > 50 && (
-                          <p className="text-sm text-muted-foreground mt-4 text-center">
-                            Showing 50 of {filteredVisitors.length} visitors
+                        
+                        {/* Pagination Controls */}
+                        <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                          <p className="text-sm text-muted-foreground">
+                            Showing {startIndex + 1}-{Math.min(endIndex, filteredVisitors.length)} of {filteredVisitors.length} visitors
                           </p>
-                        )}
+                          
+                          {totalPages > 1 && (
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                              >
+                                Previous
+                              </Button>
+                              
+                              <div className="flex items-center gap-1">
+                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                  let pageNum: number;
+                                  if (totalPages <= 5) {
+                                    pageNum = i + 1;
+                                  } else if (currentPage <= 3) {
+                                    pageNum = i + 1;
+                                  } else if (currentPage >= totalPages - 2) {
+                                    pageNum = totalPages - 4 + i;
+                                  } else {
+                                    pageNum = currentPage - 2 + i;
+                                  }
+                                  
+                                  return (
+                                    <Button
+                                      key={pageNum}
+                                      variant={currentPage === pageNum ? "default" : "outline"}
+                                      size="sm"
+                                      className="w-9"
+                                      onClick={() => setCurrentPage(pageNum)}
+                                    >
+                                      {pageNum}
+                                    </Button>
+                                  );
+                                })}
+                                
+                                {totalPages > 5 && currentPage < totalPages - 2 && (
+                                  <>
+                                    <span className="px-1 text-muted-foreground">...</span>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="w-9"
+                                      onClick={() => setCurrentPage(totalPages)}
+                                    >
+                                      {totalPages}
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                              
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                              >
+                                Next
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ) : (
                       <p className="text-muted-foreground">
