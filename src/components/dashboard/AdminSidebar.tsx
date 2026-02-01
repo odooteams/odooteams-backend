@@ -32,7 +32,8 @@ import {
   KeyRound, 
   ClipboardList,
   Globe,
-  ChevronDown
+  ChevronDown,
+  Archive
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState } from 'react';
@@ -100,6 +101,7 @@ const menuGroups: MenuGroup[] = [
     label: 'Settings',
     items: [
       { title: 'Policies', url: '/admin/policies', icon: Shield },
+      { title: 'Backups', url: '/admin/backups', icon: Archive },
       { title: 'Settings', url: '/admin/settings', icon: Settings },
     ]
   },
