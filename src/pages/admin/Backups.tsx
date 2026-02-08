@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { 
   Download,
   Upload,
@@ -21,7 +22,9 @@ import {
   XCircle,
   Loader2,
   Archive,
-  FileJson
+  FileJson,
+  RotateCcw,
+  AlertTriangle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -86,12 +89,16 @@ export default function AdminBackups() {
   const [backups, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
   const [selectedBackup, setSelectedBackup] = useState<Backup | null>(null);
   const [backupName, setBackupName] = useState('');
   const [backupDescription, setBackupDescription] = useState('');
   const [selectedTables, setSelectedTables] = useState<string[]>(AVAILABLE_TABLES.map(t => t.name));
+  const [restoreMode, setRestoreMode] = useState<'merge' | 'replace'>('merge');
+  const [restoreTables, setRestoreTables] = useState<string[]>([]);
 
   useEffect(() => {
     loadBackups();
@@ -214,6 +221,56 @@ export default function AdminBackups() {
     }
   };
 
+  const restoreBackup = async () => {
+    if (!selectedBackup) return;
+
+    try {
+      setRestoring(true);
+
+      const { error: fnError, data } = await supabase.functions.invoke('restore-backup', {
+        body: { 
+          backupId: selectedBackup.id,
+          tables: restoreTables.length > 0 ? restoreTables : undefined,
+          mode: restoreMode
+        }
+      });
+
+      if (fnError) {
+        console.error('Restore error:', fnError);
+        toast.error('Restore failed: ' + fnError.message);
+        return;
+      }
+
+      if (data?.success) {
+        toast.success(data.message || 'Restore completed successfully');
+      } else {
+        toast.warning(data?.message || 'Restore completed with some issues');
+      }
+
+      setShowRestoreDialog(false);
+      setSelectedBackup(null);
+      setRestoreTables([]);
+      setRestoreMode('merge');
+
+    } catch (error: any) {
+      console.error('Error restoring backup:', error);
+      toast.error(error.message || 'Failed to restore backup');
+    } finally {
+      setRestoring(false);
+    }
+  };
+
+  const openRestoreDialog = (backup: Backup) => {
+    setSelectedBackup(backup);
+    // Pre-select restorable tables from the backup
+    const restorableTables = (backup.tables_included || []).filter(
+      t => !['profiles', 'user_roles', 'user_permissions', 'contact_submissions', 'page_views', 'website_visitors', 'audit_logs'].includes(t)
+    );
+    setRestoreTables(restorableTables);
+    setRestoreMode('merge');
+    setShowRestoreDialog(true);
+  };
+
   const downloadBackup = async (backup: Backup) => {
     if (!backup.file_url) {
       toast.error('No file available for download');
@@ -249,11 +306,11 @@ export default function AdminBackups() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge className="bg-green-500"><CheckCircle2 className="w-3 h-3 mr-1" />Completed</Badge>;
+        return <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"><CheckCircle2 className="w-3 h-3 mr-1" />Completed</Badge>;
       case 'completed_with_errors':
-        return <Badge className="bg-yellow-500"><CheckCircle2 className="w-3 h-3 mr-1" />Partial</Badge>;
+        return <Badge className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20"><CheckCircle2 className="w-3 h-3 mr-1" />Partial</Badge>;
       case 'in_progress':
-        return <Badge className="bg-blue-500"><Loader2 className="w-3 h-3 mr-1 animate-spin" />In Progress</Badge>;
+        return <Badge className="bg-primary/15 text-primary border-primary/20"><Loader2 className="w-3 h-3 mr-1 animate-spin" />In Progress</Badge>;
       case 'failed':
         return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Failed</Badge>;
       default:
@@ -417,14 +474,24 @@ export default function AdminBackups() {
                                 <TableCell className="text-right">
                                   <div className="flex items-center justify-end gap-2">
                                     {backup.file_url && backup.status !== 'pending' && backup.status !== 'in_progress' && (
-                                      <Button
-                                        variant="outline"
-                                        size="icon"
-                                        onClick={() => downloadBackup(backup)}
-                                        title="Download"
-                                      >
-                                        <Download className="h-4 w-4" />
-                                      </Button>
+                                      <>
+                                        <Button
+                                          variant="outline"
+                                          size="icon"
+                                          onClick={() => downloadBackup(backup)}
+                                          title="Download"
+                                        >
+                                          <Download className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          variant="outline"
+                                          size="icon"
+                                          onClick={() => openRestoreDialog(backup)}
+                                          title="Restore"
+                                        >
+                                          <RotateCcw className="h-4 w-4" />
+                                        </Button>
+                                      </>
                                     )}
                                     <Button
                                       variant="outline"
@@ -577,6 +644,149 @@ export default function AdminBackups() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Restore Backup Dialog */}
+      <Dialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <RotateCcw className="h-5 w-5" />
+              Restore Backup
+            </DialogTitle>
+            <DialogDescription>
+              Restore data from "{selectedBackup?.name}"
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            {/* Warning */}
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+              <div className="text-sm">
+                <p className="font-medium text-amber-600 dark:text-amber-400">Warning</p>
+                <p className="text-muted-foreground mt-1">
+                  Restoring data will modify your current database. Some tables like user profiles, 
+                  roles, permissions, and analytics data are excluded for security reasons.
+                </p>
+              </div>
+            </div>
+
+            {/* Restore Mode */}
+            <div className="space-y-3">
+              <Label>Restore Mode</Label>
+              <RadioGroup value={restoreMode} onValueChange={(v) => setRestoreMode(v as 'merge' | 'replace')}>
+                <div className="flex items-start gap-3 p-3 rounded-lg border">
+                  <RadioGroupItem value="merge" id="merge" className="mt-1" />
+                  <div>
+                    <Label htmlFor="merge" className="font-medium cursor-pointer">Merge (Recommended)</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Updates existing records and adds new ones. Preserves data not in the backup.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg border">
+                  <RadioGroupItem value="replace" id="replace" className="mt-1" />
+                  <div>
+                    <Label htmlFor="replace" className="font-medium cursor-pointer">Replace</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Deletes all existing data in selected tables before restoring. Use with caution.
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Tables to Restore */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Tables to Restore</Label>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const restorableTables = (selectedBackup?.tables_included || []).filter(
+                        t => !['profiles', 'user_roles', 'user_permissions', 'contact_submissions', 'page_views', 'website_visitors', 'audit_logs'].includes(t)
+                      );
+                      setRestoreTables(restorableTables);
+                    }}
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRestoreTables([])}
+                  >
+                    Clear All
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 p-3 border rounded-lg max-h-48 overflow-y-auto">
+                {(selectedBackup?.tables_included || []).map((table) => {
+                  const isExcluded = ['profiles', 'user_roles', 'user_permissions', 'contact_submissions', 'page_views', 'website_visitors', 'audit_logs'].includes(table);
+                  const tableInfo = AVAILABLE_TABLES.find(t => t.name === table);
+                  return (
+                    <div key={table} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={restoreTables.includes(table)}
+                        disabled={isExcluded}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setRestoreTables(prev => [...prev, table]);
+                          } else {
+                            setRestoreTables(prev => prev.filter(t => t !== table));
+                          }
+                        }}
+                      />
+                      <span className={`text-sm ${isExcluded ? 'text-muted-foreground line-through' : ''}`}>
+                        {tableInfo?.label || table}
+                        {isExcluded && <span className="text-xs ml-1">(protected)</span>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Backup Info */}
+            {selectedBackup && (
+              <div className="text-sm text-muted-foreground border-t pt-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>Created: {format(new Date(selectedBackup.created_at), 'MMM d, yyyy HH:mm')}</div>
+                  <div>Size: {formatFileSize(selectedBackup.file_size)}</div>
+                  <div>Total Records: {getTotalRecords(selectedBackup.records_count).toLocaleString()}</div>
+                  <div>Tables: {selectedBackup.tables_included?.length || 0}</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRestoreDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={restoreBackup} 
+              disabled={restoring || restoreTables.length === 0}
+              variant={restoreMode === 'replace' ? 'destructive' : 'default'}
+            >
+              {restoring ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Restoring...
+                </>
+              ) : (
+                <>
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Restore {restoreTables.length} Table{restoreTables.length !== 1 ? 's' : ''}
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
