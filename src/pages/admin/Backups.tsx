@@ -24,7 +24,10 @@ import {
   Archive,
   FileJson,
   RotateCcw,
-  AlertTriangle
+  AlertTriangle,
+  Calendar,
+  Play,
+  Settings2
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -99,10 +102,86 @@ export default function AdminBackups() {
   const [selectedTables, setSelectedTables] = useState<string[]>(AVAILABLE_TABLES.map(t => t.name));
   const [restoreMode, setRestoreMode] = useState<'merge' | 'replace'>('merge');
   const [restoreTables, setRestoreTables] = useState<string[]>([]);
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
+  const [scheduleFrequency, setScheduleFrequency] = useState<'daily' | 'weekly'>('daily');
+  const [savingSchedule, setSavingSchedule] = useState(false);
+  const [runningScheduled, setRunningScheduled] = useState(false);
 
   useEffect(() => {
     loadBackups();
+    loadScheduleSettings();
   }, []);
+
+  const loadScheduleSettings = async () => {
+    try {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('setting_value')
+        .eq('setting_key', 'backup_schedule')
+        .single();
+
+      if (data?.setting_value) {
+        const settings = data.setting_value as { enabled: boolean; frequency: 'daily' | 'weekly' };
+        setScheduleEnabled(settings.enabled || false);
+        setScheduleFrequency(settings.frequency || 'daily');
+      }
+    } catch (error) {
+      // No schedule settings yet, use defaults
+      console.log('No backup schedule configured yet');
+    }
+  };
+
+  const saveScheduleSettings = async () => {
+    try {
+      setSavingSchedule(true);
+
+      const { error } = await supabase
+        .from('site_settings')
+        .upsert({
+          setting_key: 'backup_schedule',
+          setting_type: 'system',
+          setting_value: {
+            enabled: scheduleEnabled,
+            frequency: scheduleFrequency,
+            updated_at: new Date().toISOString()
+          },
+          is_active: true
+        }, { onConflict: 'setting_key' });
+
+      if (error) throw error;
+      toast.success('Backup schedule saved');
+    } catch (error: any) {
+      console.error('Error saving schedule:', error);
+      toast.error(error.message || 'Failed to save schedule');
+    } finally {
+      setSavingSchedule(false);
+    }
+  };
+
+  const runScheduledBackupNow = async () => {
+    try {
+      setRunningScheduled(true);
+      
+      const { error, data } = await supabase.functions.invoke('scheduled-backup', {
+        body: { scheduleType: scheduleFrequency }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success('Scheduled backup completed successfully');
+        loadBackups();
+      } else {
+        toast.warning('Backup completed with some issues');
+        loadBackups();
+      }
+    } catch (error: any) {
+      console.error('Error running scheduled backup:', error);
+      toast.error(error.message || 'Failed to run scheduled backup');
+    } finally {
+      setRunningScheduled(false);
+    }
+  };
 
   const loadBackups = async () => {
     try {
@@ -416,6 +495,89 @@ export default function AdminBackups() {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Schedule Settings Card */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <CardTitle>Automatic Backups</CardTitle>
+                          <CardDescription>Configure scheduled backup jobs</CardDescription>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={runScheduledBackupNow}
+                          disabled={runningScheduled}
+                        >
+                          {runningScheduled ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Play className="h-4 w-4 mr-2" />
+                          )}
+                          Run Now
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap items-center gap-6">
+                      <div className="flex items-center gap-3">
+                        <Label htmlFor="schedule-enabled" className="text-sm">Schedule Status</Label>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="schedule-enabled"
+                            checked={scheduleEnabled}
+                            onCheckedChange={(checked) => setScheduleEnabled(!!checked)}
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            {scheduleEnabled ? 'Enabled' : 'Disabled'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <Label className="text-sm">Frequency</Label>
+                        <RadioGroup
+                          value={scheduleFrequency}
+                          onValueChange={(v) => setScheduleFrequency(v as 'daily' | 'weekly')}
+                          className="flex gap-4"
+                        >
+                          <div className="flex items-center gap-2">
+                            <RadioGroupItem value="daily" id="freq-daily" />
+                            <Label htmlFor="freq-daily" className="text-sm cursor-pointer">Daily (2:00 AM)</Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <RadioGroupItem value="weekly" id="freq-weekly" />
+                            <Label htmlFor="freq-weekly" className="text-sm cursor-pointer">Weekly (Sunday 2:00 AM)</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        onClick={saveScheduleSettings}
+                        disabled={savingSchedule}
+                      >
+                        {savingSchedule ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Settings2 className="h-4 w-4 mr-2" />
+                        )}
+                        Save Settings
+                      </Button>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground mt-4">
+                      Note: Scheduled backups run automatically and are cleaned up after 30 days. 
+                      The schedule runs using Supabase pg_cron. Contact support if you need to modify the cron schedule directly.
+                    </p>
+                  </CardContent>
+                </Card>
 
                 {/* Backups Table */}
                 <Card>
