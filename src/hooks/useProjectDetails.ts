@@ -3,7 +3,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import useWhatsAppShare from "@/hooks/useWhatsAppShare";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { findProjectBySlug } from "@/lib/projectUtils";
+import { findProjectBySlug, createProjectSlug } from "@/lib/projectUtils";
 import { projectsQueries } from "@/lib/supabase/queries";
 
 export interface ProjectData {
@@ -43,31 +43,32 @@ export const useProjectDetails = () => {
     queryFn: () => projectsQueries.getAll(),
   });
 
-  const sheetProjects = useMemo(() => 
-    rawProjects.map((p: any): ProjectData => ({
-      id: p.id,
-      title: language === 'ar' ? p.title_ar : p.title_en,
-      category: language === 'ar' ? p.category_ar : p.category_en,
-      description: language === 'ar' ? p.description_ar : p.description_en,
-      processingSteps: language === 'ar' ? p.processing_steps_ar : p.processing_steps_en,
-      technologies: p.technologies || [],
-      images: p.images || [],
-      projectUrl: p.project_url,
-      clientName: p.client_name,
-      cost: p.cost,
-      completionDate: p.completion_date,
-      featured: p.is_featured,
+  const project: ProjectData | undefined = useMemo(() => {
+    if (!slug || isLoading) return undefined;
+    // Find project by matching slug against both English and Arabic titles
+    const raw = rawProjects.find((p: any) => 
+      createProjectSlug(p.title_en) === slug || createProjectSlug(p.title_ar) === slug
+    );
+    if (!raw) return undefined;
+    return {
+      id: raw.id,
+      title: language === 'ar' ? raw.title_ar : raw.title_en,
+      category: language === 'ar' ? raw.category_ar : raw.category_en,
+      description: language === 'ar' ? raw.description_ar : raw.description_en,
+      processingSteps: language === 'ar' ? raw.processing_steps_ar : raw.processing_steps_en,
+      technologies: raw.technologies || [],
+      images: raw.images || [],
+      projectUrl: raw.project_url,
+      clientName: raw.client_name,
+      cost: raw.cost,
+      completionDate: raw.completion_date,
+      featured: raw.is_featured,
       challenges: '',
       solutions: '',
       results: '',
       testimonial: undefined,
-    })), 
-  [rawProjects, language]);
-
-  const project: ProjectData | undefined = useMemo(() => {
-    if (!slug || isLoading) return undefined;
-    return findProjectBySlug(sheetProjects, slug);
-  }, [slug, sheetProjects, isLoading]);
+    } as ProjectData;
+  }, [slug, rawProjects, isLoading, language]);
 
   const handleContactRequest = () => {
     requestServiceViaWhatsApp(
