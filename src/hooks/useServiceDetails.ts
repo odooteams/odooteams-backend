@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import useWhatsAppShare from './useWhatsAppShare';
-import { findServiceBySlug } from '@/lib/serviceUtils';
+import { findServiceBySlug, createServiceSlug } from '@/lib/serviceUtils';
 import { useQuery } from '@tanstack/react-query';
 import { servicesQueries } from '@/lib/supabase/queries';
 
@@ -35,67 +35,38 @@ export const useServiceDetails = () => {
     queryFn: () => servicesQueries.getAll(language),
   });
 
-  const services = useMemo(() => 
-    rawServices.map((s: any) => ({
-      id: s.id,
-      title: language === 'ar' ? s.title_ar : s.title_en,
-      category: language === 'ar' ? s.category_ar : s.category_en,
-      details: language === 'ar' ? s.details_ar : s.details_en,
-      processingSteps: language === 'ar' ? s.processing_steps_ar : s.processing_steps_en,
-      image: s.image,
-      gallery: s.images || [],
-      benefits: [],
-      process: [],
-    })), 
-  [rawServices, language]);
-
   const service = useMemo(() => {
-    if (!slug || isLoading || services.length === 0) {
-      return {
-        id: '0',
-        category: '',
-        title: '',
-        details: '',
-        fullDescription: '',
-        benefits: [],
-        process: [],
-        image: '/placeholder.svg',
-        gallery: []
-      };
-    }
+    const empty = {
+      id: '0', category: '', title: '', details: '', fullDescription: '',
+      benefits: [] as string[], process: [] as ProcessStep[], image: '/placeholder.svg', gallery: [] as string[],
+    };
+    if (!slug || isLoading || rawServices.length === 0) return empty;
 
-    const foundService = findServiceBySlug(services, slug);
-    
-    if (foundService) {
-      const galleryImages = (foundService.gallery || [])
-        .filter((img: string) => img && img.trim() !== '');
-        
-      return {
-        id: foundService.id,
-        category: foundService.category,
-        title: foundService.title,
-        details: foundService.details,
-        fullDescription: foundService.details,
-        benefits: foundService.benefits || [],
-        process: foundService.process || [],
-        image: foundService.image || '/placeholder.svg',
-        gallery: galleryImages.length > 0 ? galleryImages : [foundService.image].filter(Boolean),
-        processingSteps: foundService.processingSteps,
-      };
-    }
+    // Match slug against both English and Arabic titles
+    const raw = rawServices.find((s: any) =>
+      createServiceSlug(s.title_en) === slug || createServiceSlug(s.title_ar) === slug
+    );
+    if (!raw) return empty;
+
+    const title = language === 'ar' ? raw.title_ar : raw.title_en;
+    const category = language === 'ar' ? raw.category_ar : raw.category_en;
+    const details = language === 'ar' ? raw.details_ar : raw.details_en;
+    const processingSteps = language === 'ar' ? raw.processing_steps_ar : raw.processing_steps_en;
+    const galleryImages: string[] = [];
 
     return {
-      id: '0',
-      category: '',
-      title: '',
-      details: '',
-      fullDescription: '',
+      id: raw.id,
+      category,
+      title,
+      details,
+      fullDescription: details,
       benefits: [],
       process: [],
-      image: '/placeholder.svg',
-      gallery: []
+      image: raw.image || '/placeholder.svg',
+      gallery: galleryImages.length > 0 ? galleryImages : [raw.image].filter(Boolean),
+      processingSteps,
     };
-  }, [slug, isLoading, services]);
+  }, [slug, isLoading, rawServices, language]);
   
   // Handle WhatsApp request
   const handleWhatsAppRequest = () => {
