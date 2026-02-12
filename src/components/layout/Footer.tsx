@@ -108,17 +108,17 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">{t('Contact Us', 'اتصل بنا')}</h3>
             <ul className="space-y-4">
-              <li className="flex items-center">
-                <MapPin className="h-5 w-5 mr-2 shrink-0 ml-reverse:rtl" />
+              <li className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 shrink-0" />
                 <span>{t('Cairo, Egypt', 'القاهرة، مصر')}</span>
               </li>
-              <li className="flex items-center">
-                <Phone className="h-5 w-5 mr-2 shrink-0 ml-reverse:rtl" />
-                <a href="tel:+201007419344" className="hover:text-odoo-gold transition duration-300">+20 100 741 9344</a>
+              <li className="flex items-center gap-2">
+                <Phone className="h-5 w-5 shrink-0" />
+                <a href="tel:+201007419344" className="hover:text-odoo-gold transition duration-300" dir="ltr">+20 100 741 9344</a>
               </li>
-              <li className="flex items-center">
-                <Mail className="h-5 w-5 mr-2 shrink-0 ml-reverse:rtl" />
-                <a href="mailto:info@odooteams.com" className="hover:text-odoo-gold transition duration-300">info@odooteams.com</a>
+              <li className="flex items-center gap-2">
+                <Mail className="h-5 w-5 shrink-0" />
+                <a href="mailto:info@odooteams.com" className="hover:text-odoo-gold transition duration-300" dir="ltr">info@odooteams.com</a>
               </li>
             </ul>
           </div>
