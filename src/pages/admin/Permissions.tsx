@@ -68,26 +68,18 @@ export default function AdminPermissions() {
 
   const loadUsers = async () => {
     try {
-      // Get all non-admin users
+      // Get current user
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      // Get all users except the current logged-in user
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, email, full_name');
       
       if (profilesError) throw profilesError;
 
-      // Get admin user IDs
-      const { data: adminRoles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id')
-        .eq('role', 'admin');
-      
-      if (rolesError) throw rolesError;
-
-      const adminIds = new Set(adminRoles?.map(r => r.user_id) || []);
-      
-      // Filter out admins
-      const nonAdminUsers = (profiles || []).filter(p => !adminIds.has(p.id));
-      setUsers(nonAdminUsers);
+      const allUsers = (profiles || []).filter(p => p.id !== currentUser?.id);
+      setUsers(allUsers);
     } catch (error) {
       console.error('Error loading users:', error);
       toast.error(t('Failed to load users', 'فشل في تحميل المستخدمين'));
