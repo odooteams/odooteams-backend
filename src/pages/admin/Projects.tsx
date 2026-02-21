@@ -99,6 +99,7 @@ export default function AdminProjects() {
                       <Table>
                         <TableHeader>
                           <TableRow>
+                            <TableHead>Image</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Client</TableHead>
@@ -110,6 +111,13 @@ export default function AdminProjects() {
                         <TableBody>
                           {projects.map((project) => (
                             <TableRow key={project.id}>
+                              <TableCell>
+                                {project.images?.[0] ? (
+                                  <img src={project.images[0]} alt={project.title_en} className="h-10 w-14 rounded object-cover" />
+                                ) : (
+                                  <div className="h-10 w-14 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">N/A</div>
+                                )}
+                              </TableCell>
                               <TableCell>{project.title_en}</TableCell>
                               <TableCell>{project.category_en}</TableCell>
                               <TableCell>{project.client_name || 'N/A'}</TableCell>

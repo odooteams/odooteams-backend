@@ -112,6 +112,7 @@ export default function AdminBlogs() {
                       <Table>
                         <TableHeader>
                           <TableRow>
+                            <TableHead>Image</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Published</TableHead>
@@ -123,6 +124,13 @@ export default function AdminBlogs() {
                         <TableBody>
                           {blogs.map((blog) => (
                             <TableRow key={blog.id}>
+                              <TableCell>
+                                {blog.image ? (
+                                  <img src={blog.image} alt={blog.title_en} className="h-10 w-14 rounded object-cover" />
+                                ) : (
+                                  <div className="h-10 w-14 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">N/A</div>
+                                )}
+                              </TableCell>
                               <TableCell className="max-w-md truncate">{blog.title_en}</TableCell>
                               <TableCell>{blog.category_en || 'N/A'}</TableCell>
                               <TableCell>
