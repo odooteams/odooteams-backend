@@ -12,12 +12,27 @@ import StatsSection from '@/components/about/StatsSection';
 import TimelineSection from '@/components/about/TimelineSection';
 import TeamSection from '@/components/about/TeamSection';
 import CtaSection from '@/components/about/CtaSection';
+import SEOHead from '@/components/seo/SEOHead';
+import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
+import { generateAlternateUrls } from '@/lib/canonicalUtils';
 
 const About = () => {
   const { dir } = useLanguage();
 
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <SEOHead
+        title="About OdooTeams - Expert Odoo ERP Consultants"
+        description="Learn about OdooTeams, a leading Odoo ERP implementation partner. Discover our team, expertise, and commitment to delivering world-class business solutions."
+        keywords="about OdooTeams, Odoo consultants, ERP experts, Odoo implementation partner, Odoo team"
+        structuredData={[
+          createBreadcrumbStructuredData([
+            { name: 'Home', url: 'https://odooteams.com' },
+            { name: 'About', url: 'https://odooteams.com/about' }
+          ])
+        ]}
+        alternateUrls={generateAlternateUrls('/about')}
+      />
       <TopHeader />
       <Navbar />
       <main>
@@ -31,7 +46,7 @@ const About = () => {
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
-      <div className="h-16 md:hidden" /> {/* Spacer for bottom navigation */}
+      <div className="h-16 md:hidden" />
     </div>
   );
 };

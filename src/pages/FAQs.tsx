@@ -9,21 +9,34 @@ import BottomNavigation from "@/components/layout/BottomNavigation";
 import PWAInstallPrompt from "@/components/common/PWAInstallPrompt";
 import StickyContact from "@/components/common/StickyContact";
 import useFaqs from "@/hooks/useFaqs";
+import SEOHead from '@/components/seo/SEOHead';
+import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
+import { generateAlternateUrls } from '@/lib/canonicalUtils';
+
 const FAQs = () => {
-  const {
-    dir,
-    t
-  } = useLanguage();
+  const { dir, t } = useLanguage();
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<string>("");
-  const {
-    categories,
-    isLoading
-  } = useFaqs();
+  const { categories, isLoading } = useFaqs();
+
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
   };
-  return <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+
+  return (
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <SEOHead
+        title="FAQs - Odoo ERP Questions Answered | OdooTeams"
+        description="Find answers to frequently asked questions about Odoo ERP implementation, customization, pricing, and support from OdooTeams."
+        keywords="Odoo FAQ, ERP questions, Odoo implementation FAQ, Odoo pricing, Odoo support"
+        structuredData={[
+          createBreadcrumbStructuredData([
+            { name: 'Home', url: 'https://odooteams.com' },
+            { name: 'FAQs', url: 'https://odooteams.com/faqs' }
+          ])
+        ]}
+        alternateUrls={generateAlternateUrls('/faqs')}
+      />
       <TopHeader />
       <Navbar />
       <main>
@@ -35,8 +48,6 @@ const FAQs = () => {
             <p className="text-gray-600 text-center mb-8 max-w-3xl mx-auto">
               {dir === 'rtl' ? 'اكتشف إجابات لأكثر الأسئلة شيوعًا حول خدماتنا وكيفية عملنا.' : 'Find answers to the most common questions about our services and how we work.'}
             </p>
-            
-            {/* Categories filter */}
             {!isLoading && categories.length > 0}
           </div>
         </div>
@@ -48,7 +59,9 @@ const FAQs = () => {
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
-      <div className="h-16 md:hidden" /> {/* Spacer for bottom navigation */}
-    </div>;
+      <div className="h-16 md:hidden" />
+    </div>
+  );
 };
+
 export default FAQs;

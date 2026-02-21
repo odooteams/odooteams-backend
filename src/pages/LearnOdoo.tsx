@@ -11,28 +11,20 @@ import { fetchLearnResources, LearnResource } from '@/lib/learnResources';
 import LearnHeroSection from '@/components/learn/LearnHeroSection';
 import ResourcesList from '@/components/learn/ResourcesList';
 import ResourcesLoadingState from '@/components/learn/ResourcesLoadingState';
+import SEOHead from '@/components/seo/SEOHead';
+import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
+import { generateAlternateUrls } from '@/lib/canonicalUtils';
 
 const LearnOdoo = () => {
   const { dir, language } = useLanguage();
   
-  // State for resources
   const [resources, setResources] = useState<LearnResource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // State for toggling between grid and list view
   const [isGridView, setIsGridView] = useState(true);
-  
-  // State for search term
   const [searchTerm, setSearchTerm] = useState('');
-  
-  // State for category filter
   const [categoryFilter, setCategoryFilter] = useState('all');
-  
-  // State for author filter
   const [authorFilter, setAuthorFilter] = useState('all');
-
-  // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
 
@@ -57,19 +49,16 @@ const LearnOdoo = () => {
     loadResources();
   }, []);
   
-  // Extract unique categories for dropdown
   const categories = resources.length > 0 
     ? Array.from(new Set(resources.map(resource => language === 'en' ? resource.category_en : resource.category_ar)))
-      .filter(category => category && category.trim() !== '') // Filter out empty strings
+      .filter(category => category && category.trim() !== '')
     : [];
   
-  // Extract unique authors for dropdown
   const authors = resources.length > 0
     ? Array.from(new Set(resources.map(resource => language === 'en' ? resource.author_en : resource.author_ar)))
-      .filter(author => author && author.trim() !== '') // Filter out empty strings
+      .filter(author => author && author.trim() !== '')
     : [];
 
-  // Filter resources based on search term, category, and author
   const filteredResources = resources.filter(resource => {
     const title = language === 'en' ? resource.title_en : resource.title_ar;
     const content = language === 'en' ? resource.contents_en : resource.contents_ar;
@@ -83,7 +72,6 @@ const LearnOdoo = () => {
     return matchesTerm && matchesCategory && matchesAuthor;
   });
 
-  // Get current items for pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredResources.slice(indexOfFirstItem, indexOfLastItem);
@@ -106,6 +94,18 @@ const LearnOdoo = () => {
   
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <SEOHead
+        title="Learn Odoo - Free ERP Tutorials & Resources | OdooTeams"
+        description="Master Odoo ERP with free tutorials, guides, and learning resources. From beginner to advanced Odoo implementation and customization."
+        keywords="learn Odoo, Odoo tutorials, ERP training, Odoo guides, Odoo resources, free Odoo learning"
+        structuredData={[
+          createBreadcrumbStructuredData([
+            { name: 'Home', url: 'https://odooteams.com' },
+            { name: 'Learn Odoo', url: 'https://odooteams.com/learn-odoo' }
+          ])
+        ]}
+        alternateUrls={generateAlternateUrls('/learn-odoo')}
+      />
       <TopHeader />
       <Navbar />
       <main>
@@ -129,8 +129,6 @@ const LearnOdoo = () => {
               onAuthorChange={setAuthorFilter}
               onViewChange={setIsGridView}
             />
-
-            {/* Resources grid/list */}
             <section className="py-16">
               <div className="container mx-auto px-4">
                 <ResourcesList 
@@ -138,8 +136,6 @@ const LearnOdoo = () => {
                   isGridView={isGridView} 
                   formatDate={formatDate} 
                 />
-                
-                {/* Pagination */}
                 {filteredResources.length > itemsPerPage && (
                   <Pagination
                     currentPage={currentPage}
@@ -155,7 +151,7 @@ const LearnOdoo = () => {
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
-      <div className="h-16 md:hidden" /> {/* Spacer for bottom navigation */}
+      <div className="h-16 md:hidden" />
     </div>
   );
 };
