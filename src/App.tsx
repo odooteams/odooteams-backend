@@ -18,6 +18,7 @@ import LearnOdoo from '@/pages/LearnOdoo';
 import ResourceDetails from '@/pages/ResourceDetails';
 import SignIn from '@/pages/auth/SignIn';
 import SignUp from '@/pages/auth/SignUp';
+import ResetPassword from '@/pages/auth/ResetPassword';
 import ClientDashboard from '@/pages/ClientDashboard';
 import Orders from '@/pages/dashboard/Orders';
 import Support from '@/pages/dashboard/Support';
@@ -70,6 +71,7 @@ function App() {
             {/* Auth Routes */}
             <Route path="/auth/signin" element={<SignIn />} />
             <Route path="/auth/signup" element={<SignUp />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             
             {/* Protected Routes */}
             <Route 
