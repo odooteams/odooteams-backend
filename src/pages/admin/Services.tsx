@@ -99,6 +99,7 @@ export default function AdminServices() {
                       <Table>
                         <TableHeader>
                           <TableRow>
+                            <TableHead>Image</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Status</TableHead>
@@ -110,6 +111,13 @@ export default function AdminServices() {
                         <TableBody>
                           {services.map((service) => (
                             <TableRow key={service.id}>
+                              <TableCell>
+                                {service.image ? (
+                                  <img src={service.image} alt={service.title_en} className="h-10 w-14 rounded object-cover" />
+                                ) : (
+                                  <div className="h-10 w-14 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">N/A</div>
+                                )}
+                              </TableCell>
                               <TableCell>{service.title_en}</TableCell>
                               <TableCell>{service.category_en}</TableCell>
                               <TableCell>
