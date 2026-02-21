@@ -10,27 +10,32 @@ import ProjectHeroSection from '@/components/projects/ProjectHeroSection';
 import ProjectsList from '@/components/projects/ProjectsList';
 import Pagination from '@/components/services/Pagination';
 import { useProjects } from '@/hooks/useProjects';
+import SEOHead from '@/components/seo/SEOHead';
+import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
+import { generateAlternateUrls } from '@/lib/canonicalUtils';
 
 const Projects = () => {
   const { dir } = useLanguage();
   const { 
-    projects,
-    loading,
-    searchTerm,
-    setSearchTerm,
-    categoryFilter,
-    setCategoryFilter,
-    isGridView,
-    setIsGridView,
-    categories,
-    currentPage,
-    setCurrentPage,
-    totalPages,
-    handleContactRequest
+    projects, loading, searchTerm, setSearchTerm,
+    categoryFilter, setCategoryFilter, isGridView, setIsGridView,
+    categories, currentPage, setCurrentPage, totalPages, handleContactRequest
   } = useProjects();
   
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <SEOHead
+        title="Our Projects - Odoo ERP Success Stories | OdooTeams"
+        description="Explore OdooTeams' portfolio of successful Odoo ERP implementations across industries with custom solutions."
+        keywords="Odoo projects, ERP portfolio, Odoo success stories, business transformation, Odoo case studies"
+        structuredData={[
+          createBreadcrumbStructuredData([
+            { name: 'Home', url: 'https://odooteams.com' },
+            { name: 'Projects', url: 'https://odooteams.com/projects' }
+          ])
+        ]}
+        alternateUrls={generateAlternateUrls('/projects')}
+      />
       <TopHeader />
       <Navbar />
       <main>
@@ -43,7 +48,6 @@ const Projects = () => {
           onCategoryChange={(value) => setCategoryFilter(value === "all" ? "" : value)}
           onViewChange={setIsGridView}
         />
-
         <section className="py-20 bg-gradient-to-b from-background to-muted/20">
           <div className="container mx-auto px-4">
             <ProjectsList 
@@ -52,7 +56,6 @@ const Projects = () => {
               onContactRequest={handleContactRequest}
               loading={loading}
             />
-            
             {totalPages > 1 && (
               <div className="mt-16">
                 <Pagination 
@@ -68,7 +71,7 @@ const Projects = () => {
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
-      <div className="h-16 md:hidden" /> {/* Spacer for bottom navigation */}
+      <div className="h-16 md:hidden" />
     </div>
   );
 };
