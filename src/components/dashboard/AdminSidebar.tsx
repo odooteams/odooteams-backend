@@ -145,7 +145,7 @@ export function AdminSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r bg-background">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
       <SidebarContent className="pt-2">
         {menuGroups.map((group) => (
           <SidebarGroup key={group.label} className="py-1">
