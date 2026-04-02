@@ -341,10 +341,10 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
         <div className="text-center mt-12">
           <Link 
             to="/projects"
-            className="btn-primary inline-flex items-center text-lg px-8 py-4 rounded-lg hover:scale-105 transform transition-all duration-300"
+            className="btn-primary inline-flex items-center gap-3 text-lg px-8 py-4 rounded-lg hover:scale-105 transform transition-all duration-300"
           >
             {t('View All Projects', 'عرض جميع المشاريع')}
-            <Arrow className="ml-3 mr-reverse:rtl h-6 w-6" />
+            <Arrow className="h-6 w-6" />
           </Link>
         </div>
       </div>
