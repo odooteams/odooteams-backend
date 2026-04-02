@@ -145,7 +145,7 @@ export function AdminSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r bg-background">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
       <SidebarContent className="pt-2">
         {menuGroups.map((group) => (
           <SidebarGroup key={group.label} className="py-1">
@@ -160,10 +160,10 @@ export function AdminSidebar() {
                           to={item.url}
                           end={item.url === '/admin'}
                           className={cn(
-                            'flex items-center gap-3 w-full px-3 py-2 rounded-md transition-colors',
+                            'flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200',
                             isItemActive(item.url) 
-                              ? 'bg-primary/10 text-primary font-medium' 
-                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                              ? 'bg-sidebar-accent text-sidebar-primary font-medium shadow-sm' 
+                              : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                           )}
                         >
                           <item.icon className="h-4 w-4 shrink-0" />
@@ -179,7 +179,7 @@ export function AdminSidebar() {
                 open={openGroups[group.label]}
                 onOpenChange={() => toggleGroup(group.label)}
               >
-                <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors">
+                <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-widest hover:text-sidebar-foreground/70 transition-colors">
                   <span>{group.label}</span>
                   <ChevronDown 
                     className={cn(
@@ -198,10 +198,10 @@ export function AdminSidebar() {
                               to={item.url}
                               end={item.url === '/admin'}
                               className={cn(
-                                'flex items-center gap-3 w-full px-3 py-2 rounded-md transition-colors',
+                                'flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200',
                                 isItemActive(item.url) 
-                                  ? 'bg-primary/10 text-primary font-medium' 
-                                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                  ? 'bg-sidebar-accent text-sidebar-primary font-medium shadow-sm' 
+                                  : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                               )}
                             >
                               <item.icon className="h-4 w-4 shrink-0" />
@@ -226,7 +226,7 @@ export function AdminSidebar() {
                 <SidebarMenuButton asChild tooltip="Logout">
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
+                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-200"
                   >
                     <LogOut className="h-4 w-4 shrink-0" />
                     {!isCollapsed && <span>Logout</span>}
