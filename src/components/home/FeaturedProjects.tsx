@@ -220,21 +220,21 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
                             variant="outline"
                             className="flex-1 border-odoo-magenta text-odoo-magenta hover:bg-odoo-magenta hover:text-white px-6 py-3"
                           >
-                            <Link to={`/projects/${createProjectSlug(project.title)}`}>
+                            <Link to={`/projects/${createProjectSlug(project.title)}`} className="inline-flex items-center justify-center gap-2">
                               {t('View Details', 'عرض التفاصيل')}
-                              <Arrow className="ml-2 mr-reverse:rtl h-4 w-4" />
+                              <Arrow className="h-4 w-4" />
                             </Link>
                           </Button>
                           
                           <Button
                             onClick={() => setExpandedQuote(expandedQuote === project.id ? null : project.id)}
-                            className="flex-1 bg-odoo-purple hover:bg-odoo-magenta text-white px-6 py-3"
+                            className="flex-1 bg-odoo-purple hover:bg-odoo-magenta text-white px-6 py-3 inline-flex items-center justify-center gap-2"
                           >
                             {t('Get Quote', 'احصل على عرض أسعار')}
                             {expandedQuote === project.id ? (
-                              <ChevronUp className="ml-2 mr-reverse:rtl h-4 w-4" />
+                              <ChevronUp className="h-4 w-4" />
                             ) : (
-                              <ChevronDown className="ml-2 mr-reverse:rtl h-4 w-4" />
+                              <ChevronDown className="h-4 w-4" />
                             )}
                           </Button>
                           
@@ -242,10 +242,10 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
                             <Button
                               onClick={() => window.open(project.projectUrl, '_blank')}
                               variant="secondary"
-                              className="flex-1 px-6 py-3"
+                              className="flex-1 px-6 py-3 inline-flex items-center justify-center gap-2"
                             >
                               {t('Visit Project', 'زيارة المشروع')}
-                              <Arrow className="ml-2 mr-reverse:rtl h-4 w-4" />
+                              <Arrow className="h-4 w-4" />
                             </Button>
                           )}
                         </div>
@@ -341,10 +341,10 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
         <div className="text-center mt-12">
           <Link 
             to="/projects"
-            className="btn-primary inline-flex items-center text-lg px-8 py-4 rounded-lg hover:scale-105 transform transition-all duration-300"
+            className="btn-primary inline-flex items-center gap-3 text-lg px-8 py-4 rounded-lg hover:scale-105 transform transition-all duration-300"
           >
             {t('View All Projects', 'عرض جميع المشاريع')}
-            <Arrow className="ml-3 mr-reverse:rtl h-6 w-6" />
+            <Arrow className="h-6 w-6" />
           </Link>
         </div>
       </div>

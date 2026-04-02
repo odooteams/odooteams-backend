@@ -47,15 +47,15 @@ const Navbar = () => {
   return (
     <header className={`bg-background shadow-md sticky top-0 z-50 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
       <div className="max-w-none mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center">
+        <div className="flex items-center py-4">
+          <div className="flex items-center shrink-0">
             <Link to="/" className="flex items-center">
               <span className="text-2xl font-bold text-primary">Odoo<span className="text-odoo-magenta">Teams</span></span>
             </Link>
           </div>
 
           {/* Desktop navigation */}
-          <nav className={`hidden md:flex items-center ${dir === 'rtl' ? 'space-x-0 space-x-reverse space-x-8' : 'space-x-8'}`}>
+          <nav className="hidden md:flex items-center justify-center flex-1 gap-8">
             {navLinks.map((link) => (
               <Link 
                 key={link.to} 
