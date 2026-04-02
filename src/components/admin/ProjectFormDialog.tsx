@@ -218,8 +218,28 @@ export function ProjectFormDialog({ project, onSuccess }: ProjectFormDialogProps
               id="technologies"
               value={formData.technologies}
               onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
-              placeholder="React, TypeScript, Supabase"
+              placeholder="Odoo, Python, JavaScript, PostgreSQL"
             />
+            <div className="flex flex-wrap gap-1 mt-2">
+              {['Odoo', 'Python', 'JavaScript', 'TypeScript', 'React', 'PostgreSQL', 'XML', 'QWeb', 'REST API', 'Docker', 'Linux', 'Nginx', 'CSS', 'HTML', 'Git', 'Supabase'].map((tech) => (
+                <Button
+                  key={tech}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-6 px-2"
+                  onClick={() => {
+                    const current = formData.technologies.split(',').map(t => t.trim()).filter(Boolean);
+                    if (!current.includes(tech)) {
+                      const updated = [...current, tech].join(', ');
+                      setFormData({ ...formData, technologies: updated });
+                    }
+                  }}
+                >
+                  + {tech}
+                </Button>
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-4">
