@@ -69,9 +69,9 @@ const HeroSection = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
                     <div className={`text-white space-y-5 md:space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
                       {/* Premium Badge */}
-                      <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl animate-fade-in">
-                        <div className="w-2 h-2 bg-odoo-gold rounded-full mr-3 animate-pulse"></div>
-                        <span className="text-sm font-semibold text-odoo-gold tracking-wide">✨ {t('Premium Odoo Solutions', 'حلول أودو المتميزة')}</span>
+                      <div className="inline-flex items-center px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl animate-fade-in">
+                        <div className="w-2 h-2 bg-odoo-gold rounded-full mr-2 md:mr-3 animate-pulse"></div>
+                        <span className="text-xs md:text-sm font-semibold text-odoo-gold tracking-wide">✨ {t('Premium Odoo Solutions', 'حلول أودو المتميزة')}</span>
                       </div>
                       
                       {/* Main Heading */}
