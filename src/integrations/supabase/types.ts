@@ -574,6 +574,12 @@ export type Database = {
           price: number | null
           processing_steps_ar: string | null
           processing_steps_en: string | null
+          seo_description_ar: string | null
+          seo_description_en: string | null
+          seo_keywords_ar: string | null
+          seo_keywords_en: string | null
+          seo_title_ar: string | null
+          seo_title_en: string | null
           title_ar: string
           title_en: string
           updated_at: string
@@ -594,6 +600,12 @@ export type Database = {
           price?: number | null
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           title_ar: string
           title_en: string
           updated_at?: string
@@ -614,6 +626,12 @@ export type Database = {
           price?: number | null
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           title_ar?: string
           title_en?: string
           updated_at?: string

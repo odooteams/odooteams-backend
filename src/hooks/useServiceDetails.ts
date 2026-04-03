@@ -39,6 +39,7 @@ export const useServiceDetails = () => {
     const empty = {
       id: '0', category: '', title: '', details: '', fullDescription: '',
       benefits: [] as string[], process: [] as ProcessStep[], image: '/placeholder.svg', gallery: [] as string[],
+      seo_title: '', seo_description: '', seo_keywords: '',
     };
     if (!slug || isLoading || rawServices.length === 0) return empty;
 
@@ -52,6 +53,9 @@ export const useServiceDetails = () => {
     const category = language === 'ar' ? raw.category_ar : raw.category_en;
     const details = language === 'ar' ? raw.details_ar : raw.details_en;
     const processingSteps = language === 'ar' ? raw.processing_steps_ar : raw.processing_steps_en;
+    const seo_title = language === 'ar' ? (raw as any).seo_title_ar : (raw as any).seo_title_en;
+    const seo_description = language === 'ar' ? (raw as any).seo_description_ar : (raw as any).seo_description_en;
+    const seo_keywords = language === 'ar' ? (raw as any).seo_keywords_ar : (raw as any).seo_keywords_en;
     const galleryImages: string[] = [];
 
     return {
@@ -65,6 +69,9 @@ export const useServiceDetails = () => {
       image: raw.image || '/placeholder.svg',
       gallery: galleryImages.length > 0 ? galleryImages : [raw.image].filter(Boolean),
       processingSteps,
+      seo_title: seo_title || '',
+      seo_description: seo_description || '',
+      seo_keywords: seo_keywords || '',
     };
   }, [slug, isLoading, rawServices, language]);
   
