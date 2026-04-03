@@ -38,17 +38,17 @@ const HeroSection = () => {
     slide.image5_url,
     slide.image6_url
   ].filter(img => img && img.trim() !== '');
-  return <section className="relative overflow-hidden min-h-screen flex items-center">
+  return <section className="relative overflow-hidden min-h-[100svh] flex items-center">
       {/* Enhanced gradient background with overlay */}
       <div className="absolute inset-0 bg-gradient-hero"></div>
       <div className="absolute inset-0 bg-black/10"></div>
       
-      {/* Floating geometric shapes */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse"></div>
-      <div className="absolute bottom-40 right-20 w-24 h-24 bg-odoo-gold/10 rounded-full blur-2xl animate-pulse" style={{
+      {/* Floating geometric shapes - hidden on mobile for performance */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse hidden md:block"></div>
+      <div className="absolute bottom-40 right-20 w-24 h-24 bg-odoo-gold/10 rounded-full blur-2xl animate-pulse hidden md:block" style={{
       animationDelay: '1s'
     }}></div>
-      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-odoo-pink/10 rounded-full blur-xl animate-pulse" style={{
+      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-odoo-pink/10 rounded-full blur-xl animate-pulse hidden md:block" style={{
       animationDelay: '2s'
     }}></div>
       
@@ -65,18 +65,18 @@ const HeroSection = () => {
             return (
               <CarouselItem key={slideIndex}>
                 {/* Content */}
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative z-10 w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                    <div className={`text-white space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16 lg:py-20 relative z-10 w-full">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+                    <div className={`text-white space-y-5 md:space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
                       {/* Premium Badge */}
-                      <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl animate-fade-in">
-                        <div className="w-2 h-2 bg-odoo-gold rounded-full mr-3 animate-pulse"></div>
-                        <span className="text-sm font-semibold text-odoo-gold tracking-wide">✨ {t('Premium Odoo Solutions', 'حلول أودو المتميزة')}</span>
+                      <div className="inline-flex items-center px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl animate-fade-in">
+                        <div className="w-2 h-2 bg-odoo-gold rounded-full mr-2 md:mr-3 animate-pulse"></div>
+                        <span className="text-xs md:text-sm font-semibold text-odoo-gold tracking-wide">✨ {t('Premium Odoo Solutions', 'حلول أودو المتميزة')}</span>
                       </div>
                       
                       {/* Main Heading */}
                       <div className="space-y-6">
-                        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] animate-fade-in tracking-tight" style={{
+                        <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold leading-[1.15] animate-fade-in tracking-tight" style={{
                           animationDelay: '0.1s'
                         }}>
                           <span className="bg-gradient-to-r from-white via-white to-white/90 bg-clip-text text-transparent">
@@ -88,7 +88,7 @@ const HeroSection = () => {
                           </span>
                         </h1>
                         
-                        <p className="text-xl md:text-2xl leading-relaxed text-white/80 max-w-2xl animate-fade-in font-light" style={{
+                        <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-white/80 max-w-2xl animate-fade-in font-light" style={{
                           animationDelay: '0.2s'
                         }}>
                           {t(slide.subtitle_en, slide.subtitle_ar)}
@@ -96,44 +96,44 @@ const HeroSection = () => {
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-6 pt-6 animate-fade-in" style={{
+                      <div className="flex flex-col sm:flex-row gap-3 md:gap-6 pt-3 md:pt-6 animate-fade-in" style={{
                         animationDelay: '0.4s'
                       }}>
-                        <Link to="/services" className="group relative bg-gradient-to-r from-odoo-gold to-yellow-400 hover:from-yellow-300 hover:to-odoo-gold text-odoo-purple font-bold py-5 px-10 rounded-2xl shadow-2xl hover:shadow-odoo-gold/30 transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
-                          <span className="relative z-10 text-lg">{t('Explore Services', 'استكشف الخدمات')}</span>
-                          <Arrow className="ml-4 mr-reverse:rtl h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
-                          <div className="absolute inset-0 bg-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <Link to="/services" className="group relative bg-gradient-to-r from-odoo-gold to-yellow-400 hover:from-yellow-300 hover:to-odoo-gold text-odoo-purple font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-2xl hover:shadow-odoo-gold/30 transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
+                          <span className="relative z-10 text-sm md:text-lg">{t('Explore Services', 'استكشف الخدمات')}</span>
+                          <Arrow className="ml-3 md:ml-4 h-5 w-5 md:h-6 md:w-6 group-hover:translate-x-2 transition-transform duration-300" />
+                          <div className="absolute inset-0 bg-white/30 rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </Link>
                         
-                        <Link to="/contact" className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/20 hover:border-white/50 text-white font-bold py-5 px-10 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
-                          <span className="relative z-10 text-lg">{t('Get Started', 'ابدأ الآن')}</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <Link to="/contact" className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/20 hover:border-white/50 text-white font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
+                          <span className="relative z-10 text-sm md:text-lg">{t('Get Started', 'ابدأ الآن')}</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </Link>
                       </div>
                       
                       {/* Enhanced Stats */}
-                      <div className="flex items-center gap-10 pt-10 animate-fade-in" style={{
+                      <div className="flex items-center justify-between md:justify-start gap-4 md:gap-10 pt-6 md:pt-10 animate-fade-in" style={{
                         animationDelay: '0.6s'
                       }}>
                         <div className="text-center group">
-                          <div className="text-4xl font-bold text-odoo-gold mb-2 group-hover:scale-110 transition-transform duration-300">200+</div>
-                          <div className="text-sm text-white/60 uppercase tracking-wider font-medium">{t('Projects Delivered', 'مشاريع منجزة')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">200+</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Projects', 'مشاريع')}</div>
                         </div>
-                        <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                        <div className="w-px h-10 md:h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
                         <div className="text-center group">
-                          <div className="text-4xl font-bold text-odoo-gold mb-2 group-hover:scale-110 transition-transform duration-300">50+</div>
-                          <div className="text-sm text-white/60 uppercase tracking-wider font-medium">{t('Happy Clients', 'عملاء راضون')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">50+</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Clients', 'عملاء')}</div>
                         </div>
-                        <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                        <div className="w-px h-10 md:h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
                         <div className="text-center group">
-                          <div className="text-4xl font-bold text-odoo-gold mb-2 group-hover:scale-110 transition-transform duration-300">5+</div>
-                          <div className="text-sm text-white/60 uppercase tracking-wider font-medium">{t('Years Experience', 'سنوات خبرة')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">5+</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Years', 'سنوات')}</div>
                         </div>
                       </div>
                     </div>
                     
-                    {/* Professional Hero Image */}
-                    <div className={`${dir === 'rtl' ? 'lg:order-1' : ''} flex justify-center relative`}>
+                    {/* Professional Hero Image - hidden on mobile for cleaner layout */}
+                    <div className={`${dir === 'rtl' ? 'lg:order-1' : ''} hidden lg:flex justify-center relative`}>
                       <div className="relative w-full max-w-2xl">
                         {/* Enhanced background effects */}
                         <div className="absolute -inset-8 bg-gradient-to-r from-odoo-gold/15 via-odoo-pink/15 to-odoo-purple/15 rounded-[3rem] blur-3xl animate-pulse"></div>
@@ -171,8 +171,8 @@ const HeroSection = () => {
                   </div>
                   
                   {/* ERP/App Systems Images Grid */}
-                  <div className="mt-20 mb-16">
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 opacity-80">
+                  <div className="mt-8 md:mt-20 mb-8 md:mb-16">
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4 opacity-80">
                       {gridImages.map((src, index) => (
                         <div key={index} className="relative group overflow-hidden rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-500 animate-fade-in hover:scale-110 hover:-translate-y-2" style={{
                           animationDelay: `${0.8 + index * 0.1}s`
