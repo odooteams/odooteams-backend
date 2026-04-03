@@ -112,22 +112,22 @@ const HeroSection = () => {
                       </div>
                       
                       {/* Enhanced Stats */}
-                      <div className="flex items-center gap-10 pt-10 animate-fade-in" style={{
+                      <div className="flex items-center justify-between md:justify-start gap-4 md:gap-10 pt-6 md:pt-10 animate-fade-in" style={{
                         animationDelay: '0.6s'
                       }}>
                         <div className="text-center group">
-                          <div className="text-4xl font-bold text-odoo-gold mb-2 group-hover:scale-110 transition-transform duration-300">200+</div>
-                          <div className="text-sm text-white/60 uppercase tracking-wider font-medium">{t('Projects Delivered', 'مشاريع منجزة')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">200+</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Projects', 'مشاريع')}</div>
                         </div>
-                        <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                        <div className="w-px h-10 md:h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
                         <div className="text-center group">
-                          <div className="text-4xl font-bold text-odoo-gold mb-2 group-hover:scale-110 transition-transform duration-300">50+</div>
-                          <div className="text-sm text-white/60 uppercase tracking-wider font-medium">{t('Happy Clients', 'عملاء راضون')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">50+</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Clients', 'عملاء')}</div>
                         </div>
-                        <div className="w-px h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                        <div className="w-px h-10 md:h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
                         <div className="text-center group">
-                          <div className="text-4xl font-bold text-odoo-gold mb-2 group-hover:scale-110 transition-transform duration-300">5+</div>
-                          <div className="text-sm text-white/60 uppercase tracking-wider font-medium">{t('Years Experience', 'سنوات خبرة')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">5+</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Years', 'سنوات')}</div>
                         </div>
                       </div>
                     </div>
