@@ -171,8 +171,8 @@ const HeroSection = () => {
                   </div>
                   
                   {/* ERP/App Systems Images Grid */}
-                  <div className="mt-20 mb-16">
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 opacity-80">
+                  <div className="mt-8 md:mt-20 mb-8 md:mb-16">
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4 opacity-80">
                       {gridImages.map((src, index) => (
                         <div key={index} className="relative group overflow-hidden rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-500 animate-fade-in hover:scale-110 hover:-translate-y-2" style={{
                           animationDelay: `${0.8 + index * 0.1}s`
