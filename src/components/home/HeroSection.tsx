@@ -88,7 +88,7 @@ const HeroSection = () => {
                           </span>
                         </h1>
                         
-                        <p className="text-xl md:text-2xl leading-relaxed text-white/80 max-w-2xl animate-fade-in font-light" style={{
+                        <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-white/80 max-w-2xl animate-fade-in font-light" style={{
                           animationDelay: '0.2s'
                         }}>
                           {t(slide.subtitle_en, slide.subtitle_ar)}
