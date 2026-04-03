@@ -132,8 +132,8 @@ const HeroSection = () => {
                       </div>
                     </div>
                     
-                    {/* Professional Hero Image */}
-                    <div className={`${dir === 'rtl' ? 'lg:order-1' : ''} flex justify-center relative`}>
+                    {/* Professional Hero Image - hidden on mobile for cleaner layout */}
+                    <div className={`${dir === 'rtl' ? 'lg:order-1' : ''} hidden lg:flex justify-center relative`}>
                       <div className="relative w-full max-w-2xl">
                         {/* Enhanced background effects */}
                         <div className="absolute -inset-8 bg-gradient-to-r from-odoo-gold/15 via-odoo-pink/15 to-odoo-purple/15 rounded-[3rem] blur-3xl animate-pulse"></div>
