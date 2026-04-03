@@ -65,9 +65,9 @@ const HeroSection = () => {
             return (
               <CarouselItem key={slideIndex}>
                 {/* Content */}
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 md:py-16 lg:py-20 relative z-10 w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                    <div className={`text-white space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16 lg:py-20 relative z-10 w-full">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+                    <div className={`text-white space-y-5 md:space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
                       {/* Premium Badge */}
                       <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl animate-fade-in">
                         <div className="w-2 h-2 bg-odoo-gold rounded-full mr-3 animate-pulse"></div>
