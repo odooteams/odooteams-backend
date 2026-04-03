@@ -76,7 +76,7 @@ const HeroSection = () => {
                       
                       {/* Main Heading */}
                       <div className="space-y-6">
-                        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] animate-fade-in tracking-tight" style={{
+                        <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold leading-[1.15] animate-fade-in tracking-tight" style={{
                           animationDelay: '0.1s'
                         }}>
                           <span className="bg-gradient-to-r from-white via-white to-white/90 bg-clip-text text-transparent">
