@@ -34,9 +34,9 @@ const ServiceDetails = () => {
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
       <SEOHead
-        title={`${service.title} - Professional Odoo Service | OdooTeams`}
-        description={`${service.details} Get expert ${service.title.toLowerCase()} services with professional Odoo implementation and support.`}
-        keywords={`${service.title}, Odoo ${service.title.toLowerCase()}, ERP ${service.title.toLowerCase()}, ${service.category}, Odoo implementation`}
+        title={service.seo_title || `${service.title} - Professional Odoo Service | OdooTeams`}
+        description={service.seo_description || `${service.details} Get expert ${service.title.toLowerCase()} services with professional Odoo implementation and support.`}
+        keywords={service.seo_keywords || `${service.title}, Odoo ${service.title.toLowerCase()}, ERP ${service.title.toLowerCase()}, ${service.category}, Odoo implementation`}
         canonicalUrl={`https://odooteams.com/services/${createServiceSlug(service.title)}`}
         structuredData={serviceStructuredData}
         alternateUrls={generateAlternateUrls(`/services/${createServiceSlug(service.title)}`)}
