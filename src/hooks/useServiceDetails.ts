@@ -39,6 +39,7 @@ export const useServiceDetails = () => {
     const empty = {
       id: '0', category: '', title: '', details: '', fullDescription: '',
       benefits: [] as string[], process: [] as ProcessStep[], image: '/placeholder.svg', gallery: [] as string[],
+      seo_title: '', seo_description: '', seo_keywords: '',
     };
     if (!slug || isLoading || rawServices.length === 0) return empty;
 
