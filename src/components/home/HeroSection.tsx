@@ -38,17 +38,17 @@ const HeroSection = () => {
     slide.image5_url,
     slide.image6_url
   ].filter(img => img && img.trim() !== '');
-  return <section className="relative overflow-hidden min-h-screen flex items-center">
+  return <section className="relative overflow-hidden min-h-[100svh] flex items-center">
       {/* Enhanced gradient background with overlay */}
       <div className="absolute inset-0 bg-gradient-hero"></div>
       <div className="absolute inset-0 bg-black/10"></div>
       
-      {/* Floating geometric shapes */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse"></div>
-      <div className="absolute bottom-40 right-20 w-24 h-24 bg-odoo-gold/10 rounded-full blur-2xl animate-pulse" style={{
+      {/* Floating geometric shapes - hidden on mobile for performance */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse hidden md:block"></div>
+      <div className="absolute bottom-40 right-20 w-24 h-24 bg-odoo-gold/10 rounded-full blur-2xl animate-pulse hidden md:block" style={{
       animationDelay: '1s'
     }}></div>
-      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-odoo-pink/10 rounded-full blur-xl animate-pulse" style={{
+      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-odoo-pink/10 rounded-full blur-xl animate-pulse hidden md:block" style={{
       animationDelay: '2s'
     }}></div>
       
