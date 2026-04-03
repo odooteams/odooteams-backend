@@ -81,7 +81,7 @@ const RecentPosts = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
           {resources.map((resource) => (
             <article key={resource.id} className="card group bg-card rounded-xl border border-border/50 overflow-hidden hover:border-primary/50">
               <div className="relative overflow-hidden aspect-video">
