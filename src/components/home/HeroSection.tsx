@@ -96,18 +96,18 @@ const HeroSection = () => {
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-6 pt-6 animate-fade-in" style={{
+                      <div className="flex flex-col sm:flex-row gap-3 md:gap-6 pt-3 md:pt-6 animate-fade-in" style={{
                         animationDelay: '0.4s'
                       }}>
-                        <Link to="/services" className="group relative bg-gradient-to-r from-odoo-gold to-yellow-400 hover:from-yellow-300 hover:to-odoo-gold text-odoo-purple font-bold py-5 px-10 rounded-2xl shadow-2xl hover:shadow-odoo-gold/30 transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
-                          <span className="relative z-10 text-lg">{t('Explore Services', 'استكشف الخدمات')}</span>
-                          <Arrow className="ml-4 mr-reverse:rtl h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
-                          <div className="absolute inset-0 bg-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <Link to="/services" className="group relative bg-gradient-to-r from-odoo-gold to-yellow-400 hover:from-yellow-300 hover:to-odoo-gold text-odoo-purple font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-2xl hover:shadow-odoo-gold/30 transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
+                          <span className="relative z-10 text-sm md:text-lg">{t('Explore Services', 'استكشف الخدمات')}</span>
+                          <Arrow className="ml-3 md:ml-4 h-5 w-5 md:h-6 md:w-6 group-hover:translate-x-2 transition-transform duration-300" />
+                          <div className="absolute inset-0 bg-white/30 rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </Link>
                         
-                        <Link to="/contact" className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/20 hover:border-white/50 text-white font-bold py-5 px-10 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
-                          <span className="relative z-10 text-lg">{t('Get Started', 'ابدأ الآن')}</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <Link to="/contact" className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/20 hover:border-white/50 text-white font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
+                          <span className="relative z-10 text-sm md:text-lg">{t('Get Started', 'ابدأ الآن')}</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </Link>
                       </div>
                       
