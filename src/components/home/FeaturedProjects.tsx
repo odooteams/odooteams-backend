@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import { ArrowRight, ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
@@ -16,7 +16,7 @@ import useWhatsAppShare from '@/hooks/useWhatsAppShare';
 import { useQuery } from '@tanstack/react-query';
 import { projectsQueries } from '@/lib/supabase/queries';
 import { createProjectSlug } from '@/lib/projectUtils';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -294,6 +294,16 @@ const FeaturedProjects = () => {
   const { shareToWhatsApp } = useWhatsAppShare();
   const isMobile = useIsMobile();
   const autoplayPlugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => setActiveSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on('select', onSelect);
+    onSelect();
+    return () => { carouselApi.off('select', onSelect); };
+  }, [carouselApi]);
 
   const { data: rawProjects = [], isLoading: loading } = useQuery({
     queryKey: ['projects', language],
@@ -376,6 +386,7 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
           <div className="relative">
             <Carousel
               plugins={[autoplayPlugin.current]}
+              setApi={setCarouselApi}
               opts={{
                 align: "start",
                 loop: true,
@@ -401,10 +412,19 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
                 ))}
               </CarouselContent>
             </Carousel>
-            {/* Dot indicators */}
+            {/* Active dot indicators */}
             <div className="flex justify-center gap-2 mt-4">
               {projects.map((_, i) => (
-                <div key={i} className="w-2 h-2 rounded-full bg-primary/30" />
+                <button
+                  key={i}
+                  onClick={() => carouselApi?.scrollTo(i)}
+                  className={`rounded-full transition-all duration-300 ${
+                    activeSlide === i
+                      ? 'w-6 h-2 bg-primary'
+                      : 'w-2 h-2 bg-primary/30'
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
               ))}
             </div>
           </div>

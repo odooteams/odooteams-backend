@@ -47,7 +47,7 @@ const TopHeader = () => {
             {contactData?.Email && (
               <a 
                 href={`mailto:${contactData.Email}`}
-                className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
+                className="hidden md:flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
               >
                 <Mail className="h-4 w-4" />
                 <span className="hidden sm:inline">{contactData.Email}</span>
@@ -59,15 +59,15 @@ const TopHeader = () => {
                 className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
               >
                 <Phone className="h-4 w-4" />
-                <span className="hidden sm:inline">{contactData.Call}</span>
+                <span>{contactData.Call}</span>
               </a>
             )}
           </div>
 
           {/* Right side: Social media & Language switcher */}
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
-            {/* Social media */}
-          <div className={`flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
+            {/* Social media - hidden on mobile */}
+          <div className={`hidden md:flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
               {contactData?.WhatsApp && (
                 <a 
                   href={`https://wa.me/${contactData.WhatsApp.replace(/[^0-9]/g, '')}`}
