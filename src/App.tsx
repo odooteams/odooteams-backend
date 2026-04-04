@@ -45,6 +45,7 @@ import AdminBackups from '@/pages/admin/Backups';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
+import PageTransition from '@/components/layout/PageTransition';
 import AdvancedAnalytics from '@/components/analytics/AdvancedAnalytics';
 import VisitorTracker from '@/components/analytics/VisitorTracker';
 
