@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import { ArrowRight, ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
