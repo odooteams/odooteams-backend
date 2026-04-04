@@ -294,6 +294,16 @@ const FeaturedProjects = () => {
   const { shareToWhatsApp } = useWhatsAppShare();
   const isMobile = useIsMobile();
   const autoplayPlugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => setActiveSlide(carouselApi.selectedScrollSnap());
+    carouselApi.on('select', onSelect);
+    onSelect();
+    return () => { carouselApi.off('select', onSelect); };
+  }, [carouselApi]);
 
   const { data: rawProjects = [], isLoading: loading } = useQuery({
     queryKey: ['projects', language],
