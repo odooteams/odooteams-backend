@@ -47,7 +47,7 @@ const Navbar = () => {
   return (
     <header className={`bg-background shadow-md sticky top-0 z-50 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
       <div className="max-w-none mx-auto px-4">
-        <div className="flex items-center py-4">
+        <div className="flex items-center justify-between py-4">
           <div className="flex items-center shrink-0">
             <Link to="/" className="flex items-center">
               <span className="text-2xl font-bold text-primary">Odoo<span className="text-odoo-magenta">Teams</span></span>
