@@ -386,6 +386,7 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
           <div className="relative">
             <Carousel
               plugins={[autoplayPlugin.current]}
+              setApi={setCarouselApi}
               opts={{
                 align: "start",
                 loop: true,
