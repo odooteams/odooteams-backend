@@ -263,6 +263,7 @@ function App() {
             
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </PageTransition>
           <StickyContact />
           <PWAInstallPrompt />
           <Toaster />
