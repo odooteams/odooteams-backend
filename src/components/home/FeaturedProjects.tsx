@@ -16,7 +16,7 @@ import useWhatsAppShare from '@/hooks/useWhatsAppShare';
 import { useQuery } from '@tanstack/react-query';
 import { projectsQueries } from '@/lib/supabase/queries';
 import { createProjectSlug } from '@/lib/projectUtils';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { useIsMobile } from '@/hooks/use-mobile';
 
