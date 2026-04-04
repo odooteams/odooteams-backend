@@ -45,6 +45,7 @@ import AdminBackups from '@/pages/admin/Backups';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
+import PageTransition from '@/components/layout/PageTransition';
 import AdvancedAnalytics from '@/components/analytics/AdvancedAnalytics';
 import VisitorTracker from '@/components/analytics/VisitorTracker';
 
@@ -55,7 +56,8 @@ function App() {
         <div className="App">
           <AdvancedAnalytics />
           <VisitorTracker />
-          <Routes>
+          <PageTransition>
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
@@ -261,6 +263,7 @@ function App() {
             
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </PageTransition>
           <StickyContact />
           <PWAInstallPrompt />
           <Toaster />
