@@ -66,8 +66,8 @@ const TopHeader = () => {
 
           {/* Right side: Social media & Language switcher */}
           <div className={`flex items-center gap-4 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
-            {/* Social media */}
-          <div className={`flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
+            {/* Social media - hidden on mobile */}
+          <div className={`hidden md:flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
               {contactData?.WhatsApp && (
                 <a 
                   href={`https://wa.me/${contactData.WhatsApp.replace(/[^0-9]/g, '')}`}

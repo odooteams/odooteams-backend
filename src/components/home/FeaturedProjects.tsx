@@ -412,10 +412,19 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
                 ))}
               </CarouselContent>
             </Carousel>
-            {/* Dot indicators */}
+            {/* Active dot indicators */}
             <div className="flex justify-center gap-2 mt-4">
               {projects.map((_, i) => (
-                <div key={i} className="w-2 h-2 rounded-full bg-primary/30" />
+                <button
+                  key={i}
+                  onClick={() => carouselApi?.scrollTo(i)}
+                  className={`rounded-full transition-all duration-300 ${
+                    activeSlide === i
+                      ? 'w-6 h-2 bg-primary'
+                      : 'w-2 h-2 bg-primary/30'
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
               ))}
             </div>
           </div>
