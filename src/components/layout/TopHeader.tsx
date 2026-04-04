@@ -47,7 +47,7 @@ const TopHeader = () => {
             {contactData?.Email && (
               <a 
                 href={`mailto:${contactData.Email}`}
-                className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
+                className="hidden md:flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
               >
                 <Mail className="h-4 w-4" />
                 <span className="hidden sm:inline">{contactData.Email}</span>
@@ -59,7 +59,7 @@ const TopHeader = () => {
                 className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
               >
                 <Phone className="h-4 w-4" />
-                <span className="hidden sm:inline">{contactData.Call}</span>
+                <span>{contactData.Call}</span>
               </a>
             )}
           </div>
