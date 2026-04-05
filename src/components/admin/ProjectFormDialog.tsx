@@ -73,7 +73,7 @@ export function ProjectFormDialog({ project, onSuccess }: ProjectFormDialogProps
           <Button><Plus className="h-4 w-4 mr-2" />Add Project</Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{project ? 'Edit Project' : 'Create Project'}</DialogTitle>
         </DialogHeader>

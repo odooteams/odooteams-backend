@@ -109,7 +109,7 @@ export function TimelineFormDialog({ open, onOpenChange, event, onSuccess }: Tim
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{event ? 'Edit Timeline Event' : 'Add Timeline Event'}</DialogTitle>
         </DialogHeader>

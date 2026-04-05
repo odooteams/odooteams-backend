@@ -122,9 +122,18 @@ export type Database = {
           image: string | null
           is_featured: boolean | null
           is_published: boolean | null
+          keywords_ar: string[] | null
+          keywords_en: string[] | null
           published_at: string | null
+          seo_description_ar: string | null
+          seo_description_en: string | null
+          seo_keywords_ar: string | null
+          seo_keywords_en: string | null
+          seo_title_ar: string | null
+          seo_title_en: string | null
           slug: string
           tags: string[] | null
+          tags_ar: string[] | null
           title_ar: string
           title_en: string
           updated_at: string
@@ -144,9 +153,18 @@ export type Database = {
           image?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
+          keywords_ar?: string[] | null
+          keywords_en?: string[] | null
           published_at?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           slug: string
           tags?: string[] | null
+          tags_ar?: string[] | null
           title_ar: string
           title_en: string
           updated_at?: string
@@ -166,9 +184,18 @@ export type Database = {
           image?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
+          keywords_ar?: string[] | null
+          keywords_en?: string[] | null
           published_at?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           slug?: string
           tags?: string[] | null
+          tags_ar?: string[] | null
           title_ar?: string
           title_en?: string
           updated_at?: string

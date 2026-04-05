@@ -65,7 +65,7 @@ export function ResourceFormDialog({ resource, onSuccess }: ResourceFormDialogPr
           <Button><Plus className="h-4 w-4 mr-2" />Add Resource</Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{resource ? 'Edit Resource' : 'Create Resource'}</DialogTitle>
         </DialogHeader>
