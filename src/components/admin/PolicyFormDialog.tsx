@@ -74,7 +74,7 @@ export function PolicyFormDialog({ policy, onSuccess, trigger }: PolicyFormDialo
           )
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{policy ? 'Edit Policy' : 'Create New Policy'}</DialogTitle>
         </DialogHeader>

@@ -59,7 +59,7 @@ export function FAQFormDialog({ faq, onSuccess }: FAQFormDialogProps) {
           <Button><Plus className="h-4 w-4 mr-2" />Add FAQ</Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{faq ? 'Edit FAQ' : 'Create FAQ'}</DialogTitle>
         </DialogHeader>
