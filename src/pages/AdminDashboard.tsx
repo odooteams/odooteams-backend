@@ -19,7 +19,11 @@ import {
   Globe,
   Monitor,
   Smartphone,
-  Tablet
+  Tablet,
+  Sparkles,
+  Clock,
+  CheckCircle2,
+  Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
