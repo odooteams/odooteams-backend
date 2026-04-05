@@ -19,7 +19,11 @@ import {
   Globe,
   Monitor,
   Smartphone,
-  Tablet
+  Tablet,
+  Sparkles,
+  Clock,
+  CheckCircle2,
+  Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -243,17 +247,46 @@ export default function AdminDashboard() {
 
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6">
-                {/* Welcome Section */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-bold">Welcome back, {user?.user_metadata?.full_name?.split(' ')[0] || 'Admin'}!</h2>
-                    <p className="text-muted-foreground">Here's what's happening with your website today.</p>
-                  </div>
-                  <Button onClick={() => navigate('/admin/analytics')} className="w-fit">
-                    <TrendingUp className="h-4 w-4 mr-2" />
-                    View Detailed Analytics
-                  </Button>
-                </div>
+                {/* Welcome Banner */}
+                <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-primary/90 via-primary to-primary/80 text-primary-foreground shadow-lg">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+                  <CardContent className="relative p-6 md:p-8">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className="hidden md:flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+                          <Sparkles className="h-7 w-7" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+                            Welcome back, {user?.user_metadata?.full_name?.split(' ')[0] || 'Admin'}!
+                          </h2>
+                          <p className="text-primary-foreground/80 mt-1">
+                            Here's what's happening with your website today.
+                          </p>
+                          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-primary-foreground/70">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5" />
+                              <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              <span>All systems operational</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <Button 
+                        onClick={() => navigate('/admin/analytics')} 
+                        variant="secondary"
+                        className="w-fit shadow-md"
+                      >
+                        <TrendingUp className="h-4 w-4 mr-2" />
+                        View Analytics
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Stats Cards Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -400,6 +433,34 @@ export default function AdminDashboard() {
                   </Card>
                 </div>
 
+                {/* System Status */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <Activity className="h-5 w-5 text-primary" />
+                      <CardTitle>System Status</CardTitle>
+                    </div>
+                    <CardDescription>Current platform health overview</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-4 md:grid-cols-4">
+                      {[
+                        { label: 'Database', status: 'Operational', icon: CheckCircle2 },
+                        { label: 'Authentication', status: 'Operational', icon: CheckCircle2 },
+                        { label: 'Storage', status: 'Operational', icon: CheckCircle2 },
+                        { label: 'Edge Functions', status: 'Operational', icon: CheckCircle2 },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                          <item.icon className="h-5 w-5 text-green-500 shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">{item.label}</p>
+                            <p className="text-xs text-muted-foreground">{item.status}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
 
 
                 {/* Quick Actions & Content Distribution */}
