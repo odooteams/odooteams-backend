@@ -103,11 +103,11 @@ export function BlogFormDialog({ blog, onSuccess }: BlogFormDialogProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{blog ? 'Edit Blog' : 'Create Blog'}</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <label className="text-sm">Title (EN)</label>
             <Input value={form.title_en} onChange={(e) => handleChange('title_en', e.target.value)} />
@@ -124,21 +124,21 @@ export function BlogFormDialog({ blog, onSuccess }: BlogFormDialogProps) {
             <label className="text-sm">Category (AR)</label>
             <Input value={form.category_ar} onChange={(e) => handleChange('category_ar', e.target.value)} />
           </div>
-          <div className="md:col-span-2">
+          <div>
             <label className="text-sm">Excerpt (EN)</label>
-            <Textarea value={form.excerpt_en || ''} onChange={(e) => handleChange('excerpt_en', e.target.value)} />
+            <Textarea value={form.excerpt_en || ''} onChange={(e) => handleChange('excerpt_en', e.target.value)} rows={2} />
           </div>
-          <div className="md:col-span-2">
+          <div>
             <label className="text-sm">Excerpt (AR)</label>
-            <Textarea value={form.excerpt_ar || ''} onChange={(e) => handleChange('excerpt_ar', e.target.value)} />
+            <Textarea value={form.excerpt_ar || ''} onChange={(e) => handleChange('excerpt_ar', e.target.value)} rows={2} />
           </div>
-          <div className="md:col-span-2">
+          <div>
             <label className="text-sm">Content (EN)</label>
-            <Textarea value={form.content_en} onChange={(e) => handleChange('content_en', e.target.value)} rows={5} />
+            <Textarea value={form.content_en} onChange={(e) => handleChange('content_en', e.target.value)} rows={4} />
           </div>
-          <div className="md:col-span-2">
+          <div>
             <label className="text-sm">Content (AR)</label>
-            <Textarea value={form.content_ar} onChange={(e) => handleChange('content_ar', e.target.value)} rows={5} />
+            <Textarea value={form.content_ar} onChange={(e) => handleChange('content_ar', e.target.value)} rows={4} />
           </div>
           <div>
             <label className="text-sm">Slug</label>
