@@ -400,59 +400,7 @@ export default function AdminDashboard() {
                   </Card>
                 </div>
 
-                {/* Recent Visitors Table */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Visitors</CardTitle>
-                    <CardDescription>Latest website visitors with details</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {loading ? (
-                      <p className="text-muted-foreground">Loading...</p>
-                    ) : stats?.recentVisitors && stats.recentVisitors.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Page</TableHead>
-                              <TableHead>Browser</TableHead>
-                              <TableHead>OS</TableHead>
-                              <TableHead>Device</TableHead>
-                              <TableHead>Time</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {stats.recentVisitors.slice(0, 10).map((visitor, index) => {
-                              const Icon = getDeviceIcon(visitor.device_type);
-                              return (
-                                <TableRow key={index}>
-                                  <TableCell className="font-medium max-w-[200px] truncate">
-                                    {visitor.page_url}
-                                  </TableCell>
-                                  <TableCell>
-                                    <Badge variant="outline">{visitor.browser_name || 'Unknown'}</Badge>
-                                  </TableCell>
-                                  <TableCell>{visitor.os_name || 'Unknown'}</TableCell>
-                                  <TableCell>
-                                    <div className="flex items-center gap-1">
-                                      <Icon className="h-4 w-4" />
-                                      <span className="capitalize">{visitor.device_type || 'desktop'}</span>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="text-muted-foreground">
-                                    {new Date(visitor.created_at).toLocaleString()}
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground">No visitor data yet. Visitors will appear here once tracking begins.</p>
-                    )}
-                  </CardContent>
-                </Card>
+
 
                 {/* Quick Actions & Content Distribution */}
                 <div className="grid gap-6 md:grid-cols-3">
