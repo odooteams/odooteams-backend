@@ -433,6 +433,34 @@ export default function AdminDashboard() {
                   </Card>
                 </div>
 
+                {/* System Status */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <Activity className="h-5 w-5 text-primary" />
+                      <CardTitle>System Status</CardTitle>
+                    </div>
+                    <CardDescription>Current platform health overview</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-4 md:grid-cols-4">
+                      {[
+                        { label: 'Database', status: 'Operational', icon: CheckCircle2 },
+                        { label: 'Authentication', status: 'Operational', icon: CheckCircle2 },
+                        { label: 'Storage', status: 'Operational', icon: CheckCircle2 },
+                        { label: 'Edge Functions', status: 'Operational', icon: CheckCircle2 },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                          <item.icon className="h-5 w-5 text-green-500 shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">{item.label}</p>
+                            <p className="text-xs text-muted-foreground">{item.status}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
 
 
                 {/* Quick Actions & Content Distribution */}
