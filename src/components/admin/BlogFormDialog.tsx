@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from './RichTextEditor';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -241,11 +242,11 @@ export function BlogFormDialog({ blog, onSuccess }: BlogFormDialogProps) {
               </div>
               <div>
                 <label className="text-sm font-medium">Content (EN) *</label>
-                <Textarea value={form.content_en} onChange={(e) => handleChange('content_en', e.target.value)} rows={5} />
+                <RichTextEditor value={form.content_en} onChange={(val) => handleChange('content_en', val)} placeholder="Write your blog content in English..." />
               </div>
               <div>
                 <label className="text-sm font-medium">Content (AR) *</label>
-                <Textarea value={form.content_ar} onChange={(e) => handleChange('content_ar', e.target.value)} rows={5} />
+                <RichTextEditor value={form.content_ar} onChange={(val) => handleChange('content_ar', val)} placeholder="اكتب محتوى المدونة بالعربية..." dir="rtl" />
               </div>
             </div>
           </TabsContent>
