@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Pencil } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Pencil, Sparkles, Search } from 'lucide-react';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 
@@ -13,6 +15,46 @@ interface ResourceFormDialogProps {
   resource?: any;
   onSuccess: () => void;
 }
+
+const DEFAULT_KEYWORDS_EN = [
+  'Odoo Tutorial', 'Odoo Guide', 'ERP Learning', 'Odoo Modules',
+  'Odoo Configuration', 'Odoo Development', 'Business Process',
+  'Accounting Guide', 'Inventory Tutorial', 'CRM Setup',
+  'HR Management', 'Point of Sale', 'E-Commerce Setup',
+  'Odoo Customization', 'Technical Documentation', 'Best Practices',
+];
+
+const DEFAULT_KEYWORDS_AR = [
+  'شرح أودو', 'دليل أودو', 'تعلم ERP', 'وحدات أودو',
+  'إعداد أودو', 'تطوير أودو', 'عمليات الأعمال',
+  'دليل المحاسبة', 'شرح المخزون', 'إعداد CRM',
+  'إدارة الموارد البشرية', 'نقاط البيع', 'إعداد التجارة الإلكترونية',
+  'تخصيص أودو', 'التوثيق التقني', 'أفضل الممارسات',
+];
+
+const SEO_TEMPLATES = [
+  {
+    name: 'Learning Resource',
+    title_en: '{title} | Learn & Master',
+    title_ar: '{title} | تعلم وأتقن',
+    desc_en: 'Learn everything about {title}. Comprehensive guide with step-by-step instructions and best practices.',
+    desc_ar: 'تعلم كل شيء عن {title}. دليل شامل مع تعليمات خطوة بخطوة وأفضل الممارسات.',
+  },
+  {
+    name: 'Tutorial Guide',
+    title_en: '{title} - Complete Tutorial',
+    title_ar: '{title} - دليل تعليمي شامل',
+    desc_en: 'Complete tutorial on {title}. Follow our expert guide to get started quickly and efficiently.',
+    desc_ar: 'دليل تعليمي كامل حول {title}. اتبع دليل الخبراء لتبدأ بسرعة وكفاءة.',
+  },
+  {
+    name: 'Documentation',
+    title_en: '{title} - Documentation & Reference',
+    title_ar: '{title} - التوثيق والمرجع',
+    desc_en: 'Official documentation for {title}. Find detailed technical reference and implementation guides.',
+    desc_ar: 'التوثيق الرسمي لـ {title}. اعثر على المرجع التقني التفصيلي وأدلة التنفيذ.',
+  },
+];
 
 export function ResourceFormDialog({ resource, onSuccess }: ResourceFormDialogProps) {
   const [open, setOpen] = useState(false);
@@ -32,18 +74,59 @@ export function ResourceFormDialog({ resource, onSuccess }: ResourceFormDialogPr
     download_url: resource?.download_url || '',
     published_date: resource?.published_date || new Date().toISOString().split('T')[0],
     is_active: resource?.is_active ?? true,
+    seo_title_en: resource?.seo_title_en || '',
+    seo_title_ar: resource?.seo_title_ar || '',
+    seo_description_en: resource?.seo_description_en || '',
+    seo_description_ar: resource?.seo_description_ar || '',
+    seo_keywords_en: resource?.seo_keywords_en || '',
+    seo_keywords_ar: resource?.seo_keywords_ar || '',
   });
+
+  const [selectedKeywordsEn, setSelectedKeywordsEn] = useState<string[]>([]);
+  const [selectedKeywordsAr, setSelectedKeywordsAr] = useState<string[]>([]);
+
+  const toggleKeyword = (list: string[], setList: (v: string[]) => void, item: string) => {
+    setList(list.includes(item) ? list.filter(i => i !== item) : [...list, item]);
+  };
+
+  const generateSlug = (text: string) =>
+    text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+
+  const applySeoTemplate = (template: typeof SEO_TEMPLATES[0]) => {
+    const titleEn = formData.title_en || 'Resource Title';
+    const titleAr = formData.title_ar || 'عنوان المورد';
+    setFormData(prev => ({
+      ...prev,
+      seo_title_en: template.title_en.replace('{title}', titleEn),
+      seo_title_ar: template.title_ar.replace('{title}', titleAr),
+      seo_description_en: template.desc_en.replace('{title}', titleEn),
+      seo_description_ar: template.desc_ar.replace('{title}', titleAr),
+      seo_keywords_en: selectedKeywordsEn.join(', '),
+      seo_keywords_ar: selectedKeywordsAr.join(', '),
+    }));
+    toast.success(`Applied "${template.name}" SEO template`);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
+      const submitData = {
+        ...formData,
+        seo_title_en: formData.seo_title_en || null,
+        seo_title_ar: formData.seo_title_ar || null,
+        seo_description_en: formData.seo_description_en || null,
+        seo_description_ar: formData.seo_description_ar || null,
+        seo_keywords_en: formData.seo_keywords_en || null,
+        seo_keywords_ar: formData.seo_keywords_ar || null,
+      };
+
       if (resource) {
-        await contentManagement.updateLearnResource(resource.id, formData);
+        await contentManagement.updateLearnResource(resource.id, submitData);
         toast.success('Resource updated successfully');
       } else {
-        await contentManagement.createLearnResource(formData);
+        await contentManagement.createLearnResource(submitData);
         toast.success('Resource created successfully');
       }
       setOpen(false);
@@ -69,159 +152,101 @@ export function ResourceFormDialog({ resource, onSuccess }: ResourceFormDialogPr
         <DialogHeader>
           <DialogTitle>{resource ? 'Edit Resource' : 'Create Resource'}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="title_en">Title (English)</Label>
-              <Input
-                id="title_en"
-                value={formData.title_en}
-                onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="title_ar">Title (Arabic)</Label>
-              <Input
-                id="title_ar"
-                value={formData.title_ar}
-                onChange={(e) => setFormData({ ...formData, title_ar: e.target.value })}
-                required
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="category_en">Category (English)</Label>
-              <Input
-                id="category_en"
-                value={formData.category_en}
-                onChange={(e) => setFormData({ ...formData, category_en: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="category_ar">Category (Arabic)</Label>
-              <Input
-                id="category_ar"
-                value={formData.category_ar}
-                onChange={(e) => setFormData({ ...formData, category_ar: e.target.value })}
-                required
-              />
-            </div>
-          </div>
+        <Tabs defaultValue="content" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="content">Content</TabsTrigger>
+            <TabsTrigger value="seo">SEO & Keywords</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="main_header_en">Main Header (English)</Label>
-              <Input
-                id="main_header_en"
-                value={formData.main_header_en}
-                onChange={(e) => setFormData({ ...formData, main_header_en: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="main_header_ar">Main Header (Arabic)</Label>
-              <Input
-                id="main_header_ar"
-                value={formData.main_header_ar}
-                onChange={(e) => setFormData({ ...formData, main_header_ar: e.target.value })}
-                required
-              />
-            </div>
-          </div>
+          <TabsContent value="content">
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Title (EN)</Label><Input value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} required /></div>
+                <div><Label>Title (AR)</Label><Input value={formData.title_ar} onChange={(e) => setFormData({ ...formData, title_ar: e.target.value })} required /></div>
+                <div><Label>Category (EN)</Label><Input value={formData.category_en} onChange={(e) => setFormData({ ...formData, category_en: e.target.value })} required /></div>
+                <div><Label>Category (AR)</Label><Input value={formData.category_ar} onChange={(e) => setFormData({ ...formData, category_ar: e.target.value })} required /></div>
+                <div><Label>Main Header (EN)</Label><Input value={formData.main_header_en} onChange={(e) => setFormData({ ...formData, main_header_en: e.target.value })} required /></div>
+                <div><Label>Main Header (AR)</Label><Input value={formData.main_header_ar} onChange={(e) => setFormData({ ...formData, main_header_ar: e.target.value })} required /></div>
+                <div><Label>Author (EN)</Label><Input value={formData.author_en} onChange={(e) => setFormData({ ...formData, author_en: e.target.value })} /></div>
+                <div><Label>Author (AR)</Label><Input value={formData.author_ar} onChange={(e) => setFormData({ ...formData, author_ar: e.target.value })} /></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Contents (EN)</Label><Textarea value={formData.contents_en} onChange={(e) => setFormData({ ...formData, contents_en: e.target.value })} required rows={5} /></div>
+                <div><Label>Contents (AR)</Label><Textarea value={formData.contents_ar} onChange={(e) => setFormData({ ...formData, contents_ar: e.target.value })} required rows={5} dir="rtl" /></div>
+              </div>
+            </form>
+          </TabsContent>
 
-          <div className="grid grid-cols-2 gap-4">
+          <TabsContent value="seo" className="space-y-4 mt-4">
             <div>
-              <Label htmlFor="author_en">Author (English)</Label>
-              <Input
-                id="author_en"
-                value={formData.author_en}
-                onChange={(e) => setFormData({ ...formData, author_en: e.target.value })}
-              />
+              <label className="text-sm font-medium flex items-center gap-2 mb-2">
+                <Sparkles className="h-4 w-4 text-primary" /> Quick SEO Templates
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {SEO_TEMPLATES.map((t) => (
+                  <Button key={t.name} type="button" variant="outline" size="sm" className="justify-start text-xs h-auto py-2" onClick={() => applySeoTemplate(t)}>
+                    <Sparkles className="h-3 w-3 mr-1.5 shrink-0 text-primary" />{t.name}
+                  </Button>
+                ))}
+              </div>
             </div>
-            <div>
-              <Label htmlFor="author_ar">Author (Arabic)</Label>
-              <Input
-                id="author_ar"
-                value={formData.author_ar}
-                onChange={(e) => setFormData({ ...formData, author_ar: e.target.value })}
-              />
+
+            <div className="p-3 border rounded-lg bg-muted/30">
+              <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                <Search className="h-3 w-3" /> Google Search Preview (EN)
+              </p>
+              <p className="text-sm text-[hsl(var(--primary))] font-medium truncate">{formData.seo_title_en || formData.title_en || 'Resource Title'}</p>
+              <p className="text-xs text-muted-foreground truncate">yoursite.com/learn/{generateSlug(formData.title_en || 'resource')}</p>
+              <p className="text-xs text-muted-foreground line-clamp-2">{formData.seo_description_en || 'Resource description...'}</p>
+              <p className="text-xs mt-1 text-muted-foreground">Title: {(formData.seo_title_en || '').length}/60 • Desc: {(formData.seo_description_en || '').length}/160</p>
             </div>
-          </div>
 
-          <div>
-            <Label htmlFor="contents_en">Contents (English)</Label>
-            <Textarea
-              id="contents_en"
-              value={formData.contents_en}
-              onChange={(e) => setFormData({ ...formData, contents_en: e.target.value })}
-              required
-              rows={6}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="contents_ar">Contents (Arabic)</Label>
-            <Textarea
-              id="contents_ar"
-              value={formData.contents_ar}
-              onChange={(e) => setFormData({ ...formData, contents_ar: e.target.value })}
-              required
-              rows={6}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              />
+              <label className="text-sm font-medium flex items-center gap-2 mb-2">Keywords (EN) <Badge variant="secondary" className="text-xs">{selectedKeywordsEn.length} selected</Badge></label>
+              <div className="flex flex-wrap gap-1.5 p-3 border rounded-lg bg-muted/30 max-h-28 overflow-y-auto">
+                {DEFAULT_KEYWORDS_EN.map((kw) => (
+                  <Badge key={kw} variant={selectedKeywordsEn.includes(kw) ? 'default' : 'outline'} className="cursor-pointer text-xs" onClick={() => toggleKeyword(selectedKeywordsEn, setSelectedKeywordsEn, kw)}>{kw}</Badge>
+                ))}
+              </div>
             </div>
             <div>
-              <Label htmlFor="download_url">Download URL</Label>
-              <Input
-                id="download_url"
-                value={formData.download_url}
-                onChange={(e) => setFormData({ ...formData, download_url: e.target.value })}
-              />
+              <label className="text-sm font-medium flex items-center gap-2 mb-2">Keywords (AR) <Badge variant="secondary" className="text-xs">{selectedKeywordsAr.length} selected</Badge></label>
+              <div className="flex flex-wrap gap-1.5 p-3 border rounded-lg bg-muted/30 max-h-28 overflow-y-auto" dir="rtl">
+                {DEFAULT_KEYWORDS_AR.map((kw) => (
+                  <Badge key={kw} variant={selectedKeywordsAr.includes(kw) ? 'default' : 'outline'} className="cursor-pointer text-xs" onClick={() => toggleKeyword(selectedKeywordsAr, setSelectedKeywordsAr, kw)}>{kw}</Badge>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="published_date">Published Date</Label>
-              <Input
-                id="published_date"
-                type="date"
-                value={formData.published_date}
-                onChange={(e) => setFormData({ ...formData, published_date: e.target.value })}
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>SEO Title (EN)</Label><Input value={formData.seo_title_en} onChange={(e) => setFormData({ ...formData, seo_title_en: e.target.value })} maxLength={60} /></div>
+              <div><Label>SEO Title (AR)</Label><Input value={formData.seo_title_ar} onChange={(e) => setFormData({ ...formData, seo_title_ar: e.target.value })} dir="rtl" maxLength={60} /></div>
+              <div><Label>SEO Description (EN)</Label><Textarea value={formData.seo_description_en} onChange={(e) => setFormData({ ...formData, seo_description_en: e.target.value })} rows={2} maxLength={160} /></div>
+              <div><Label>SEO Description (AR)</Label><Textarea value={formData.seo_description_ar} onChange={(e) => setFormData({ ...formData, seo_description_ar: e.target.value })} dir="rtl" rows={2} maxLength={160} /></div>
+              <div><Label>SEO Keywords (EN)</Label><Input value={formData.seo_keywords_en} onChange={(e) => setFormData({ ...formData, seo_keywords_en: e.target.value })} /></div>
+              <div><Label>SEO Keywords (AR)</Label><Input value={formData.seo_keywords_ar} onChange={(e) => setFormData({ ...formData, seo_keywords_ar: e.target.value })} dir="rtl" /></div>
             </div>
-            <div className="flex items-center gap-2 pt-8">
-              <Switch
-                id="is_active"
-                checked={formData.is_active}
-                onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
-              />
-              <Label htmlFor="is_active">Active</Label>
-            </div>
-          </div>
+          </TabsContent>
 
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : resource ? 'Update' : 'Create'}
-            </Button>
-          </div>
-        </form>
+          <TabsContent value="settings" className="space-y-4 mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label>Image URL</Label><Input value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} /></div>
+              <div><Label>Download URL</Label><Input value={formData.download_url} onChange={(e) => setFormData({ ...formData, download_url: e.target.value })} /></div>
+              <div><Label>Published Date</Label><Input type="date" value={formData.published_date} onChange={(e) => setFormData({ ...formData, published_date: e.target.value })} /></div>
+              <div className="flex items-center gap-2 pt-8">
+                <Switch id="is_active" checked={formData.is_active} onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })} />
+                <Label htmlFor="is_active">Active</Label>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-end gap-2 pt-2 border-t">
+          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={(e) => handleSubmit(e as any)} disabled={loading}>{loading ? 'Saving...' : resource ? 'Update' : 'Create'}</Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

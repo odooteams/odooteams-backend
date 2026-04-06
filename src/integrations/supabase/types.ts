@@ -352,6 +352,12 @@ export type Database = {
           main_header_ar: string
           main_header_en: string
           published_date: string | null
+          seo_description_ar: string | null
+          seo_description_en: string | null
+          seo_keywords_ar: string | null
+          seo_keywords_en: string | null
+          seo_title_ar: string | null
+          seo_title_en: string | null
           title_ar: string
           title_en: string
           updated_at: string
@@ -373,6 +379,12 @@ export type Database = {
           main_header_ar: string
           main_header_en: string
           published_date?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           title_ar: string
           title_en: string
           updated_at?: string
@@ -394,6 +406,12 @@ export type Database = {
           main_header_ar?: string
           main_header_en?: string
           published_date?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           title_ar?: string
           title_en?: string
           updated_at?: string
@@ -533,6 +551,12 @@ export type Database = {
           processing_steps_ar: string | null
           processing_steps_en: string | null
           project_url: string | null
+          seo_description_ar: string | null
+          seo_description_en: string | null
+          seo_keywords_ar: string | null
+          seo_keywords_en: string | null
+          seo_title_ar: string | null
+          seo_title_en: string | null
           technologies: string[] | null
           title_ar: string
           title_en: string
@@ -555,6 +579,12 @@ export type Database = {
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
           project_url?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           technologies?: string[] | null
           title_ar: string
           title_en: string
@@ -577,6 +607,12 @@ export type Database = {
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
           project_url?: string | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_keywords_ar?: string | null
+          seo_keywords_en?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
           technologies?: string[] | null
           title_ar?: string
           title_en?: string
