@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { ImageUpload } from './ImageUpload';
 
 interface ServiceFormDialogProps {
   service?: any;
@@ -233,8 +234,8 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="image">Image URL</Label>
-                  <Input id="image" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} />
+                  <Label htmlFor="image">Image</Label>
+                  <ImageUpload value={formData.image} onChange={(url) => setFormData({ ...formData, image: url })} folder="services" />
                 </div>
                 <div>
                   <Label htmlFor="price">Price</Label>
