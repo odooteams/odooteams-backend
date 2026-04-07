@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Pencil, Sparkles, Search } from 'lucide-react';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
+import { ImageUpload } from './ImageUpload';
 
 interface ResourceFormDialogProps {
   resource?: any;
