@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Pencil, Sparkles, Search } from 'lucide-react';
+import { ImageUpload } from './ImageUpload';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 
