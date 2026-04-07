@@ -450,8 +450,8 @@ export function BlogFormDialog({ blog, onSuccess }: BlogFormDialogProps) {
                 <Input value={form.slug} onChange={(e) => handleChange('slug', e.target.value)} placeholder="auto-generated-from-title" />
               </div>
               <div>
-                <label className="text-sm font-medium">Image URL</label>
-                <Input value={form.image || ''} onChange={(e) => handleChange('image', e.target.value)} placeholder="https://..." />
+                <label className="text-sm font-medium">Featured Image</label>
+                <ImageUpload value={form.image || ''} onChange={(url) => handleChange('image', url)} folder="blogs" />
               </div>
             </div>
             <div className="flex items-center gap-6 pt-2">
