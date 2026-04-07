@@ -17,6 +17,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import { createLocalBusinessStructuredData } from '@/components/seo/StructuredData';
 import { useAutomaticSitemapGeneration } from '@/components/seo/SitemapGenerator';
 import { generateAlternateUrls } from '@/lib/canonicalUtils';
+import { ScrollReveal } from '@/components/common/ScrollReveal';
 
 const Index = () => {
   const { dir, t } = useLanguage();
@@ -54,21 +55,31 @@ const Index = () => {
         <section id="hero">
           <HeroSection />
         </section>
-        <section id="services">
-          <ServicesSlider />
-        </section>
-        <section id="about">
-          <AboutPreview />
-        </section>
-        <section id="projects">
-          <FeaturedProjects />
-        </section>
-        <section id="blog">
-          <RecentPosts />
-        </section>
-        <section id="testimonials">
-          <TestimonialsSlider />
-        </section>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section id="services">
+            <ServicesSlider />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700} delay={100}>
+          <section id="about">
+            <AboutPreview />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="zoom-in" duration={700}>
+          <section id="projects">
+            <FeaturedProjects />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section id="blog">
+            <RecentPosts />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700} delay={100}>
+          <section id="testimonials">
+            <TestimonialsSlider />
+          </section>
+        </ScrollReveal>
       </main>
       <StickyContact />
       <Footer />
