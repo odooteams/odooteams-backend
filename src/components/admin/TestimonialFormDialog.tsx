@@ -223,14 +223,8 @@ export function TestimonialFormDialog({ open, onOpenChange, testimonial, onSucce
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="image">Image URL (optional)</Label>
-              <Input
-                id="image"
-                type="url"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://example.com/image.jpg"
-              />
+              <Label>Image (optional)</Label>
+              <ImageUpload value={formData.image} onChange={(url) => setFormData({ ...formData, image: url })} folder="testimonials" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="rating">Rating (1-5)</Label>

@@ -233,7 +233,7 @@ export function ResourceFormDialog({ resource, onSuccess }: ResourceFormDialogPr
 
           <TabsContent value="settings" className="space-y-4 mt-4">
             <div className="grid grid-cols-2 gap-4">
-              <div><Label>Image URL</Label><Input value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} /></div>
+              <div><Label>Image</Label><ImageUpload value={formData.image} onChange={(url) => setFormData({ ...formData, image: url })} folder="resources" /></div>
               <div><Label>Download URL</Label><Input value={formData.download_url} onChange={(e) => setFormData({ ...formData, download_url: e.target.value })} /></div>
               <div><Label>Published Date</Label><Input type="date" value={formData.published_date} onChange={(e) => setFormData({ ...formData, published_date: e.target.value })} /></div>
               <div className="flex items-center gap-2 pt-8">
