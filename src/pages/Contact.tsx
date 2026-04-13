@@ -14,6 +14,7 @@ import ContactFAQ from '@/components/contact/ContactFAQ';
 import SEOHead from '@/components/seo/SEOHead';
 import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
 import { generateAlternateUrls } from '@/lib/canonicalUtils';
+import { ScrollReveal } from '@/components/common/ScrollReveal';
 
 const Contact = () => {
   const { dir } = useLanguage();
@@ -36,15 +37,23 @@ const Contact = () => {
       <Navbar />
       <main>
         <ContactHero />
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <ContactForm />
-              <ContactInfo />
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section className="py-16">
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <ScrollReveal variant="fade-right" duration={600}>
+                  <ContactForm />
+                </ScrollReveal>
+                <ScrollReveal variant="fade-left" duration={600} delay={100}>
+                  <ContactInfo />
+                </ScrollReveal>
+              </div>
             </div>
-          </div>
-        </section>
-        <ContactFAQ />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <ContactFAQ />
+        </ScrollReveal>
       </main>
       <StickyContact />
       <Footer />

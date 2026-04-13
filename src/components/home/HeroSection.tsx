@@ -11,6 +11,13 @@ const HeroSection = () => {
   const { sliderData, loading, error } = useSlider();
   const autoplayPlugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Fallback data when loading or error
   const fallbackData = {
@@ -39,17 +46,17 @@ const HeroSection = () => {
     slide.image6_url
   ].filter(img => img && img.trim() !== '');
   return <section className="relative overflow-hidden min-h-[100svh] flex items-center">
-      {/* Enhanced gradient background with overlay */}
-      <div className="absolute inset-0 bg-gradient-hero"></div>
+      {/* Parallax gradient background */}
+      <div className="absolute inset-0 bg-gradient-hero" style={{ transform: `translateY(${scrollY * 0.3}px)` }}></div>
       <div className="absolute inset-0 bg-black/10"></div>
       
-      {/* Floating geometric shapes - hidden on mobile for performance */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse hidden md:block"></div>
+      {/* Floating geometric shapes with parallax - hidden on mobile for performance */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse hidden md:block" style={{ transform: `translateY(${scrollY * 0.15}px)` }}></div>
       <div className="absolute bottom-40 right-20 w-24 h-24 bg-odoo-gold/10 rounded-full blur-2xl animate-pulse hidden md:block" style={{
-      animationDelay: '1s'
+      animationDelay: '1s', transform: `translateY(${scrollY * 0.2}px)`
     }}></div>
       <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-odoo-pink/10 rounded-full blur-xl animate-pulse hidden md:block" style={{
-      animationDelay: '2s'
+      animationDelay: '2s', transform: `translateY(${scrollY * 0.1}px)`
     }}></div>
       
       {/* Carousel Container */}

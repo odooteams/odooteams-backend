@@ -13,25 +13,16 @@ import { useServices } from '@/hooks/useServices';
 import SEOHead from '@/components/seo/SEOHead';
 import { createServiceStructuredData, createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
 import { generateAlternateUrls } from '@/lib/canonicalUtils';
+import { ScrollReveal } from '@/components/common/ScrollReveal';
 
 const Services = () => {
   const { dir, t } = useLanguage();
   const { 
-    services,
-    searchTerm,
-    setSearchTerm,
-    categoryFilter,
-    setCategoryFilter,
-    isGridView,
-    setIsGridView,
-    categories,
-    currentPage,
-    setCurrentPage,
-    totalPages,
-    handleWhatsAppRequest
+    services, searchTerm, setSearchTerm,
+    categoryFilter, setCategoryFilter, isGridView, setIsGridView,
+    categories, currentPage, setCurrentPage, totalPages, handleWhatsAppRequest
   } = useServices();
 
-  // Create structured data for services
   const servicesStructuredData = [
     createBreadcrumbStructuredData([
       { name: 'Home', url: 'https://odooteams.com' },
@@ -51,7 +42,7 @@ const Services = () => {
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
       <SEOHead
-        title={`Odoo Services - Professional ERP Implementation & Customization | OdooTeams`}
+        title="Odoo Services - Professional ERP Implementation & Customization | OdooTeams"
         description="Explore our comprehensive Odoo ERP services including implementation, customization, training, and support. Get expert Odoo solutions tailored to your business needs."
         keywords="Odoo services, ERP implementation, Odoo customization, Odoo training, Odoo support, business automation, Odoo modules, ERP consulting"
         structuredData={servicesStructuredData}
@@ -60,7 +51,6 @@ const Services = () => {
       <TopHeader />
       <Navbar />
       <main>
-        {/* Hero section with search */}
         <HeroSection 
           searchTerm={searchTerm}
           categoryFilter={categoryFilter || "all"}
@@ -70,31 +60,29 @@ const Services = () => {
           onCategoryChange={(value) => setCategoryFilter(value === "all" ? "" : value)}
           onViewChange={setIsGridView}
         />
-
-        {/* Services grid/list */}
-        <section className="py-16 animate-fade-in">
-          <div className="container mx-auto px-4">
-            <ServicesList 
-              services={services}
-              isGridView={isGridView}
-              onRequestViaWhatsApp={handleWhatsAppRequest}
-            />
-            
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section className="py-16">
+            <div className="container mx-auto px-4">
+              <ServicesList 
+                services={services}
+                isGridView={isGridView}
+                onRequestViaWhatsApp={handleWhatsAppRequest}
               />
-            )}
-          </div>
-        </section>
+              {totalPages > 1 && (
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              )}
+            </div>
+          </section>
+        </ScrollReveal>
       </main>
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
-      <div className="h-16 md:hidden" /> {/* Spacer for bottom navigation */}
+      <div className="h-16 md:hidden" />
     </div>
   );
 };

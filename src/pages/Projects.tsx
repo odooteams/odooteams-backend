@@ -13,6 +13,7 @@ import { useProjects } from '@/hooks/useProjects';
 import SEOHead from '@/components/seo/SEOHead';
 import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
 import { generateAlternateUrls } from '@/lib/canonicalUtils';
+import { ScrollReveal } from '@/components/common/ScrollReveal';
 
 const Projects = () => {
   const { dir } = useLanguage();
@@ -48,25 +49,27 @@ const Projects = () => {
           onCategoryChange={(value) => setCategoryFilter(value === "all" ? "" : value)}
           onViewChange={setIsGridView}
         />
-        <section className="py-20 bg-gradient-to-b from-background to-muted/20">
-          <div className="container mx-auto px-4">
-            <ProjectsList 
-              projects={projects}
-              isGridView={isGridView}
-              onContactRequest={handleContactRequest}
-              loading={loading}
-            />
-            {totalPages > 1 && (
-              <div className="mt-16">
-                <Pagination 
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={setCurrentPage}
-                />
-              </div>
-            )}
-          </div>
-        </section>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section className="py-20 bg-gradient-to-b from-background to-muted/20">
+            <div className="container mx-auto px-4">
+              <ProjectsList 
+                projects={projects}
+                isGridView={isGridView}
+                onContactRequest={handleContactRequest}
+                loading={loading}
+              />
+              {totalPages > 1 && (
+                <div className="mt-16">
+                  <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        </ScrollReveal>
       </main>
       <Footer />
       <BottomNavigation />
