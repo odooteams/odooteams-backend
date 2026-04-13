@@ -15,6 +15,7 @@ import CtaSection from '@/components/about/CtaSection';
 import SEOHead from '@/components/seo/SEOHead';
 import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
 import { generateAlternateUrls } from '@/lib/canonicalUtils';
+import { ScrollReveal } from '@/components/common/ScrollReveal';
 
 const About = () => {
   const { dir } = useLanguage();
@@ -37,11 +38,21 @@ const About = () => {
       <Navbar />
       <main>
         <AboutHero />
-        <WhoWeAreSection />
-        <StatsSection />
-        <TimelineSection />
-        <TeamSection />
-        <CtaSection />
+        <ScrollReveal variant="fade-up" duration={700}>
+          <WhoWeAreSection />
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700} delay={100}>
+          <StatsSection />
+        </ScrollReveal>
+        <ScrollReveal variant="fade-left" duration={700}>
+          <TimelineSection />
+        </ScrollReveal>
+        <ScrollReveal variant="zoom-in" duration={700}>
+          <TeamSection />
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <CtaSection />
+        </ScrollReveal>
       </main>
       <Footer />
       <BottomNavigation />
