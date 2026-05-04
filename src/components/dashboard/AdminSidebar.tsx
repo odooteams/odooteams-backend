@@ -37,8 +37,9 @@ import {
   Search as SearchIcon
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 interface MenuItem {
   title: string;
