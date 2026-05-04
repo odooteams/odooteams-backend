@@ -37,8 +37,9 @@ import {
   Search as SearchIcon
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 interface MenuItem {
   title: string;
@@ -115,7 +116,42 @@ export function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
-  
+
+  // Auto-fit: scale sidebar contents so everything fits without scrolling
+  const [autoFit, setAutoFit] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('admin-sidebar-autofit') !== 'false';
+  });
+  const contentRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    localStorage.setItem('admin-sidebar-autofit', String(autoFit));
+  }, [autoFit]);
+
+  useLayoutEffect(() => {
+    if (!autoFit || isCollapsed) { setScale(1); return; }
+    const recalc = () => {
+      const container = contentRef.current;
+      const inner = innerRef.current;
+      if (!container || !inner) return;
+      // Reset to natural size before measuring
+      inner.style.transform = 'none';
+      inner.style.width = '100%';
+      const available = container.clientHeight;
+      const needed = inner.scrollHeight;
+      const next = needed > available ? Math.max(0.6, available / needed) : 1;
+      setScale(next);
+    };
+    recalc();
+    const ro = new ResizeObserver(recalc);
+    if (contentRef.current) ro.observe(contentRef.current);
+    if (innerRef.current) ro.observe(innerRef.current);
+    window.addEventListener('resize', recalc);
+    return () => { ro.disconnect(); window.removeEventListener('resize', recalc); };
+  }, [autoFit, isCollapsed]);
+
   // Track which groups are open
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
     // Initialize all groups as open
@@ -148,7 +184,31 @@ export function AdminSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
-      <SidebarContent className="pt-1 pb-1 gap-0 overflow-hidden">
+      <SidebarContent
+        ref={contentRef}
+        className={cn('pt-1 pb-1 gap-0', autoFit && !isCollapsed ? 'overflow-hidden' : 'overflow-y-auto')}
+      >
+        <div
+          ref={innerRef}
+          style={
+            autoFit && !isCollapsed && scale < 1
+              ? { transform: `scale(${scale})`, transformOrigin: 'top left', width: `${100 / scale}%` }
+              : undefined
+          }
+        >
+        {!isCollapsed && (
+          <div className="flex items-center justify-end px-2 pb-1">
+            <button
+              type="button"
+              onClick={() => setAutoFit(v => !v)}
+              title={autoFit ? 'Disable auto-fit' : 'Auto-fit sidebar to height'}
+              className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors px-2 py-0.5 rounded"
+            >
+              {autoFit ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+              <span>{autoFit ? 'Auto-fit' : 'Scroll'}</span>
+            </button>
+          </div>
+        )}
         {menuGroups.map((group) => (
           <SidebarGroup key={group.label} className="py-0">
             {isCollapsed ? (
@@ -238,6 +298,7 @@ export function AdminSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
