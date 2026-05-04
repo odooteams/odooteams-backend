@@ -184,7 +184,31 @@ export function AdminSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
-      <SidebarContent className="pt-1 pb-1 gap-0 overflow-hidden">
+      <SidebarContent
+        ref={contentRef}
+        className={cn('pt-1 pb-1 gap-0', autoFit && !isCollapsed ? 'overflow-hidden' : 'overflow-y-auto')}
+      >
+        <div
+          ref={innerRef}
+          style={
+            autoFit && !isCollapsed && scale < 1
+              ? { transform: `scale(${scale})`, transformOrigin: 'top left', width: `${100 / scale}%` }
+              : undefined
+          }
+        >
+        {!isCollapsed && (
+          <div className="flex items-center justify-end px-2 pb-1">
+            <button
+              type="button"
+              onClick={() => setAutoFit(v => !v)}
+              title={autoFit ? 'Disable auto-fit' : 'Auto-fit sidebar to height'}
+              className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors px-2 py-0.5 rounded"
+            >
+              {autoFit ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+              <span>{autoFit ? 'Auto-fit' : 'Scroll'}</span>
+            </button>
+          </div>
+        )}
         {menuGroups.map((group) => (
           <SidebarGroup key={group.label} className="py-0">
             {isCollapsed ? (
