@@ -116,7 +116,42 @@ export function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
-  
+
+  // Auto-fit: scale sidebar contents so everything fits without scrolling
+  const [autoFit, setAutoFit] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return localStorage.getItem('admin-sidebar-autofit') !== 'false';
+  });
+  const contentRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    localStorage.setItem('admin-sidebar-autofit', String(autoFit));
+  }, [autoFit]);
+
+  useLayoutEffect(() => {
+    if (!autoFit || isCollapsed) { setScale(1); return; }
+    const recalc = () => {
+      const container = contentRef.current;
+      const inner = innerRef.current;
+      if (!container || !inner) return;
+      // Reset to natural size before measuring
+      inner.style.transform = 'none';
+      inner.style.width = '100%';
+      const available = container.clientHeight;
+      const needed = inner.scrollHeight;
+      const next = needed > available ? Math.max(0.6, available / needed) : 1;
+      setScale(next);
+    };
+    recalc();
+    const ro = new ResizeObserver(recalc);
+    if (contentRef.current) ro.observe(contentRef.current);
+    if (innerRef.current) ro.observe(innerRef.current);
+    window.addEventListener('resize', recalc);
+    return () => { ro.disconnect(); window.removeEventListener('resize', recalc); };
+  }, [autoFit, isCollapsed]);
+
   // Track which groups are open
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
     // Initialize all groups as open
