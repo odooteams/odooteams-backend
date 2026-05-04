@@ -16,6 +16,8 @@ import { Search, Globe, FileText, Activity, Download, RefreshCw, Plus, Edit, Sav
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import SEODashboard from '@/components/seo/SEODashboard';
+import SerpPreview from '@/components/seo/SerpPreview';
+import RouteMapper from '@/components/seo/RouteMapper';
 
 // ---------- Global SEO Settings Tab ----------
 function GlobalSeoTab() {
@@ -201,6 +203,11 @@ function PageSeoEditor({ row, onSaved }: { row?: PageSeoRow; onSaved: () => void
               <Input value={form.page_path || ''} onChange={e => setForm({ ...form, page_path: e.target.value })} placeholder="/" />
             </div>
           </div>
+          <RouteMapper
+            pagePath={form.page_path || ''}
+            canonicalUrl={form.canonical_url || ''}
+            onChange={({ page_path, canonical_url }) => setForm({ ...form, page_path, canonical_url })}
+          />
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Title (EN) — {(form.title_en || '').length}/60</Label>
@@ -250,15 +257,9 @@ function PageSeoEditor({ row, onSaved }: { row?: PageSeoRow; onSaved: () => void
             <Label>Active</Label>
           </div>
 
-          {/* Google preview */}
-          <div className="border rounded-lg p-4 bg-muted/30">
-            <p className="text-xs text-muted-foreground mb-2">Google Search Preview</p>
-            <div className="text-blue-700 text-lg leading-tight truncate">{form.title_en || 'Page title'}</div>
-            <div className="text-green-700 text-sm">https://odooteams.com{form.page_path || '/'}</div>
-            <div className="text-sm text-muted-foreground line-clamp-2">{form.description_en || 'Page description...'}</div>
-          </div>
         </div>
         <DialogFooter>
+          <SerpPreview data={form as any} />
           <Button onClick={save} disabled={saving}>{saving ? 'Saving...' : 'Save'}</Button>
         </DialogFooter>
       </DialogContent>
