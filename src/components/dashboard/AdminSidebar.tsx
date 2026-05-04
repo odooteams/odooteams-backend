@@ -298,6 +298,7 @@ export function AdminSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
