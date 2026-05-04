@@ -148,9 +148,9 @@ export function AdminSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
-      <SidebarContent className="pt-2">
+      <SidebarContent className="pt-1 pb-1 gap-0 overflow-hidden">
         {menuGroups.map((group) => (
-          <SidebarGroup key={group.label} className="py-1">
+          <SidebarGroup key={group.label} className="py-0">
             {isCollapsed ? (
               // When collapsed, show items without group labels
               <SidebarGroupContent>
@@ -162,7 +162,7 @@ export function AdminSidebar() {
                           to={item.url}
                           end={item.url === '/admin'}
                           className={cn(
-                            'flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200',
+                            'flex items-center gap-3 w-full px-2 py-1 rounded-lg transition-all duration-200',
                             isItemActive(item.url) 
                               ? 'bg-sidebar-accent text-sidebar-primary font-medium shadow-sm' 
                               : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
@@ -181,7 +181,7 @@ export function AdminSidebar() {
                 open={openGroups[group.label]}
                 onOpenChange={() => toggleGroup(group.label)}
               >
-                <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-widest hover:text-sidebar-foreground/70 transition-colors">
+                <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-1 text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-widest hover:text-sidebar-foreground/70 transition-colors">
                   <span>{group.label}</span>
                   <ChevronDown 
                     className={cn(
@@ -192,22 +192,22 @@ export function AdminSidebar() {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarGroupContent>
-                    <SidebarMenu>
+                    <SidebarMenu className="gap-0">
                       {group.items.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                          <SidebarMenuButton asChild>
+                          <SidebarMenuButton asChild className="h-7">
                             <NavLink
                               to={item.url}
                               end={item.url === '/admin'}
                               className={cn(
-                                'flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200',
+                                'flex items-center gap-2 w-full px-3 py-1 rounded-md text-sm transition-all duration-200',
                                 isItemActive(item.url) 
                                   ? 'bg-sidebar-accent text-sidebar-primary font-medium shadow-sm' 
                                   : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                               )}
                             >
-                              <item.icon className="h-4 w-4 shrink-0" />
-                              <span>{item.title}</span>
+                              <item.icon className="h-3.5 w-3.5 shrink-0" />
+                              <span className="text-[13px]">{item.title}</span>
                             </NavLink>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -221,7 +221,7 @@ export function AdminSidebar() {
         ))}
 
         {/* Logout at bottom */}
-        <SidebarGroup className="mt-auto border-t pt-2">
+        <SidebarGroup className="mt-auto border-t pt-1">
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
