@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REQUIRED_HEADERS } from "@/lib/security/cspTemplate";
 import { PUBLIC_ROUTES_TO_TEST, ENVIRONMENTS } from "@/lib/security/routes";
 
+declare const process: { env: Record<string, string | undefined> };
 const ENV = (process.env.SEC_ENV || "dev") as keyof typeof ENVIRONMENTS;
 const BASE = ENVIRONMENTS[ENV];
 
