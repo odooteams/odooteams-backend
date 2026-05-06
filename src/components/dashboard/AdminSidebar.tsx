@@ -102,6 +102,7 @@ const menuGroups: MenuGroup[] = [
     label: 'Settings',
     items: [
       { title: 'SEO', url: '/admin/seo', icon: SearchIcon },
+      { title: 'Security', url: '/admin/security', icon: Shield },
       { title: 'Policies', url: '/admin/policies', icon: Shield },
       { title: 'Backups', url: '/admin/backups', icon: Archive },
       { title: 'Settings', url: '/admin/settings', icon: Settings },

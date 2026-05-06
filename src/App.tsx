@@ -43,6 +43,7 @@ import AdminPermissions from '@/pages/admin/Permissions';
 import AdminAuditLogs from '@/pages/admin/AuditLogs';
 import AdminBackups from '@/pages/admin/Backups';
 import AdminSEO from '@/pages/admin/SEO';
+import AdminSecurity from '@/pages/admin/Security';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
@@ -258,6 +259,14 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminSEO />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/security" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminSecurity />
                 </ProtectedRoute>
               } 
             />
