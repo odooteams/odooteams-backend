@@ -1,5 +1,7 @@
-// Visually hidden honeypot styles — invisible to humans, visible to bots.
-export const honeypotStyle: React.CSSProperties = {
+import type { CSSProperties } from "react";
+
+// Visually hidden honeypot styles — invisible to humans, picked up by bots.
+export const honeypotStyle: CSSProperties = {
   position: "absolute",
   left: "-9999px",
   top: "auto",
@@ -9,5 +11,3 @@ export const honeypotStyle: React.CSSProperties = {
   opacity: 0,
   pointerEvents: "none",
 };
-
-import React from "react";
