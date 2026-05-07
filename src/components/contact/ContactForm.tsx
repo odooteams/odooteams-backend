@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Send, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { honeypotStyle } from '@/lib/security/honeypot';
 
 const ContactForm: React.FC = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const formLoadedAt = useRef<number>(Date.now());
+  const lastSubmitHash = useRef<string>('');
+  const lastSubmitAt = useRef<number>(0);
+
+  const [hp, setHp] = useState({ website: '', hp_company: '' });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -77,29 +83,52 @@ const ContactForm: React.FC = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (isSubmitting) return; // hard guard against double-clicks
     if (!validate()) return;
-    
+
+    // Client-side idempotency: same payload within 10s = ignore.
+    const fingerprint = `${formData.email.trim().toLowerCase()}|${formData.message.trim()}`;
+    if (
+      fingerprint === lastSubmitHash.current &&
+      Date.now() - lastSubmitAt.current < 10_000
+    ) {
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     try {
-      // Save to database
-      const { error: dbError } = await supabase
-        .from('contact_submissions')
-        .insert({
+      const { data, error: fnError } = await supabase.functions.invoke('submit-contact', {
+        body: {
+          type: 'contact',
           full_name: formData.name.trim(),
           email: formData.email.trim().toLowerCase(),
           phone: formData.phone.trim() || null,
           company: formData.company.trim() || null,
           subject: formData.subject.trim() || null,
           message: formData.message.trim(),
-          status: 'new'
-        });
+          website: hp.website,
+          hp_company: hp.hp_company,
+          form_loaded_at: formLoadedAt.current,
+        },
+      });
 
-      if (dbError) {
-        console.error('Database error:', dbError);
-        throw new Error('Failed to save message');
+      if (fnError || (data && (data as any).error)) {
+        const msg = (data as any)?.error || fnError?.message || 'Failed to save message';
+        if (msg.toLowerCase().includes('too many')) {
+          toast({
+            title: t('Slow down', 'تمهل قليلاً'),
+            description: t('Too many requests. Please try again in a minute.', 'طلبات كثيرة. يرجى المحاولة بعد دقيقة.'),
+            variant: 'destructive',
+          });
+          return;
+        }
+        throw new Error(msg);
       }
+
+      lastSubmitHash.current = fingerprint;
+      lastSubmitAt.current = Date.now();
       
       // Show success toast
       toast({
@@ -136,6 +165,29 @@ const ContactForm: React.FC = () => {
       </h2>
       
       <form onSubmit={handleSubmit}>
+        {/* Honeypot fields — hidden from real users */}
+        <div style={honeypotStyle} aria-hidden="true">
+          <label>
+            Website
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={hp.website}
+              onChange={(e) => setHp((s) => ({ ...s, website: e.target.value }))}
+            />
+          </label>
+          <label>
+            Company URL
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={hp.hp_company}
+              onChange={(e) => setHp((s) => ({ ...s, hp_company: e.target.value }))}
+            />
+          </label>
+        </div>
         <div className="mb-6">
           <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
             {t('Your Name', 'الاسم')} <span className="text-red-500">*</span>

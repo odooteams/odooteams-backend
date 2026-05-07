@@ -250,6 +250,7 @@ export type Database = {
           assigned_to: string | null
           company: string | null
           created_at: string
+          dedupe_hash: string | null
           email: string
           full_name: string
           id: string
@@ -264,6 +265,7 @@ export type Database = {
           assigned_to?: string | null
           company?: string | null
           created_at?: string
+          dedupe_hash?: string | null
           email: string
           full_name: string
           id?: string
@@ -278,6 +280,7 @@ export type Database = {
           assigned_to?: string | null
           company?: string | null
           created_at?: string
+          dedupe_hash?: string | null
           email?: string
           full_name?: string
           id?: string
@@ -788,6 +791,30 @@ export type Database = {
           setting_value?: Json
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      submission_rate_limits: {
+        Row: {
+          created_at: string
+          dedupe_hash: string
+          id: string
+          ip_address: string
+          submission_type: string
+        }
+        Insert: {
+          created_at?: string
+          dedupe_hash: string
+          id?: string
+          ip_address: string
+          submission_type: string
+        }
+        Update: {
+          created_at?: string
+          dedupe_hash?: string
+          id?: string
+          ip_address?: string
+          submission_type?: string
         }
         Relationships: []
       }
