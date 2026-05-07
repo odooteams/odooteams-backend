@@ -165,6 +165,29 @@ const ContactForm: React.FC = () => {
       </h2>
       
       <form onSubmit={handleSubmit}>
+        {/* Honeypot fields — hidden from real users */}
+        <div style={honeypotStyle} aria-hidden="true">
+          <label>
+            Website
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={hp.website}
+              onChange={(e) => setHp((s) => ({ ...s, website: e.target.value }))}
+            />
+          </label>
+          <label>
+            Company URL
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={hp.hp_company}
+              onChange={(e) => setHp((s) => ({ ...s, hp_company: e.target.value }))}
+            />
+          </label>
+        </div>
         <div className="mb-6">
           <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
             {t('Your Name', 'الاسم')} <span className="text-red-500">*</span>
