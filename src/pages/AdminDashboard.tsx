@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -247,6 +248,13 @@ export default function AdminDashboard() {
 
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6">
+                <Tabs defaultValue="overview" className="space-y-6">
+                  <TabsList>
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                    <TabsTrigger value="actions">Quick Actions</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="overview" className="space-y-6 mt-0">
                 {/* Welcome Banner */}
                 <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-primary/90 via-primary to-primary/80 text-primary-foreground shadow-lg">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -319,7 +327,9 @@ export default function AdminDashboard() {
                     </Card>
                   ))}
                 </div>
+                  </TabsContent>
 
+                  <TabsContent value="analytics" className="space-y-6 mt-0">
                 {/* Charts Row */}
                 <div className="grid gap-6 md:grid-cols-2">
                   {/* Visitors Trend Chart */}
@@ -461,8 +471,9 @@ export default function AdminDashboard() {
                     </div>
                   </CardContent>
                 </Card>
+                  </TabsContent>
 
-
+                  <TabsContent value="actions" className="space-y-6 mt-0">
                 {/* Quick Actions & Content Distribution */}
                 <div className="grid gap-6 md:grid-cols-3">
                   {/* Quick Actions */}
@@ -561,6 +572,8 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                 </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </main>
           </div>
