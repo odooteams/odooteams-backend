@@ -23,8 +23,10 @@ import { PUBLIC_ROUTES_TO_TEST } from "@/lib/security/routes";
 import { toast } from "sonner";
 
 // --------- CSP Diff Tab ---------
+const DEFAULT_BASE_URL = "https://odooteams.com";
+
 function CspDiffTab() {
-  const [url, setUrl] = useState(window.location.origin);
+  const [url, setUrl] = useState(DEFAULT_BASE_URL);
   const [loading, setLoading] = useState(false);
   const [currentCspRaw, setCurrentCspRaw] = useState("");
   const [diffs, setDiffs] = useState<CspDiff[]>([]);
@@ -123,7 +125,7 @@ function CspDiffTab() {
 
 // --------- Header Tests Runner ---------
 function HeaderTestsTab() {
-  const [baseUrl, setBaseUrl] = useState(window.location.origin);
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
   const [routes, setRoutes] = useState(PUBLIC_ROUTES_TO_TEST.join("\n"));
   const [results, setResults] = useState<{ route: string; checks: HeaderCheck[] }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -190,7 +192,7 @@ function HeaderTestsTab() {
 
 // --------- Black-box Scanner ---------
 function BlackBoxTab() {
-  const [baseUrl, setBaseUrl] = useState(window.location.origin);
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
   const [routes, setRoutes] = useState(PUBLIC_ROUTES_TO_TEST.slice(0, 4).join("\n"));
   const [results, setResults] = useState<ProbeResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -320,16 +322,18 @@ export default function AdminSecurity() {
               </h1>
             </header>
             <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-7xl mx-auto space-y-6">
-                <Tabs defaultValue="csp">
-                  <TabsList className="grid grid-cols-3 w-full max-w-2xl">
-                    <TabsTrigger value="csp"><FileSearch className="h-4 w-4 mr-2" />CSP Diff</TabsTrigger>
-                    <TabsTrigger value="headers"><ShieldCheck className="h-4 w-4 mr-2" />Header Tests</TabsTrigger>
-                    <TabsTrigger value="blackbox"><Bug className="h-4 w-4 mr-2" />Black-box Scan</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="csp" className="mt-6"><CspDiffTab /></TabsContent>
-                  <TabsContent value="headers" className="mt-6"><HeaderTestsTab /></TabsContent>
-                  <TabsContent value="blackbox" className="mt-6"><BlackBoxTab /></TabsContent>
+              <div className="max-w-7xl mx-auto space-y-6 min-w-0">
+                <Tabs defaultValue="csp" className="w-full">
+                  <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
+                    <TabsList className="inline-flex w-max md:grid md:grid-cols-3 md:w-full md:max-w-2xl">
+                      <TabsTrigger value="csp" className="whitespace-nowrap"><FileSearch className="h-4 w-4 mr-2" />CSP Diff</TabsTrigger>
+                      <TabsTrigger value="headers" className="whitespace-nowrap"><ShieldCheck className="h-4 w-4 mr-2" />Header Tests</TabsTrigger>
+                      <TabsTrigger value="blackbox" className="whitespace-nowrap"><Bug className="h-4 w-4 mr-2" />Black-box Scan</TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <TabsContent value="csp" className="mt-6 min-w-0"><CspDiffTab /></TabsContent>
+                  <TabsContent value="headers" className="mt-6 min-w-0"><HeaderTestsTab /></TabsContent>
+                  <TabsContent value="blackbox" className="mt-6 min-w-0"><BlackBoxTab /></TabsContent>
                 </Tabs>
               </div>
             </main>
