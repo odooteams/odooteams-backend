@@ -112,8 +112,8 @@ export default function Support() {
                           required
                         />
                       </div>
-                      <Button type="submit" className="w-full">
-                        Submit Ticket
+                      <Button type="submit" className="w-full" disabled={submitting}>
+                        {submitting ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Submitting...</> : 'Submit Ticket'}
                       </Button>
                     </form>
                   </CardContent>
