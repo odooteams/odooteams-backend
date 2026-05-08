@@ -70,6 +70,20 @@ export default function AdminMessages() {
         .eq('id', id);
 
       if (error) throw error;
+
+      // Notify client of status change
+      const target = messages.find(m => m.id === id) || selectedMessage;
+      if (target?.email) {
+        const isAr = /[\u0600-\u06FF]/.test(`${target.message || ''} ${target.subject || ''}`);
+        supabase.functions.invoke('send-notification-email', {
+          body: {
+            kind: 'status_update',
+            lang: isAr ? 'ar' : 'en',
+            data: { name: target.full_name, email: target.email, status, notes: target.notes },
+          },
+        }).catch((e) => console.error('status notify failed:', e));
+      }
+
       toast.success('Status updated');
       loadMessages();
       
