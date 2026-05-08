@@ -86,6 +86,7 @@ const QuoteRequestDialog: React.FC<QuoteRequestDialogProps> = ({
           website: hp.website,
           hp_company: hp.hp_company,
           form_loaded_at: formLoadedAt.current,
+          lang: language,
         },
       });
 
