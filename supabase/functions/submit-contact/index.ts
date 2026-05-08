@@ -191,5 +191,29 @@ Deno.serve(async (req) => {
     dedupe_hash,
   });
 
+  // Fire-and-forget notifications (client confirmation + admin alert)
+  const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-notification-email`;
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const lang = (body?.lang === "ar" ? "ar" : "en") as "ar" | "en";
+  const baseData = {
+    type: submissionType,
+    name: full_name,
+    email: email.trim().toLowerCase(),
+    phone,
+    company,
+    subject: finalSubject,
+    message: finalMessage,
+  };
+  const post = (kind: string) =>
+    fetch(notifyUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${anonKey}`, apikey: anonKey },
+      body: JSON.stringify({ kind, lang, data: baseData }),
+    }).catch((e) => console.error(`notify ${kind} failed:`, e?.message));
+
+  // Don't await — keep response fast
+  post("contact_confirmation");
+  post("contact_admin_alert");
+
   return json({ success: true });
 });

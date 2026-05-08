@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { honeypotStyle } from '@/lib/security/honeypot';
 
 const ContactForm: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formLoadedAt = useRef<number>(Date.now());
@@ -111,6 +111,7 @@ const ContactForm: React.FC = () => {
           website: hp.website,
           hp_company: hp.hp_company,
           form_loaded_at: formLoadedAt.current,
+          lang: language,
         },
       });
 

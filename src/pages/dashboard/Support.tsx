@@ -6,19 +6,58 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MessageSquare, Mail, Phone } from 'lucide-react';
+import { MessageSquare, Mail, Phone, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/lib/LanguageContext';
 
 export default function Support() {
+  const { user } = useAuth();
+  const { language } = useLanguage();
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Support ticket submitted successfully');
-    setSubject('');
-    setMessage('');
+    if (!user?.email) {
+      toast.error('You must be signed in');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const fullName = (user.user_metadata as any)?.full_name || user.email;
+      const data = { name: fullName, email: user.email, subject, message };
+
+      // Save as a contact submission of subject = support
+      await supabase.from('contact_submissions').insert({
+        full_name: fullName,
+        email: user.email,
+        subject: `[Support] ${subject}`,
+        message,
+        status: 'new',
+      });
+
+      await Promise.allSettled([
+        supabase.functions.invoke('send-notification-email', {
+          body: { kind: 'support_ticket_client', lang: language, data },
+        }),
+        supabase.functions.invoke('send-notification-email', {
+          body: { kind: 'support_ticket_admin', lang: 'en', data },
+        }),
+      ]);
+
+      toast.success('Support ticket submitted successfully');
+      setSubject('');
+      setMessage('');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to submit ticket');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -73,8 +112,8 @@ export default function Support() {
                           required
                         />
                       </div>
-                      <Button type="submit" className="w-full">
-                        Submit Ticket
+                      <Button type="submit" className="w-full" disabled={submitting}>
+                        {submitting ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Submitting...</> : 'Submit Ticket'}
                       </Button>
                     </form>
                   </CardContent>

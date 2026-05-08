@@ -51,7 +51,7 @@ const QuoteRequestDialog: React.FC<QuoteRequestDialogProps> = ({
   projectCost,
   variant = 'magenta',
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hp, setHp] = useState({ website: '', hp_company: '' });
@@ -86,6 +86,7 @@ const QuoteRequestDialog: React.FC<QuoteRequestDialogProps> = ({
           website: hp.website,
           hp_company: hp.hp_company,
           form_loaded_at: formLoadedAt.current,
+          lang: language,
         },
       });
 

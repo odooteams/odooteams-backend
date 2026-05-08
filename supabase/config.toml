@@ -38,3 +38,9 @@ verify_jwt = false
 
 [functions.scheduled-backup]
 verify_jwt = false
+
+[functions.send-notification-email]
+verify_jwt = false
+
+[functions.submit-contact]
+verify_jwt = false
