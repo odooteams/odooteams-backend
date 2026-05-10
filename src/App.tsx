@@ -74,8 +74,8 @@ function App() {
             <Route path="/policy/:slug" element={<Policy />} />
             
             {/* Auth Routes */}
-            <Route path="/auth/signin" element={<SignIn />} />
-            <Route path="/auth/signup" element={<SignUp />} />
+            <Route path="/auth/signin" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
+            <Route path="/auth/signup" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
             <Route path="/reset-password" element={<ResetPassword />} />
             
             {/* Protected Routes */}
