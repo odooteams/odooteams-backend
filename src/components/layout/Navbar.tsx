@@ -6,9 +6,16 @@ import { Menu, X, LogIn, LayoutDashboard, ShieldCheck, LogOut } from 'lucide-rea
 
 const Navbar = () => {
   const { t, dir } = useLanguage();
+  const { user, isAdmin, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+    navigate('/');
+  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
