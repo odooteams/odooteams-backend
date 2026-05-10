@@ -136,9 +136,43 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+              {!user ? (
+                <Link
+                  to="/auth/signin"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex items-center gap-2 text-primary font-semibold py-2"
+                >
+                  <LogIn className="h-4 w-4" />
+                  {t('Sign in', 'تسجيل الدخول')}
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to={isAdmin ? '/admin' : '/dashboard'}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="inline-flex items-center gap-2 text-primary font-semibold py-2"
+                  >
+                    {isAdmin ? <ShieldCheck className="h-4 w-4" /> : <LayoutDashboard className="h-4 w-4" />}
+                    {isAdmin ? t('Admin Panel', 'لوحة الإدارة') : t('My Account', 'حسابي')}
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="inline-flex items-center gap-2 text-foreground py-2 text-start"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t('Sign out', 'تسجيل الخروج')}
+                  </button>
+                </>
+              )}
             </nav>
           </div>
         )}
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;
       </div>
     </header>
   );
