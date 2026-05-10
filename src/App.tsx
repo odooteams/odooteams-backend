@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from '@/lib/LanguageContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { PublicOnlyRoute } from '@/components/auth/PublicOnlyRoute';
 import { Toaster } from '@/components/ui/sonner';
 import PWAInstallPrompt from '@/components/common/PWAInstallPrompt';
 import StickyContact from '@/components/common/StickyContact';
