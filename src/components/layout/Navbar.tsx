@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
-import { Menu, X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Menu, X, LogIn, LayoutDashboard, ShieldCheck, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const { t, dir } = useLanguage();
