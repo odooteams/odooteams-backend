@@ -173,9 +173,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
-      </div>
-    </header>
-  );
-};
 
 export default Navbar;
