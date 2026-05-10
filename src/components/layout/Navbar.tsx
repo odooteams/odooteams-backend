@@ -78,6 +78,36 @@ const Navbar = () => {
             ))}
           </nav>
 
+          {/* Desktop auth actions */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+            {!user ? (
+              <Link
+                to="/auth/signin"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
+              >
+                <LogIn className="h-4 w-4" />
+                {t('Sign in', 'تسجيل الدخول')}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to={isAdmin ? '/admin' : '/dashboard'}
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
+                >
+                  {isAdmin ? <ShieldCheck className="h-4 w-4" /> : <LayoutDashboard className="h-4 w-4" />}
+                  {isAdmin ? t('Admin Panel', 'لوحة الإدارة') : t('My Account', 'حسابي')}
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition"
+                  aria-label={t('Sign out', 'تسجيل الخروج')}
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </>
+            )}
+          </div>
+
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button onClick={toggleMenu} className="p-1">
