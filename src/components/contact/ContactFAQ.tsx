@@ -44,7 +44,7 @@ const ContactFAQ: React.FC = () => {
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="px-6 py-4 text-gray-600">
-                    <div dangerouslySetInnerHTML={{ __html: faq.contents }} />
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(faq.contents) }} />
                   </AccordionContent>
                 </AccordionItem>
               ))}
