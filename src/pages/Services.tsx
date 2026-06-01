@@ -42,8 +42,8 @@ const Services = () => {
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
       <SEOHead
-        title="Odoo Services - Professional ERP Implementation & Customization | OdooTeams"
-        description="Explore our comprehensive Odoo ERP services including implementation, customization, training, and support. Get expert Odoo solutions tailored to your business needs."
+        title="Odoo Services — Implementation & Customization | OdooTeams"
+        description="Comprehensive Odoo ERP services: implementation, customization, training, and support tailored to your business needs."
         keywords="Odoo services, ERP implementation, Odoo customization, Odoo training, Odoo support, business automation, Odoo modules, ERP consulting"
         structuredData={servicesStructuredData}
         alternateUrls={generateAlternateUrls('/services')}

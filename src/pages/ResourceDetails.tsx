@@ -12,6 +12,7 @@ import ResourceHero from '@/components/learn/ResourceHero';
 import ResourceTableOfContents from '@/components/learn/ResourceTableOfContents';
 import ResourceContent from '@/components/learn/ResourceContent';
 import RelatedResources from '@/components/learn/RelatedResources';
+import SEOHead from '@/components/seo/SEOHead';
 
 const ResourceDetails = () => {
   const { id } = useParams();
@@ -133,8 +134,27 @@ const ResourceDetails = () => {
   const author = language === 'en' ? resource.author_en : resource.author_ar;
   const mainHeaders = parseMainHeaders(language === 'en' ? resource.main_header_en : resource.main_header_ar);
   
+  const excerpt = (content || '').replace(/<[^>]*>/g, '').slice(0, 155);
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: excerpt,
+    author: author ? { "@type": "Person", name: author } : undefined,
+    datePublished: resource.published_date || undefined,
+    image: resource.image || undefined,
+  };
+
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <SEOHead
+        title={`${title} | OdooTeams Learn`}
+        description={excerpt}
+        image={resource.image || undefined}
+        article
+        publishedTime={resource.published_date || undefined}
+        structuredData={[articleSchema]}
+      />
       <TopHeader />
       <Navbar />
       <main>

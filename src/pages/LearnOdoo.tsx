@@ -102,7 +102,18 @@ const LearnOdoo = () => {
           createBreadcrumbStructuredData([
             { name: 'Home', url: 'https://odooteams.com' },
             { name: 'Learn Odoo', url: 'https://odooteams.com/learn-odoo' }
-          ])
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Odoo Learning Resources",
+            itemListElement: resources.slice(0, 50).map((r, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `https://odooteams.com/learn-odoo/${r.id}`,
+              name: language === 'en' ? r.title_en : r.title_ar,
+            })),
+          },
         ]}
         alternateUrls={generateAlternateUrls('/learn-odoo')}
       />
