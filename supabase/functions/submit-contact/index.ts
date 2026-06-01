@@ -194,6 +194,7 @@ Deno.serve(async (req) => {
   // Fire-and-forget notifications (client confirmation + admin alert)
   const notifyUrl = `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-notification-email`;
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const lang = (body?.lang === "ar" ? "ar" : "en") as "ar" | "en";
   const baseData = {
     type: submissionType,
@@ -207,7 +208,7 @@ Deno.serve(async (req) => {
   const post = (kind: string) =>
     fetch(notifyUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${anonKey}`, apikey: anonKey },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceKey}`, apikey: anonKey },
       body: JSON.stringify({ kind, lang, data: baseData }),
     }).catch((e) => console.error(`notify ${kind} failed:`, e?.message));
 
