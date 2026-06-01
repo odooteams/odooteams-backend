@@ -43,8 +43,8 @@ const Index = () => {
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
       <SEOHead
-        title="OdooTeams - Professional Odoo Implementation Services | ERP Solutions"
-        description="Transform your business with expert Odoo ERP implementation, customization, and development services. Get professional Odoo solutions worldwide with 24/7 support."
+        title="OdooTeams — Expert Odoo ERP Implementation Services"
+        description="Expert Odoo ERP implementation, customization, and development services worldwide. Professional Odoo solutions with 24/7 support."
         keywords="Odoo implementation, Odoo ERP, Odoo customization, Odoo development, Odoo training, ERP solutions, business automation, Odoo consultant"
         structuredData={homeStructuredData}
         alternateUrls={generateAlternateUrls('/')}
