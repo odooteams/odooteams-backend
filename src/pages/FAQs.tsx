@@ -17,7 +17,20 @@ const FAQs = () => {
   const { dir, t } = useLanguage();
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<string>("");
-  const { categories, isLoading } = useFaqs();
+  const { faqs, categories, isLoading } = useFaqs();
+
+  const faqSchema = faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.slice(0, 20).map(f => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: (f.contents || '').replace(/<[^>]*>/g, '').slice(0, 500),
+      },
+    })),
+  } : null;
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
@@ -33,7 +46,8 @@ const FAQs = () => {
           createBreadcrumbStructuredData([
             { name: 'Home', url: 'https://odooteams.com' },
             { name: 'FAQs', url: 'https://odooteams.com/faqs' }
-          ])
+          ]),
+          ...(faqSchema ? [faqSchema] : []),
         ]}
         alternateUrls={generateAlternateUrls('/faqs')}
       />
