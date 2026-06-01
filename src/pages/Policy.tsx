@@ -111,7 +111,7 @@ export default function Policy() {
 
             <div
               className="prose prose-lg max-w-none dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.replace(/\n/g, '<br />')) }}
             />
 
             <div className="mt-12 pt-8 border-t">
