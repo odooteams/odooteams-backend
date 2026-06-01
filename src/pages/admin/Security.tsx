@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download } from "lucide-react";
+import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks } from "lucide-react";
 import {
   RECOMMENDED_CSP,
   parseCsp,
@@ -20,6 +20,8 @@ import {
 } from "@/lib/security/cspTemplate";
 import { fetchHeaders, checkHeaders, probeRoute, type ProbeResult, type HeaderCheck } from "@/lib/security/scanner";
 import { PUBLIC_ROUTES_TO_TEST } from "@/lib/security/routes";
+import { runOwaspAudit, OWASP_LABELS, type OwaspCategory, type OwaspFinding } from "@/lib/security/owasp";
+import { fetchHtml, extractResources, summarize, type Resource } from "@/lib/security/network";
 import { toast } from "sonner";
 
 // --------- CSP Diff Tab ---------
@@ -306,6 +308,263 @@ function BlackBoxTab() {
   );
 }
 
+// --------- OWASP Top 10 Audit ---------
+function OwaspTab() {
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+  const [routes, setRoutes] = useState(PUBLIC_ROUTES_TO_TEST.slice(0, 5).join("\n"));
+  const [findings, setFindings] = useState<OwaspFinding[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
+
+  const run = async () => {
+    setLoading(true);
+    setFindings([]);
+    setProgress("Starting…");
+    try {
+      const list = routes.split("\n").map((r) => r.trim()).filter(Boolean);
+      const out = await runOwaspAudit(baseUrl, list, { onProgress: setProgress });
+      setFindings(out);
+      toast.success(`OWASP audit complete — ${out.length} checks`);
+    } catch (e: any) {
+      toast.error(e.message || "Audit failed");
+    } finally {
+      setLoading(false);
+      setProgress("");
+    }
+  };
+
+  const grouped = findings.reduce<Record<OwaspCategory, OwaspFinding[]>>((acc, f) => {
+    (acc[f.category] ||= []).push(f);
+    return acc;
+  }, {} as any);
+
+  const sevBadge = (s: OwaspFinding["severity"], pass: boolean) => {
+    if (pass) return <Badge variant="default" className="bg-green-600">Pass</Badge>;
+    const map = { info: "secondary", low: "outline", medium: "default", high: "destructive" } as const;
+    return <Badge variant={map[s] as any}>{s}</Badge>;
+  };
+
+  const downloadReport = () => {
+    const blob = new Blob([JSON.stringify(findings, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `owasp-audit-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>OWASP Top 10 (2021) Audit</CardTitle>
+        <CardDescription>
+          Heuristic checks across all ten OWASP categories — headers, TLS, injection, SRI, auth surfaces, and more.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Base URL</Label>
+            <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Routes to probe (injection tests)</Label>
+            <Textarea rows={4} value={routes} onChange={(e) => setRoutes(e.target.value)} className="font-mono text-xs" />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={run} disabled={loading}>
+            <ListChecks className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+            {loading ? "Auditing…" : "Run OWASP Audit"}
+          </Button>
+          {findings.length > 0 && (
+            <Button variant="outline" onClick={downloadReport}>
+              <Download className="h-4 w-4 mr-2" /> Export JSON
+            </Button>
+          )}
+        </div>
+        {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
+
+        {findings.length > 0 && (
+          <div className="space-y-4">
+            {(Object.keys(OWASP_LABELS) as OwaspCategory[]).map((cat) => {
+              const items = grouped[cat] || [];
+              if (items.length === 0) return null;
+              const failing = items.filter((i) => !i.pass).length;
+              return (
+                <div key={cat} className="border rounded-lg overflow-hidden">
+                  <div className="px-4 py-2 bg-muted flex items-center justify-between">
+                    <span className="font-semibold text-sm">{OWASP_LABELS[cat]}</span>
+                    <Badge variant={failing > 0 ? "destructive" : "default"} className={failing === 0 ? "bg-green-600" : ""}>
+                      {failing > 0 ? `${failing} issues` : "All pass"}
+                    </Badge>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Check</TableHead>
+                        <TableHead className="w-24">Result</TableHead>
+                        <TableHead>Detail</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {items.map((f, i) => (
+                        <TableRow key={i}>
+                          <TableCell className="font-medium text-sm">{f.title}</TableCell>
+                          <TableCell>{sevBadge(f.severity, f.pass)}</TableCell>
+                          <TableCell className="text-xs text-muted-foreground">{f.detail}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// --------- Network & CDN Inspector ---------
+function NetworkTab() {
+  const [url, setUrl] = useState(DEFAULT_BASE_URL);
+  const [loading, setLoading] = useState(false);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [summary, setSummary] = useState<ReturnType<typeof summarize> | null>(null);
+
+  const run = async () => {
+    setLoading(true);
+    setResources([]);
+    setSummary(null);
+    try {
+      const html = await fetchHtml(url);
+      if (!html) {
+        toast.error("Could not fetch page (CORS or network)");
+        return;
+      }
+      const items = extractResources(html, url);
+      setResources(items);
+      setSummary(summarize(items, url));
+      toast.success(`Found ${items.length} resources`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Network & CDN Inspector</CardTitle>
+          <CardDescription>
+            Pulls the rendered HTML, classifies every external script/stylesheet/image/iframe by CDN provider, and flags missing SRI & mixed-content.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex gap-2">
+            <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://yoursite.com" />
+            <Button onClick={run} disabled={loading}>
+              <Network className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+              {loading ? "Scanning…" : "Inspect"}
+            </Button>
+          </div>
+
+          {summary && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="border rounded p-3 text-center">
+                <div className="text-2xl font-bold">{summary.totalExternal}</div>
+                <div className="text-xs text-muted-foreground">External resources</div>
+              </div>
+              <div className="border rounded p-3 text-center">
+                <div className="text-2xl font-bold">{Object.keys(summary.byCdn).length}</div>
+                <div className="text-xs text-muted-foreground">Distinct CDNs</div>
+              </div>
+              <div className="border rounded p-3 text-center">
+                <div className={`text-2xl font-bold ${summary.mixedContent.length ? "text-red-600" : ""}`}>
+                  {summary.mixedContent.length}
+                </div>
+                <div className="text-xs text-muted-foreground">Mixed-content (http)</div>
+              </div>
+              <div className="border rounded p-3 text-center">
+                <div className={`text-2xl font-bold ${summary.missingSri.length ? "text-orange-600" : ""}`}>
+                  {summary.missingSri.length}
+                </div>
+                <div className="text-xs text-muted-foreground">Missing SRI</div>
+              </div>
+            </div>
+          )}
+
+          {summary && Object.keys(summary.byCdn).length > 0 && (
+            <div>
+              <Label className="mb-2 block">CDN breakdown</Label>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(summary.byCdn)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([cdn, n]) => (
+                    <Badge key={cdn} variant="secondary">{cdn} · {n}</Badge>
+                  ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {resources.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Resources</CardTitle>
+            <CardDescription>{resources.length} resources detected on the page</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Tag</TableHead>
+                    <TableHead>CDN</TableHead>
+                    <TableHead>URL</TableHead>
+                    <TableHead>Proto</TableHead>
+                    <TableHead>SRI</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {resources.map((r, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Badge variant="outline">{r.tag}</Badge></TableCell>
+                      <TableCell className="text-xs">{r.cdn}</TableCell>
+                      <TableCell className="font-mono text-xs max-w-md truncate">{r.url}</TableCell>
+                      <TableCell>
+                        {r.protocol === "https:" ? (
+                          <Badge className="bg-green-600">https</Badge>
+                        ) : r.protocol === "http:" ? (
+                          <Badge variant="destructive">http</Badge>
+                        ) : (
+                          <Badge variant="secondary">{r.protocol}</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {(r.tag === "script" || r.tag === "link") ? (
+                          r.hasIntegrity ? (
+                            <ShieldCheck className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <ShieldAlert className="h-4 w-4 text-orange-600" />
+                          )
+                        ) : <span className="text-muted-foreground text-xs">n/a</span>}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 // --------- Main page ---------
 export default function AdminSecurity() {
   return (
@@ -323,14 +582,18 @@ export default function AdminSecurity() {
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
-                <Tabs defaultValue="csp" className="w-full">
+                <Tabs defaultValue="owasp" className="w-full">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
-                    <TabsList className="inline-flex w-max md:grid md:grid-cols-3 md:w-full md:max-w-2xl">
+                    <TabsList className="inline-flex w-max md:grid md:grid-cols-5 md:w-full md:max-w-4xl">
+                      <TabsTrigger value="owasp" className="whitespace-nowrap"><ListChecks className="h-4 w-4 mr-2" />OWASP Top 10</TabsTrigger>
+                      <TabsTrigger value="network" className="whitespace-nowrap"><Network className="h-4 w-4 mr-2" />Network & CDN</TabsTrigger>
                       <TabsTrigger value="csp" className="whitespace-nowrap"><FileSearch className="h-4 w-4 mr-2" />CSP Diff</TabsTrigger>
                       <TabsTrigger value="headers" className="whitespace-nowrap"><ShieldCheck className="h-4 w-4 mr-2" />Header Tests</TabsTrigger>
                       <TabsTrigger value="blackbox" className="whitespace-nowrap"><Bug className="h-4 w-4 mr-2" />Black-box Scan</TabsTrigger>
                     </TabsList>
                   </div>
+                  <TabsContent value="owasp" className="mt-6 min-w-0"><OwaspTab /></TabsContent>
+                  <TabsContent value="network" className="mt-6 min-w-0"><NetworkTab /></TabsContent>
                   <TabsContent value="csp" className="mt-6 min-w-0"><CspDiffTab /></TabsContent>
                   <TabsContent value="headers" className="mt-6 min-w-0"><HeaderTestsTab /></TabsContent>
                   <TabsContent value="blackbox" className="mt-6 min-w-0"><BlackBoxTab /></TabsContent>
