@@ -584,12 +584,16 @@ export default function AdminSecurity() {
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
                 <Tabs defaultValue="csp" className="w-full">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
-                    <TabsList className="inline-flex w-max md:grid md:grid-cols-3 md:w-full md:max-w-2xl">
+                    <TabsList className="inline-flex w-max md:grid md:grid-cols-5 md:w-full md:max-w-4xl">
+                      <TabsTrigger value="owasp" className="whitespace-nowrap"><ListChecks className="h-4 w-4 mr-2" />OWASP Top 10</TabsTrigger>
+                      <TabsTrigger value="network" className="whitespace-nowrap"><Network className="h-4 w-4 mr-2" />Network & CDN</TabsTrigger>
                       <TabsTrigger value="csp" className="whitespace-nowrap"><FileSearch className="h-4 w-4 mr-2" />CSP Diff</TabsTrigger>
                       <TabsTrigger value="headers" className="whitespace-nowrap"><ShieldCheck className="h-4 w-4 mr-2" />Header Tests</TabsTrigger>
                       <TabsTrigger value="blackbox" className="whitespace-nowrap"><Bug className="h-4 w-4 mr-2" />Black-box Scan</TabsTrigger>
                     </TabsList>
                   </div>
+                  <TabsContent value="owasp" className="mt-6 min-w-0"><OwaspTab /></TabsContent>
+                  <TabsContent value="network" className="mt-6 min-w-0"><NetworkTab /></TabsContent>
                   <TabsContent value="csp" className="mt-6 min-w-0"><CspDiffTab /></TabsContent>
                   <TabsContent value="headers" className="mt-6 min-w-0"><HeaderTestsTab /></TabsContent>
                   <TabsContent value="blackbox" className="mt-6 min-w-0"><BlackBoxTab /></TabsContent>
