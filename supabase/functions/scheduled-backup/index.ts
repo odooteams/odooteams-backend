@@ -36,6 +36,34 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
+    // AuthN/AuthZ: only accept calls bearing the service role key (used by the
+    // internal pg_cron job) or a signed-in admin user JWT.
+    const authHeader = req.headers.get('Authorization') || ''
+    const bearer = authHeader.replace(/^Bearer\s+/i, '').trim()
+    let authorized = false
+    if (bearer && bearer === supabaseServiceKey) {
+      authorized = true
+    } else if (bearer) {
+      const userClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!)
+      const { data: u } = await userClient.auth.getUser(bearer)
+      if (u?.user) {
+        const admin = createClient(supabaseUrl, supabaseServiceKey)
+        const { data: roleRow } = await admin
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', u.user.id)
+          .eq('role', 'admin')
+          .maybeSingle()
+        if (roleRow) authorized = true
+      }
+    }
+    if (!authorized) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
     // Create admin client for database operations
     const adminClient = createClient(supabaseUrl, supabaseServiceKey)
 
