@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import DOMPurify from 'dompurify';
 
 export default function Policy() {
   const { slug } = useParams();
@@ -110,7 +111,7 @@ export default function Policy() {
 
             <div
               className="prose prose-lg max-w-none dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content.replace(/\n/g, '<br />')) }}
             />
 
             <div className="mt-12 pt-8 border-t">
