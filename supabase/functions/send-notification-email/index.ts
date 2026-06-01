@@ -170,6 +170,26 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
+  // AuthN: accept either (a) the service role key (used by internal server-to-server
+  // calls from submit-contact / scheduled-backup) or (b) a valid signed-in user JWT.
+  const authHeader = req.headers.get("Authorization") || "";
+  const bearer = authHeader.replace(/^Bearer\s+/i, "").trim();
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  let authorized = false;
+  if (bearer && serviceKey && bearer === serviceKey) {
+    authorized = true;
+  } else if (bearer) {
+    try {
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+      );
+      const { data, error } = await supa.auth.getUser(bearer);
+      if (!error && data?.user) authorized = true;
+    } catch (_) { /* fallthrough */ }
+  }
+  if (!authorized) return json({ error: "Unauthorized" }, 401);
+
   let payload: Payload;
   try {
     payload = await req.json();
