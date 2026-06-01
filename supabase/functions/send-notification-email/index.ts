@@ -75,25 +75,25 @@ function build(payload: Payload): { to: string; subject: string; html: string } 
   switch (payload.kind) {
     case "contact_confirmation": {
       const subject = t(lang, "We received your message", "تم استلام رسالتك");
-      const html = wrap(lang, t(lang, `Hello ${d.name || ""}`, `مرحباً ${d.name || ""}`), `
+      const html = wrap(lang, t(lang, `Hello ${esc(d.name) || ""}`, `مرحباً ${esc(d.name) || ""}`), `
         <p>${t(lang, "Thank you for contacting Odoo Teams. We received your message and will get back to you shortly.", "شكراً لتواصلك مع Odoo Teams. لقد استلمنا رسالتك وسنقوم بالرد عليك في أقرب وقت.")}</p>
-        ${d.subject ? `<p><strong>${t(lang, "Subject", "الموضوع")}:</strong> ${d.subject}</p>` : ""}
-        ${d.message ? `<p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${String(d.message).slice(0, 1000)}</p>` : ""}
+        ${d.subject ? `<p><strong>${t(lang, "Subject", "الموضوع")}:</strong> ${esc(d.subject)}</p>` : ""}
+        ${d.message ? `<p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${esc(String(d.message).slice(0, 1000))}</p>` : ""}
         <p>${t(lang, "Best regards,", "مع أطيب التحيات،")}<br/>Odoo Teams</p>
       `);
       return { to: payload.to || d.email, subject, html };
     }
     case "contact_admin_alert": {
-      const subject = `[New ${d.type === "quote" ? "Quote" : "Contact"}] ${d.name} — ${d.subject || "No subject"}`;
+      const subject = `[New ${d.type === "quote" ? "Quote" : "Contact"}] ${String(d.name ?? "").slice(0,80)} — ${String(d.subject ?? "No subject").slice(0,120)}`;
       const html = wrap("en", "New submission received", `
-        <p><strong>Type:</strong> ${d.type || "contact"}</p>
-        <p><strong>Name:</strong> ${d.name || "-"}</p>
-        <p><strong>Email:</strong> <a href="mailto:${d.email}">${d.email}</a></p>
-        <p><strong>Phone:</strong> ${d.phone || "-"}</p>
-        ${d.company ? `<p><strong>Company:</strong> ${d.company}</p>` : ""}
-        ${d.subject ? `<p><strong>Subject:</strong> ${d.subject}</p>` : ""}
+        <p><strong>Type:</strong> ${esc(d.type || "contact")}</p>
+        <p><strong>Name:</strong> ${esc(d.name) || "-"}</p>
+        <p><strong>Email:</strong> <a href="mailto:${encodeURIComponent(String(d.email ?? ""))}">${esc(d.email)}</a></p>
+        <p><strong>Phone:</strong> ${esc(d.phone) || "-"}</p>
+        ${d.company ? `<p><strong>Company:</strong> ${esc(d.company)}</p>` : ""}
+        ${d.subject ? `<p><strong>Subject:</strong> ${esc(d.subject)}</p>` : ""}
         <p><strong>Message:</strong></p>
-        <p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${d.message || "-"}</p>
+        <p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${esc(d.message) || "-"}</p>
         <p><a href="https://odooteams.com/admin/messages" style="display:inline-block;background:#5b21b6;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Open in admin</a></p>
       `);
       return { to: payload.to || ADMIN_EMAIL, subject, html };
@@ -105,14 +105,14 @@ function build(payload: Payload): { to: string; subject: string; html: string } 
         resolved: ["Resolved", "تم الحل"],
         closed: ["Closed", "مغلق"],
       };
-      const [en, ar] = statusLabel[d.status] || [d.status, d.status];
+      const [en, ar] = statusLabel[d.status] || [String(d.status ?? ""), String(d.status ?? "")];
       const subject = t(lang, `Your request status: ${en}`, `حالة طلبك: ${ar}`);
-      const html = wrap(lang, t(lang, `Hello ${d.name || ""}`, `مرحباً ${d.name || ""}`), `
+      const html = wrap(lang, t(lang, `Hello ${esc(d.name) || ""}`, `مرحباً ${esc(d.name) || ""}`), `
         <p>${t(lang, "There is an update on your request.", "هناك تحديث على طلبك.")}</p>
         <p style="font-size:16px"><strong>${t(lang, "New status", "الحالة الجديدة")}:</strong>
-          <span style="display:inline-block;background:#5b21b6;color:#fff;padding:4px 12px;border-radius:999px;margin-${lang === "ar" ? "right" : "left"}:8px">${t(lang, en, ar)}</span>
+          <span style="display:inline-block;background:#5b21b6;color:#fff;padding:4px 12px;border-radius:999px;margin-${lang === "ar" ? "right" : "left"}:8px">${esc(t(lang, en, ar))}</span>
         </p>
-        ${d.notes ? `<p><strong>${t(lang, "Notes", "ملاحظات")}:</strong></p><p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${d.notes}</p>` : ""}
+        ${d.notes ? `<p><strong>${t(lang, "Notes", "ملاحظات")}:</strong></p><p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${esc(d.notes)}</p>` : ""}
         <p>${t(lang, "Thank you for choosing Odoo Teams.", "شكراً لاختيارك Odoo Teams.")}</p>
       `);
       return { to: payload.to || d.email, subject, html };
@@ -120,19 +120,19 @@ function build(payload: Payload): { to: string; subject: string; html: string } 
     case "support_ticket_client": {
       const subject = t(lang, "Support ticket received", "تم استلام تذكرة الدعم");
       const html = wrap(lang, t(lang, "Your support ticket has been received", "تم استلام تذكرة الدعم الخاصة بك"), `
-        <p>${t(lang, `Hello ${d.name || ""}, we have received your support ticket and our team will respond soon.`, `مرحباً ${d.name || ""}، لقد استلمنا تذكرة الدعم الخاصة بك وسيرد عليك فريقنا قريباً.`)}</p>
-        <p><strong>${t(lang, "Subject", "الموضوع")}:</strong> ${d.subject || "-"}</p>
-        <p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${d.message || ""}</p>
+        <p>${t(lang, `Hello ${esc(d.name) || ""}, we have received your support ticket and our team will respond soon.`, `مرحباً ${esc(d.name) || ""}، لقد استلمنا تذكرة الدعم الخاصة بك وسيرد عليك فريقنا قريباً.`)}</p>
+        <p><strong>${t(lang, "Subject", "الموضوع")}:</strong> ${esc(d.subject) || "-"}</p>
+        <p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${esc(d.message) || ""}</p>
       `);
       return { to: payload.to || d.email, subject, html };
     }
     case "support_ticket_admin": {
-      const subject = `[Support Ticket] ${d.subject || "No subject"} — ${d.name || d.email}`;
+      const subject = `[Support Ticket] ${String(d.subject ?? "No subject").slice(0,120)} — ${String(d.name ?? d.email ?? "").slice(0,120)}`;
       const html = wrap("en", "New support ticket", `
-        <p><strong>From:</strong> ${d.name || "-"} &lt;${d.email}&gt;</p>
-        <p><strong>Subject:</strong> ${d.subject || "-"}</p>
+        <p><strong>From:</strong> ${esc(d.name) || "-"} &lt;${esc(d.email)}&gt;</p>
+        <p><strong>Subject:</strong> ${esc(d.subject) || "-"}</p>
         <p><strong>Message:</strong></p>
-        <p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${d.message || "-"}</p>
+        <p style="background:#f6f7fb;padding:12px;border-radius:8px;white-space:pre-wrap">${esc(d.message) || "-"}</p>
         <p><a href="https://odooteams.com/admin/messages" style="display:inline-block;background:#5b21b6;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">Open in admin</a></p>
       `);
       return { to: payload.to || ADMIN_EMAIL, subject, html };
