@@ -582,7 +582,7 @@ export default function AdminSecurity() {
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
-                <Tabs defaultValue="csp" className="w-full">
+                <Tabs defaultValue="owasp" className="w-full">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
                     <TabsList className="inline-flex w-max md:grid md:grid-cols-5 md:w-full md:max-w-4xl">
                       <TabsTrigger value="owasp" className="whitespace-nowrap"><ListChecks className="h-4 w-4 mr-2" />OWASP Top 10</TabsTrigger>
