@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download } from "lucide-react";
+import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks } from "lucide-react";
 import {
   RECOMMENDED_CSP,
   parseCsp,
@@ -20,6 +20,8 @@ import {
 } from "@/lib/security/cspTemplate";
 import { fetchHeaders, checkHeaders, probeRoute, type ProbeResult, type HeaderCheck } from "@/lib/security/scanner";
 import { PUBLIC_ROUTES_TO_TEST } from "@/lib/security/routes";
+import { runOwaspAudit, OWASP_LABELS, type OwaspCategory, type OwaspFinding } from "@/lib/security/owasp";
+import { fetchHtml, extractResources, summarize, type Resource } from "@/lib/security/network";
 import { toast } from "sonner";
 
 // --------- CSP Diff Tab ---------
