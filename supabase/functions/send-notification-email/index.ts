@@ -1,6 +1,11 @@
 // Sends emails via Hostinger SMTP (info@odooteams.com)
 // Used for: contact/quote confirmations, admin alerts, status updates, support tickets
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+function esc(s: unknown): string {
+  return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
