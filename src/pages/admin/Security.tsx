@@ -568,6 +568,283 @@ function NetworkTab() {
   );
 }
 
+// --------- CSRF Audit ---------
+function CsrfTab() {
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+  const [routes, setRoutes] = useState(DEFAULT_ADMIN_ROUTES.join("\n"));
+  const [findings, setFindings] = useState<CsrfFinding[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
+
+  const run = async () => {
+    setLoading(true);
+    setFindings([]);
+    try {
+      const list = routes.split("\n").map((r) => r.trim()).filter(Boolean);
+      const out = await runCsrfAudit(baseUrl, list, { onProgress: setProgress });
+      setFindings(out);
+      toast.success(`CSRF audit complete — ${out.length} checks`);
+    } finally {
+      setLoading(false);
+      setProgress("");
+    }
+  };
+
+  const sevBadge = (s: CsrfFinding["severity"], pass: boolean) => {
+    if (pass) return <Badge variant="default" className="bg-green-600">Pass</Badge>;
+    const map = { info: "secondary", low: "outline", medium: "default", high: "destructive" } as const;
+    return <Badge variant={map[s] as any}>{s}</Badge>;
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>CSRF Protection Audit</CardTitle>
+        <CardDescription>
+          Checks anti-CSRF tokens on mutating forms and validates Set-Cookie SameSite/HttpOnly/Secure flags on admin & auth routes.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Base URL</Label>
+            <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Admin / auth routes</Label>
+            <Textarea rows={5} value={routes} onChange={(e) => setRoutes(e.target.value)} className="font-mono text-xs" />
+          </div>
+        </div>
+        <Button onClick={run} disabled={loading}>
+          <KeyRound className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+          {loading ? "Auditing…" : "Run CSRF Audit"}
+        </Button>
+        {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
+
+        {findings.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Route</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Result</TableHead>
+                <TableHead>Message</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {findings.map((f, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-mono text-xs">{f.route}</TableCell>
+                  <TableCell>{f.category}</TableCell>
+                  <TableCell>{sevBadge(f.severity, f.pass)}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{f.message}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// --------- SQL Injection Fuzzer ---------
+function SqliTab() {
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+  const [routes, setRoutes] = useState(PUBLIC_ROUTES_TO_TEST.slice(0, 4).join("\n"));
+  const [extra, setExtra] = useState("");
+  const [findings, setFindings] = useState<SqliFinding[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
+
+  const run = async () => {
+    setLoading(true);
+    setFindings([]);
+    try {
+      const list = routes.split("\n").map((r) => r.trim()).filter(Boolean);
+      const extras = extra.split(",").map((s) => s.trim()).filter(Boolean);
+      const out = await runSqliFuzz(baseUrl, list, { extraParams: extras, onProgress: setProgress });
+      setFindings(out);
+      toast.success(`Fuzzing complete — ${out.length} signals`);
+    } finally {
+      setLoading(false);
+      setProgress("");
+    }
+  };
+
+  const sevBadge = (s: SqliFinding["severity"]) => {
+    const map = { info: "secondary", low: "outline", medium: "default", high: "destructive" } as const;
+    return <Badge variant={map[s] as any}>{s}</Badge>;
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>SQL Injection Fuzzer</CardTitle>
+        <CardDescription>
+          Sends a battery of SQLi payloads against common query parameters and any discovered HTML form fields, flagging DB-error leaks, status flips and large length deltas.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Base URL</Label>
+            <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Routes</Label>
+            <Textarea rows={4} value={routes} onChange={(e) => setRoutes(e.target.value)} className="font-mono text-xs" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Extra parameters (comma-separated, optional)</Label>
+          <Input value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="invoice_id, ticket, code" />
+        </div>
+        <Button onClick={run} disabled={loading}>
+          <Database className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+          {loading ? "Fuzzing…" : "Start SQLi Fuzz"}
+        </Button>
+        {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
+
+        {findings.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Route</TableHead>
+                <TableHead>Param</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead>Payload</TableHead>
+                <TableHead>Severity</TableHead>
+                <TableHead>Signal</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {findings.map((f, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-mono text-xs">{f.route}</TableCell>
+                  <TableCell className="font-mono text-xs">{f.parameter}</TableCell>
+                  <TableCell><Badge variant="outline">{f.method}</Badge></TableCell>
+                  <TableCell className="font-mono text-xs max-w-xs truncate">{f.payload}</TableCell>
+                  <TableCell>{sevBadge(f.severity)}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{f.signal}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {!loading && findings.length === 0 && (
+          <p className="text-sm text-muted-foreground">No findings yet — run the fuzzer.</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// --------- XSS Scanner ---------
+function XssTab() {
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+  const [routes, setRoutes] = useState(PUBLIC_ROUTES_TO_TEST.slice(0, 4).join("\n"));
+  const [extra, setExtra] = useState("");
+  const [stored, setStored] = useState(true);
+  const [findings, setFindings] = useState<XssFinding[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
+
+  const run = async () => {
+    setLoading(true);
+    setFindings([]);
+    try {
+      const list = routes.split("\n").map((r) => r.trim()).filter(Boolean);
+      const extras = extra.split(",").map((s) => s.trim()).filter(Boolean);
+      const out = await runXssScan(baseUrl, list, {
+        extraParams: extras,
+        testStored: stored,
+        onProgress: setProgress,
+      });
+      setFindings(out);
+      toast.success(`XSS scan complete — ${out.length} reflections`);
+    } finally {
+      setLoading(false);
+      setProgress("");
+    }
+  };
+
+  const sevBadge = (s: XssFinding["severity"]) => {
+    const map = { info: "secondary", low: "outline", medium: "default", high: "destructive" } as const;
+    return <Badge variant={map[s] as any}>{s}</Badge>;
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>XSS Scanner</CardTitle>
+        <CardDescription>
+          Tests reflected & stored XSS payloads against common parameters and discovered form fields. Reports the rendering context of each reflection so you can judge exploitability.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Base URL</Label>
+            <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Routes</Label>
+            <Textarea rows={4} value={routes} onChange={(e) => setRoutes(e.target.value)} className="font-mono text-xs" />
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Extra parameters (comma-separated, optional)</Label>
+            <Input value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="comment, title, slug" />
+          </div>
+          <div className="flex items-end gap-2">
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={stored} onChange={(e) => setStored(e.target.checked)} />
+              Also test stored XSS (POST then re-fetch)
+            </label>
+          </div>
+        </div>
+        <Button onClick={run} disabled={loading}>
+          <Code2 className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+          {loading ? "Scanning…" : "Run XSS Scan"}
+        </Button>
+        {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
+
+        {findings.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Route</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Param</TableHead>
+                <TableHead>Context</TableHead>
+                <TableHead>Severity</TableHead>
+                <TableHead>Evidence</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {findings.map((f, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-mono text-xs">{f.route}</TableCell>
+                  <TableCell><Badge variant="outline">{f.type}</Badge></TableCell>
+                  <TableCell className="font-mono text-xs">{f.parameter}</TableCell>
+                  <TableCell><Badge variant="secondary">{f.context}</Badge></TableCell>
+                  <TableCell>{sevBadge(f.severity)}</TableCell>
+                  <TableCell className="font-mono text-xs max-w-md truncate">{f.evidence}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {!loading && findings.length === 0 && (
+          <p className="text-sm text-muted-foreground">No reflections detected yet — run the scan.</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 // --------- Main page ---------
 export default function AdminSecurity() {
   return (
