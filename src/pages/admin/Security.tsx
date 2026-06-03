@@ -893,6 +893,164 @@ function XssTab() {
   );
 }
 
+
+// --------- Full Scan ---------
+function FullScanTab() {
+  const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
+  const [pct, setPct] = useState(0);
+  const [report, setReport] = useState<FullScanReport | null>(null);
+
+  const run = async () => {
+    setLoading(true);
+    setReport(null);
+    setPct(0);
+    try {
+      const r = await runFullScan(baseUrl, (msg, p) => {
+        setProgress(msg);
+        setPct(p);
+      });
+      setReport(r);
+      toast.success("Full scan complete");
+    } catch (e: any) {
+      toast.error(e.message || "Scan failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadReport = () => {
+    if (!report) return;
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `full-scan-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Full Security Scan</CardTitle>
+        <CardDescription>
+          Runs Headers + OWASP Top 10 + CSRF + SQLi + XSS + Black-box + Network/CDN in one go and produces a single consolidated report.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex gap-2">
+          <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder="https://yoursite.com" />
+          <Button onClick={run} disabled={loading} size="lg">
+            <Rocket className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+            {loading ? "Scanning…" : "Run Full Scan"}
+          </Button>
+          {report && (
+            <Button variant="outline" onClick={downloadReport}>
+              <Download className="h-4 w-4 mr-2" /> Export
+            </Button>
+          )}
+        </div>
+        {loading && (
+          <div className="space-y-2">
+            <Progress value={pct} />
+            <p className="text-xs text-muted-foreground">{progress} ({pct}%)</p>
+          </div>
+        )}
+
+        {report && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {[
+                ["Headers", `${report.summary.headers.pass}✓ / ${report.summary.headers.fail}✗`, report.summary.headers.fail],
+                ["OWASP", `${report.summary.owasp.pass}✓ / ${report.summary.owasp.fail}✗`, report.summary.owasp.fail],
+                ["CSRF", `${report.summary.csrf.pass}✓ / ${report.summary.csrf.fail}✗`, report.summary.csrf.fail],
+                ["Black-box", `${report.summary.blackbox.pass}✓ / ${report.summary.blackbox.fail}✗`, report.summary.blackbox.fail],
+                ["SQLi findings", String(report.summary.sqli.findings), report.summary.sqli.high],
+                ["XSS findings", String(report.summary.xss.findings), report.summary.xss.high],
+                ["External resources", String(report.summary.network.external), 0],
+                ["Mixed content", String(report.summary.network.mixed), report.summary.network.mixed],
+              ].map(([label, val, bad]) => (
+                <div key={label as string} className="border rounded p-3 text-center">
+                  <div className={`text-xl font-bold ${(bad as number) > 0 ? "text-red-600" : ""}`}>{val as string}</div>
+                  <div className="text-xs text-muted-foreground">{label as string}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Scanned {report.baseUrl} · {new Date(report.startedAt).toLocaleString()}
+              {" → "}
+              {new Date(report.finishedAt).toLocaleTimeString()}
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// --------- Server Config Snippets ---------
+function ServerConfigTab() {
+  const [domain, setDomain] = useState("odooteams.com");
+  const [csp, setCsp] = useState(buildCspString(RECOMMENDED_CSP));
+  const nginx = generateNginxConfig({ domain, csp });
+  const cf = generateCloudflareTransformRules({ domain, csp });
+  const apache = generateApacheHtaccess({ domain, csp });
+
+  const dl = (name: string, content: string, mime = "text/plain") => {
+    const blob = new Blob([content], { type: mime });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Server Config Generator</CardTitle>
+          <CardDescription>Drop-in Nginx, Cloudflare, and Apache snippets that set every missing security header.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Domain</Label>
+              <Input value={domain} onChange={(e) => setDomain(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>CSP (editable)</Label>
+              <Textarea rows={3} value={csp} onChange={(e) => setCsp(e.target.value)} className="font-mono text-xs" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {[
+        { title: "Nginx", filename: "nginx-security.conf", content: nginx },
+        { title: "Cloudflare Transform Rules", filename: "cloudflare-rules.txt", content: cf },
+        { title: "Apache .htaccess", filename: ".htaccess", content: apache },
+      ].map((s) => (
+        <Card key={s.title}>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>{s.title}</CardTitle>
+              <CardDescription>Copy/paste or download.</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => dl(s.filename, s.content)}>
+              <Download className="h-4 w-4 mr-2" /> Download
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <Textarea rows={14} readOnly value={s.content} className="font-mono text-xs" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 // --------- Main page ---------
 export default function AdminSecurity() {
   return (
@@ -910,9 +1068,10 @@ export default function AdminSecurity() {
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
-                <Tabs defaultValue="owasp" className="w-full">
+                <Tabs defaultValue="full" className="w-full">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
-                    <TabsList className="inline-flex w-max md:grid md:grid-cols-8 md:w-full">
+                    <TabsList className="inline-flex w-max md:grid md:grid-cols-10 md:w-full">
+                      <TabsTrigger value="full" className="whitespace-nowrap"><Rocket className="h-4 w-4 mr-2" />Full Scan</TabsTrigger>
                       <TabsTrigger value="owasp" className="whitespace-nowrap"><ListChecks className="h-4 w-4 mr-2" />OWASP</TabsTrigger>
                       <TabsTrigger value="csrf" className="whitespace-nowrap"><KeyRound className="h-4 w-4 mr-2" />CSRF</TabsTrigger>
                       <TabsTrigger value="xss" className="whitespace-nowrap"><Code2 className="h-4 w-4 mr-2" />XSS</TabsTrigger>
@@ -921,8 +1080,10 @@ export default function AdminSecurity() {
                       <TabsTrigger value="csp" className="whitespace-nowrap"><FileSearch className="h-4 w-4 mr-2" />CSP Diff</TabsTrigger>
                       <TabsTrigger value="headers" className="whitespace-nowrap"><ShieldCheck className="h-4 w-4 mr-2" />Headers</TabsTrigger>
                       <TabsTrigger value="blackbox" className="whitespace-nowrap"><Bug className="h-4 w-4 mr-2" />Black-box</TabsTrigger>
+                      <TabsTrigger value="server" className="whitespace-nowrap"><Server className="h-4 w-4 mr-2" />Server Config</TabsTrigger>
                     </TabsList>
                   </div>
+                  <TabsContent value="full" className="mt-6 min-w-0"><FullScanTab /></TabsContent>
                   <TabsContent value="owasp" className="mt-6 min-w-0"><OwaspTab /></TabsContent>
                   <TabsContent value="csrf" className="mt-6 min-w-0"><CsrfTab /></TabsContent>
                   <TabsContent value="xss" className="mt-6 min-w-0"><XssTab /></TabsContent>
@@ -931,6 +1092,7 @@ export default function AdminSecurity() {
                   <TabsContent value="csp" className="mt-6 min-w-0"><CspDiffTab /></TabsContent>
                   <TabsContent value="headers" className="mt-6 min-w-0"><HeaderTestsTab /></TabsContent>
                   <TabsContent value="blackbox" className="mt-6 min-w-0"><BlackBoxTab /></TabsContent>
+                  <TabsContent value="server" className="mt-6 min-w-0"><ServerConfigTab /></TabsContent>
                 </Tabs>
               </div>
             </main>
