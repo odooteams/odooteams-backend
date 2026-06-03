@@ -80,8 +80,8 @@ export async function runFullScan(
     const s = summarize(items, base + "/");
     network = {
       totalExternal: s.totalExternal,
-      mixedContent: s.mixedContent,
-      missingSri: s.missingSri,
+      mixedContent: s.mixedContent.map((r) => r.url),
+      missingSri: s.missingSri.map((r) => r.url),
       byCdn: s.byCdn,
     };
   }
