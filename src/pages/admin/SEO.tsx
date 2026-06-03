@@ -470,6 +470,245 @@ ${urls.join('\n')}
   );
 }
 
+// ---------- Internal Links Tab ----------
+function InternalLinksTab() {
+  const [baseUrl, setBaseUrl] = useState('https://odooteams.com');
+  const [routes, setRoutes] = useState(['/', '/about', '/services', '/projects', '/learn-odoo', '/faqs', '/contact'].join('\n'));
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState('');
+  const [report, setReport] = useState<InternalLinkReport | null>(null);
+
+  const run = async () => {
+    setLoading(true);
+    setReport(null);
+    try {
+      const list = routes.split('\n').map(r => r.trim()).filter(Boolean);
+      const out = await analyzeInternalLinks(baseUrl, list, setProgress);
+      setReport(out);
+      toast.success(`Analyzed ${list.length} pages`);
+    } catch (e: any) {
+      toast.error(e.message || 'Failed (CORS?)');
+    } finally {
+      setLoading(false);
+      setProgress('');
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Internal Link Analyzer</CardTitle>
+          <CardDescription>
+            Crawls each route, counts outbound internal vs external links, surfaces orphan pages and top anchor text.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Base URL</Label>
+              <Input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Routes (one per line)</Label>
+              <Textarea rows={6} value={routes} onChange={e => setRoutes(e.target.value)} className="font-mono text-xs" />
+            </div>
+          </div>
+          <Button onClick={run} disabled={loading}>
+            <NetworkIcon className={`h-4 w-4 mr-2 ${loading ? 'animate-pulse' : ''}`} />
+            {loading ? 'Analyzing…' : 'Analyze Internal Links'}
+          </Button>
+          {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
+        </CardContent>
+      </Card>
+
+      {report && (
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{report.pages.length}</div>
+              <div className="text-xs text-muted-foreground">Pages</div>
+            </div>
+            <div className="border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{report.averageInternal.toFixed(1)}</div>
+              <div className="text-xs text-muted-foreground">Avg internal links/page</div>
+            </div>
+            <div className="border rounded p-3 text-center">
+              <div className={`text-2xl font-bold ${report.orphans.length ? 'text-orange-600' : 'text-green-600'}`}>{report.orphans.length}</div>
+              <div className="text-xs text-muted-foreground">Orphan pages</div>
+            </div>
+            <div className="border rounded p-3 text-center">
+              <div className="text-2xl font-bold">{Object.keys(report.externalDomains).length}</div>
+              <div className="text-xs text-muted-foreground">External domains</div>
+            </div>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Per-page metrics</CardTitle>
+              <CardDescription>Inbound counts come from the scanned set only.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Path</TableHead>
+                    <TableHead>Inbound</TableHead>
+                    <TableHead>Outbound internal</TableHead>
+                    <TableHead>External</TableHead>
+                    <TableHead>Words</TableHead>
+                    <TableHead>H1</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {report.pages.map(p => {
+                    const key = p.url.replace(/\/$/, '') || '/';
+                    const inbound = report.inbound[key] ?? 0;
+                    return (
+                      <TableRow key={p.url}>
+                        <TableCell className="font-mono text-xs">{p.url}</TableCell>
+                        <TableCell>
+                          <Badge variant={inbound === 0 ? 'destructive' : 'default'}>{inbound}</Badge>
+                        </TableCell>
+                        <TableCell>{p.internalLinks.length}</TableCell>
+                        <TableCell>{p.externalLinks.length}</TableCell>
+                        <TableCell>{p.wordCount}</TableCell>
+                        <TableCell>
+                          <Badge variant={p.h1Count === 1 ? 'default' : 'destructive'}>{p.h1Count}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          {report.orphans.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Orphan pages</CardTitle>
+                <CardDescription>No internal links point to these. Add contextual links from related pages.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-2">
+                {report.orphans.map(o => <Badge key={o} variant="destructive">{o}</Badge>)}
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader><CardTitle>Top anchor text</CardTitle></CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {report.topAnchors.map(a => (
+                <Badge key={a.anchor} variant="secondary">{a.anchor} · {a.count}</Badge>
+              ))}
+            </CardContent>
+          </Card>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ---------- Off-Page SEO Tab ----------
+function OffPageTab() {
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const copy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied');
+  };
+
+  const done = OFF_PAGE_CHECKLIST.filter(i => checked[i.id]).length;
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Off-Page SEO Checklist</CardTitle>
+          <CardDescription>{done}/{OFF_PAGE_CHECKLIST.length} complete — work through these to grow authority signals.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {OFF_PAGE_CHECKLIST.map(item => (
+            <label key={item.id} className="flex items-center gap-3 p-2 border rounded hover:bg-muted/50 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={!!checked[item.id]}
+                onChange={e => setChecked({ ...checked, [item.id]: e.target.checked })}
+              />
+              <span className="flex-1 text-sm">{item.label}</span>
+              <Badge variant={item.priority === 'high' ? 'destructive' : item.priority === 'medium' ? 'default' : 'secondary'}>
+                {item.priority}
+              </Badge>
+            </label>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Backlink Prospects</CardTitle>
+          <CardDescription>High-relevance directories, forums, and publications for Odoo/ERP outreach.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Authority</TableHead>
+                <TableHead>Notes</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {BACKLINK_PROSPECTS.map(p => (
+                <TableRow key={p.url}>
+                  <TableCell className="font-medium">{p.name}</TableCell>
+                  <TableCell className="text-xs">{p.category}</TableCell>
+                  <TableCell><Badge variant="outline">{p.type}</Badge></TableCell>
+                  <TableCell>
+                    <Badge variant={p.authority === 'high' ? 'default' : p.authority === 'medium' ? 'secondary' : 'outline'}>
+                      {p.authority}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground max-w-md">{p.notes}</TableCell>
+                  <TableCell>
+                    <a href={p.url} target="_blank" rel="noopener noreferrer">
+                      <Button variant="ghost" size="icon"><ExternalLink className="h-4 w-4" /></Button>
+                    </a>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Outreach Email Templates</CardTitle>
+          <CardDescription>Copy, fill in the variables, and send.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {Object.entries(OUTREACH_TEMPLATES).map(([key, body]) => (
+            <div key={key} className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</Label>
+                <Button variant="outline" size="sm" onClick={() => copy(body)}>
+                  <Copy className="h-4 w-4 mr-2" /> Copy
+                </Button>
+              </div>
+              <Textarea rows={10} readOnly value={body} className="font-mono text-xs" />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+
 // ---------- Main Page ----------
 export default function AdminSEO() {
   return (
