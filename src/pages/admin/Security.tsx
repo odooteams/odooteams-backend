@@ -599,12 +599,33 @@ function CsrfTab() {
     return <Badge variant={map[s] as any}>{s}</Badge>;
   };
 
+  const totals = {
+    pass: findings.filter((f) => f.pass).length,
+    fail: findings.filter((f) => !f.pass).length,
+    high: findings.filter((f) => !f.pass && f.severity === "high").length,
+  };
+
+  const downloadReport = () => {
+    const report = {
+      generatedAt: new Date().toISOString(),
+      baseUrl,
+      totals,
+      findings,
+    };
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `csrf-report-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>CSRF Protection Audit</CardTitle>
         <CardDescription>
-          Checks anti-CSRF tokens on mutating forms and validates Set-Cookie SameSite/HttpOnly/Secure flags on admin & auth routes.
+          Checks anti-CSRF tokens on mutating forms and validates Set-Cookie SameSite/HttpOnly/Secure flags on admin & auth routes. Produces a pass/fail report.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -618,11 +639,35 @@ function CsrfTab() {
             <Textarea rows={5} value={routes} onChange={(e) => setRoutes(e.target.value)} className="font-mono text-xs" />
           </div>
         </div>
-        <Button onClick={run} disabled={loading}>
-          <KeyRound className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
-          {loading ? "Auditing…" : "Run CSRF Audit"}
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={run} disabled={loading}>
+            <KeyRound className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+            {loading ? "Auditing…" : "Run CSRF Audit"}
+          </Button>
+          {findings.length > 0 && (
+            <Button variant="outline" onClick={downloadReport}>
+              <Download className="h-4 w-4 mr-2" /> Export Report
+            </Button>
+          )}
+        </div>
         {progress && <p className="text-xs text-muted-foreground">{progress}</p>}
+
+        {findings.length > 0 && (
+          <div className="grid grid-cols-3 gap-2">
+            <div className="border rounded p-3 text-center">
+              <div className="text-2xl font-bold text-green-600">{totals.pass}</div>
+              <div className="text-xs text-muted-foreground">Pass</div>
+            </div>
+            <div className="border rounded p-3 text-center">
+              <div className="text-2xl font-bold text-red-600">{totals.fail}</div>
+              <div className="text-xs text-muted-foreground">Fail</div>
+            </div>
+            <div className="border rounded p-3 text-center">
+              <div className="text-2xl font-bold text-orange-600">{totals.high}</div>
+              <div className="text-xs text-muted-foreground">High severity</div>
+            </div>
+          </div>
+        )}
 
         {findings.length > 0 && (
           <Table>
