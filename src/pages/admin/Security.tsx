@@ -895,24 +895,69 @@ function XssTab() {
 
 
 // --------- Full Scan ---------
+const SAVED_SCANS_KEY = "security:saved-full-scans";
+
+interface SavedScan {
+  id: string;
+  label: string;
+  savedAt: string;
+  report: FullScanReport;
+}
+
+function loadSavedScans(): SavedScan[] {
+  try {
+    const raw = localStorage.getItem(SAVED_SCANS_KEY);
+    return raw ? (JSON.parse(raw) as SavedScan[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistSavedScans(scans: SavedScan[]) {
+  try {
+    localStorage.setItem(SAVED_SCANS_KEY, JSON.stringify(scans));
+  } catch (e) {
+    console.error("Failed to persist scans", e);
+  }
+}
+
 function FullScanTab() {
   const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
+  const [label, setLabel] = useState("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState("");
   const [pct, setPct] = useState(0);
   const [report, setReport] = useState<FullScanReport | null>(null);
+  const [saved, setSaved] = useState<SavedScan[]>(() => loadSavedScans());
 
   const run = async () => {
+    if (!baseUrl.trim()) {
+      toast.error("Please enter a URL to scan");
+      return;
+    }
+    let target = baseUrl.trim();
+    if (!/^https?:\/\//i.test(target)) target = "https://" + target;
+
     setLoading(true);
     setReport(null);
     setPct(0);
     try {
-      const r = await runFullScan(baseUrl, (msg, p) => {
+      const r = await runFullScan(target, (msg, p) => {
         setProgress(msg);
         setPct(p);
       });
       setReport(r);
-      toast.success("Full scan complete");
+
+      const entry: SavedScan = {
+        id: `scan-${Date.now()}`,
+        label: label.trim() || (() => { try { return new URL(r.baseUrl).hostname; } catch { return r.baseUrl; } })(),
+        savedAt: new Date().toISOString(),
+        report: r,
+      };
+      const next = [entry, ...saved].slice(0, 25);
+      setSaved(next);
+      persistSavedScans(next);
+      toast.success("Full scan complete — saved for later review");
     } catch (e: any) {
       toast.error(e.message || "Scan failed");
     } finally {
@@ -920,9 +965,9 @@ function FullScanTab() {
     }
   };
 
-  const downloadReport = () => {
-    if (!report) return;
-    const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" });
+  const downloadReport = (r: FullScanReport | null = report) => {
+    if (!r) return;
+    const blob = new Blob([JSON.stringify(r, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `full-scan-${Date.now()}.json`;
@@ -930,27 +975,54 @@ function FullScanTab() {
     URL.revokeObjectURL(a.href);
   };
 
+  const deleteSaved = (id: string) => {
+    const next = saved.filter((s) => s.id !== id);
+    setSaved(next);
+    persistSavedScans(next);
+  };
+
+  const clearAll = () => {
+    setSaved([]);
+    persistSavedScans([]);
+    toast.success("Saved scans cleared");
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Full Security Scan</CardTitle>
         <CardDescription>
-          Runs Headers + OWASP Top 10 + CSRF + SQLi + XSS + Black-box + Network/CDN in one go and produces a single consolidated report.
+          Runs Headers + OWASP Top 10 + CSRF + SQLi + XSS + Black-box + Network/CDN against any URL and saves the consolidated report for later review.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <Input value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder="https://yoursite.com" />
-          <Button onClick={run} disabled={loading} size="lg">
-            <Rocket className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
-            {loading ? "Scanning…" : "Run Full Scan"}
-          </Button>
-          {report && (
-            <Button variant="outline" onClick={downloadReport}>
-              <Download className="h-4 w-4 mr-2" /> Export
+        <div className="grid gap-3 md:grid-cols-[2fr_1fr_auto]">
+          <div className="space-y-1">
+            <Label htmlFor="full-scan-url" className="text-xs">Target URL</Label>
+            <Input
+              id="full-scan-url"
+              value={baseUrl}
+              onChange={(e) => setBaseUrl(e.target.value)}
+              placeholder="https://yoursite.com"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="full-scan-label" className="text-xs">Label (optional)</Label>
+            <Input
+              id="full-scan-label"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="e.g. Pre-release prod"
+            />
+          </div>
+          <div className="flex items-end">
+            <Button onClick={run} disabled={loading} size="lg" className="w-full">
+              <Rocket className={`h-4 w-4 mr-2 ${loading ? "animate-pulse" : ""}`} />
+              {loading ? "Scanning…" : "Run Full Scan"}
             </Button>
-          )}
+          </div>
         </div>
+
         {loading && (
           <div className="space-y-2">
             <Progress value={pct} />
@@ -960,6 +1032,12 @@ function FullScanTab() {
 
         {report && (
           <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-sm">Latest scan results</h3>
+              <Button variant="outline" size="sm" onClick={() => downloadReport(report)}>
+                <Download className="h-4 w-4 mr-2" /> Export JSON
+              </Button>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {[
                 ["Headers", `${report.summary.headers.pass}✓ / ${report.summary.headers.fail}✗`, report.summary.headers.fail],
@@ -970,10 +1048,10 @@ function FullScanTab() {
                 ["XSS findings", String(report.summary.xss.findings), report.summary.xss.high],
                 ["External resources", String(report.summary.network.external), 0],
                 ["Mixed content", String(report.summary.network.mixed), report.summary.network.mixed],
-              ].map(([label, val, bad]) => (
-                <div key={label as string} className="border rounded p-3 text-center">
+              ].map(([lbl, val, bad]) => (
+                <div key={lbl as string} className="border rounded p-3 text-center">
                   <div className={`text-xl font-bold ${(bad as number) > 0 ? "text-red-600" : ""}`}>{val as string}</div>
-                  <div className="text-xs text-muted-foreground">{label as string}</div>
+                  <div className="text-xs text-muted-foreground">{lbl as string}</div>
                 </div>
               ))}
             </div>
@@ -984,6 +1062,48 @@ function FullScanTab() {
             </p>
           </div>
         )}
+
+        <div className="space-y-2 border-t pt-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-sm">Saved scans ({saved.length})</h3>
+            {saved.length > 0 && (
+              <Button variant="ghost" size="sm" onClick={clearAll}>Clear all</Button>
+            )}
+          </div>
+          {saved.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              No saved scans yet. Completed scans are automatically saved in your browser for later review.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {saved.map((s) => {
+                const sum = s.report.summary;
+                const totalFail =
+                  sum.headers.fail + sum.owasp.fail + sum.csrf.fail + sum.blackbox.fail + sum.sqli.high + sum.xss.high;
+                return (
+                  <div key={s.id} className="border rounded p-3 flex flex-wrap items-center gap-3">
+                    <div className="flex-1 min-w-[200px]">
+                      <div className="font-medium text-sm">{s.label}</div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {s.report.baseUrl} · {new Date(s.savedAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <div className={`text-sm font-semibold ${totalFail > 0 ? "text-red-600" : "text-green-600"}`}>
+                      {totalFail > 0 ? `${totalFail} issues` : "All passed"}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setReport(s.report)}>View</Button>
+                      <Button variant="outline" size="sm" onClick={() => downloadReport(s.report)}>
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => deleteSaved(s.id)}>Delete</Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
