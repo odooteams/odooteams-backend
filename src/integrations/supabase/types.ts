@@ -680,6 +680,42 @@ export type Database = {
         }
         Relationships: []
       }
+      security_scans: {
+        Row: {
+          created_at: string
+          finished_at: string | null
+          id: string
+          label: string
+          report: Json
+          started_at: string | null
+          summary: Json
+          target_url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          label: string
+          report: Json
+          started_at?: string | null
+          summary?: Json
+          target_url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          label?: string
+          report?: Json
+          started_at?: string | null
+          summary?: Json
+          target_url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           category_ar: string

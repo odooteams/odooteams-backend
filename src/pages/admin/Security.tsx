@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import SEOHead from "@/components/seo/SEOHead";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/dashboard/AdminSidebar";
@@ -895,8 +897,6 @@ function XssTab() {
 
 
 // --------- Full Scan ---------
-const SAVED_SCANS_KEY = "security:saved-full-scans";
-
 interface SavedScan {
   id: string;
   label: string;
@@ -904,35 +904,52 @@ interface SavedScan {
   report: FullScanReport;
 }
 
-function loadSavedScans(): SavedScan[] {
-  try {
-    const raw = localStorage.getItem(SAVED_SCANS_KEY);
-    return raw ? (JSON.parse(raw) as SavedScan[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function persistSavedScans(scans: SavedScan[]) {
-  try {
-    localStorage.setItem(SAVED_SCANS_KEY, JSON.stringify(scans));
-  } catch (e) {
-    console.error("Failed to persist scans", e);
-  }
-}
-
 function FullScanTab() {
+  const { user } = useAuth();
   const [baseUrl, setBaseUrl] = useState(DEFAULT_BASE_URL);
   const [label, setLabel] = useState("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState("");
   const [pct, setPct] = useState(0);
   const [report, setReport] = useState<FullScanReport | null>(null);
-  const [saved, setSaved] = useState<SavedScan[]>(() => loadSavedScans());
+  const [saved, setSaved] = useState<SavedScan[]>([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
+
+  const fetchSaved = async () => {
+    if (!user?.id) return;
+    setLoadingSaved(true);
+    const { data, error } = await supabase
+      .from("security_scans")
+      .select("id, label, created_at, report")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) {
+      toast.error("Could not load saved scans: " + error.message);
+    } else {
+      setSaved(
+        (data || []).map((row: any) => ({
+          id: row.id,
+          label: row.label,
+          savedAt: row.created_at,
+          report: row.report as FullScanReport,
+        }))
+      );
+    }
+    setLoadingSaved(false);
+  };
+
+  useEffect(() => {
+    fetchSaved();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   const run = async () => {
     if (!baseUrl.trim()) {
       toast.error("Please enter a URL to scan");
+      return;
+    }
+    if (!user?.id) {
+      toast.error("You must be signed in to save scans");
       return;
     }
     let target = baseUrl.trim();
@@ -948,16 +965,31 @@ function FullScanTab() {
       });
       setReport(r);
 
-      const entry: SavedScan = {
-        id: `scan-${Date.now()}`,
-        label: label.trim() || (() => { try { return new URL(r.baseUrl).hostname; } catch { return r.baseUrl; } })(),
-        savedAt: new Date().toISOString(),
-        report: r,
-      };
-      const next = [entry, ...saved].slice(0, 25);
-      setSaved(next);
-      persistSavedScans(next);
-      toast.success("Full scan complete — saved for later review");
+      const finalLabel =
+        label.trim() ||
+        (() => {
+          try {
+            return new URL(r.baseUrl).hostname;
+          } catch {
+            return r.baseUrl;
+          }
+        })();
+
+      const { error } = await supabase.from("security_scans").insert({
+        user_id: user.id,
+        label: finalLabel,
+        target_url: r.baseUrl,
+        started_at: r.startedAt,
+        finished_at: r.finishedAt,
+        summary: r.summary as any,
+        report: r as any,
+      });
+      if (error) {
+        toast.error("Scan ran but failed to save: " + error.message);
+      } else {
+        toast.success("Full scan complete — saved to your account");
+        fetchSaved();
+      }
     } catch (e: any) {
       toast.error(e.message || "Scan failed");
     } finally {
@@ -975,17 +1007,27 @@ function FullScanTab() {
     URL.revokeObjectURL(a.href);
   };
 
-  const deleteSaved = (id: string) => {
-    const next = saved.filter((s) => s.id !== id);
-    setSaved(next);
-    persistSavedScans(next);
+  const deleteSaved = async (id: string) => {
+    const { error } = await supabase.from("security_scans").delete().eq("id", id);
+    if (error) {
+      toast.error("Failed to delete: " + error.message);
+      return;
+    }
+    setSaved((prev) => prev.filter((s) => s.id !== id));
   };
 
-  const clearAll = () => {
+  const clearAll = async () => {
+    if (!user?.id) return;
+    if (!confirm("Delete all saved scans? This cannot be undone.")) return;
+    const { error } = await supabase.from("security_scans").delete().eq("user_id", user.id);
+    if (error) {
+      toast.error("Failed to clear: " + error.message);
+      return;
+    }
     setSaved([]);
-    persistSavedScans([]);
     toast.success("Saved scans cleared");
   };
+
 
   return (
     <Card>
@@ -1065,15 +1107,18 @@ function FullScanTab() {
 
         <div className="space-y-2 border-t pt-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-sm">Saved scans ({saved.length})</h3>
+            <h3 className="font-semibold text-sm">
+              Saved scans ({saved.length}){loadingSaved && " · loading…"}
+            </h3>
             {saved.length > 0 && (
               <Button variant="ghost" size="sm" onClick={clearAll}>Clear all</Button>
             )}
           </div>
           {saved.length === 0 ? (
             <p className="text-xs text-muted-foreground">
-              No saved scans yet. Completed scans are automatically saved in your browser for later review.
+              No saved scans yet. Completed scans are stored on your admin account and available across devices.
             </p>
+
           ) : (
             <div className="space-y-2">
               {saved.map((s) => {
