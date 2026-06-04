@@ -1107,15 +1107,18 @@ function FullScanTab() {
 
         <div className="space-y-2 border-t pt-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-sm">Saved scans ({saved.length})</h3>
+            <h3 className="font-semibold text-sm">
+              Saved scans ({saved.length}){loadingSaved && " · loading…"}
+            </h3>
             {saved.length > 0 && (
               <Button variant="ghost" size="sm" onClick={clearAll}>Clear all</Button>
             )}
           </div>
           {saved.length === 0 ? (
             <p className="text-xs text-muted-foreground">
-              No saved scans yet. Completed scans are automatically saved in your browser for later review.
+              No saved scans yet. Completed scans are stored on your admin account and available across devices.
             </p>
+
           ) : (
             <div className="space-y-2">
               {saved.map((s) => {
