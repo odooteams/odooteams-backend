@@ -1074,38 +1074,73 @@ function FullScanTab() {
           </div>
         )}
 
-        {report && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">Latest scan results</h3>
-              <Button variant="outline" size="sm" onClick={() => downloadReport(report)}>
-                <Download className="h-4 w-4 mr-2" /> Export JSON
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {[
-                ["Headers", `${report.summary.headers.pass}✓ / ${report.summary.headers.fail}✗`, report.summary.headers.fail],
-                ["OWASP", `${report.summary.owasp.pass}✓ / ${report.summary.owasp.fail}✗`, report.summary.owasp.fail],
-                ["CSRF", `${report.summary.csrf.pass}✓ / ${report.summary.csrf.fail}✗`, report.summary.csrf.fail],
-                ["Black-box", `${report.summary.blackbox.pass}✓ / ${report.summary.blackbox.fail}✗`, report.summary.blackbox.fail],
-                ["SQLi findings", String(report.summary.sqli.findings), report.summary.sqli.high],
-                ["XSS findings", String(report.summary.xss.findings), report.summary.xss.high],
-                ["External resources", String(report.summary.network.external), 0],
-                ["Mixed content", String(report.summary.network.mixed), report.summary.network.mixed],
-              ].map(([lbl, val, bad]) => (
-                <div key={lbl as string} className="border rounded p-3 text-center">
-                  <div className={`text-xl font-bold ${(bad as number) > 0 ? "text-red-600" : ""}`}>{val as string}</div>
-                  <div className="text-xs text-muted-foreground">{lbl as string}</div>
+        {report && (() => {
+          const s = report.summary;
+          const weights = { headers: 2, owasp: 3, csrf: 3, blackbox: 2, sqli: 3, xss: 3, network: 1 };
+          let earned = 0, total = 0;
+          total += weights.headers * (s.headers.pass + s.headers.fail);
+          earned += weights.headers * s.headers.pass;
+          total += weights.owasp * (s.owasp.pass + s.owasp.fail);
+          earned += weights.owasp * s.owasp.pass;
+          total += weights.csrf * (s.csrf.pass + s.csrf.fail);
+          earned += weights.csrf * s.csrf.pass;
+          total += weights.blackbox * (s.blackbox.pass + s.blackbox.fail);
+          earned += weights.blackbox * s.blackbox.pass;
+          // findings count as failures
+          const sqliPenalty = s.sqli.high * weights.sqli;
+          const xssPenalty = s.xss.high * weights.xss;
+          const netPenalty = s.network.mixed * weights.network;
+          total += sqliPenalty + xssPenalty + netPenalty;
+          const score = total === 0 ? 100 : Math.round((earned / total) * 100);
+          const grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : score >= 60 ? "D" : "F";
+          const color = grade === "A" ? "text-green-600" : grade === "B" ? "text-emerald-600" : grade === "C" ? "text-yellow-600" : grade === "D" ? "text-orange-600" : "text-red-600";
+          return (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-sm">Latest scan results</h3>
+                <Button variant="outline" size="sm" onClick={() => downloadReport(report)}>
+                  <Download className="h-4 w-4 mr-2" /> Export JSON
+                </Button>
+              </div>
+              <div className="grid md:grid-cols-3 gap-3">
+                <div className="border rounded-lg p-4 text-center">
+                  <div className={`text-5xl font-bold ${color}`}>{grade}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Overall security grade</div>
                 </div>
-              ))}
+                <div className="border rounded-lg p-4 text-center">
+                  <div className={`text-5xl font-bold ${color}`}>{score}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Score / 100</div>
+                </div>
+                <div className="border rounded-lg p-4 text-center">
+                  <div className="text-5xl font-bold">{s.owasp.fail + s.csrf.fail + s.headers.fail + s.blackbox.fail + s.sqli.high + s.xss.high}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Total issues</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {[
+                  ["Headers", `${s.headers.pass}✓ / ${s.headers.fail}✗`, s.headers.fail],
+                  ["OWASP", `${s.owasp.pass}✓ / ${s.owasp.fail}✗`, s.owasp.fail],
+                  ["CSRF", `${s.csrf.pass}✓ / ${s.csrf.fail}✗`, s.csrf.fail],
+                  ["Black-box", `${s.blackbox.pass}✓ / ${s.blackbox.fail}✗`, s.blackbox.fail],
+                  ["SQLi findings", String(s.sqli.findings), s.sqli.high],
+                  ["XSS findings", String(s.xss.findings), s.xss.high],
+                  ["External resources", String(s.network.external), 0],
+                  ["Mixed content", String(s.network.mixed), s.network.mixed],
+                ].map(([lbl, val, bad]) => (
+                  <div key={lbl as string} className="border rounded p-3 text-center">
+                    <div className={`text-xl font-bold ${(bad as number) > 0 ? "text-red-600" : ""}`}>{val as string}</div>
+                    <div className="text-xs text-muted-foreground">{lbl as string}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Scanned {report.baseUrl} · {new Date(report.startedAt).toLocaleString()}
+                {" → "}
+                {new Date(report.finishedAt).toLocaleTimeString()}
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Scanned {report.baseUrl} · {new Date(report.startedAt).toLocaleString()}
-              {" → "}
-              {new Date(report.finishedAt).toLocaleTimeString()}
-            </p>
-          </div>
-        )}
+          );
+        })()}
 
         <div className="space-y-2 border-t pt-4">
           <div className="flex items-center justify-between">
