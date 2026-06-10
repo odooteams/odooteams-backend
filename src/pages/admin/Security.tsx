@@ -12,7 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server } from "lucide-react";
+import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server, Ban } from "lucide-react";
+import BlacklistTab from "@/components/admin/security/BlacklistTab";
+import MiddlewareTab from "@/components/admin/security/MiddlewareTab";
 import {
   RECOMMENDED_CSP,
   parseCsp,
