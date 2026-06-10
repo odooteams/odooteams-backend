@@ -338,6 +338,78 @@ export type Database = {
         }
         Relationships: []
       }
+      ip_blacklist: {
+        Row: {
+          attempts: number
+          auto: boolean
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          ip: string
+          last_route: string | null
+          notes: string | null
+          reason: string
+          severity: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          auto?: boolean
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip: string
+          last_route?: string | null
+          notes?: string | null
+          reason?: string
+          severity?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          auto?: boolean
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip?: string
+          last_route?: string | null
+          notes?: string | null
+          reason?: string
+          severity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ip_whitelist: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          ip: string
+          note: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          ip: string
+          note?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          ip?: string
+          note?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       learn_resources: {
         Row: {
           author_ar: string | null
@@ -677,6 +749,42 @@ export type Database = {
           title_ar?: string
           title_en?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      security_events: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip: string | null
+          route: string | null
+          severity: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip?: string | null
+          route?: string | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip?: string | null
+          route?: string | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
