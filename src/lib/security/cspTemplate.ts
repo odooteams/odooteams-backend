@@ -26,11 +26,14 @@ export const RECOMMENDED_CSP: Record<string, string[]> = {
 
 export const REQUIRED_HEADERS: Record<string, string | RegExp> = {
   "content-security-policy": /default-src/i,
-  "strict-transport-security": /max-age=\d+/i,
+  "strict-transport-security": /max-age=\d{7,}/i, // >= ~115 days
   "x-content-type-options": "nosniff",
   "x-frame-options": /DENY|SAMEORIGIN/i,
   "referrer-policy": /no-referrer|strict-origin/i,
   "permissions-policy": /.+/,
+  "cross-origin-opener-policy": /same-origin/i,
+  "cross-origin-resource-policy": /same-origin|same-site/i,
+  "x-xss-protection": /0|1; mode=block/i,
 };
 
 export function parseCsp(value: string): Record<string, string[]> {
