@@ -15,6 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server, Ban } from "lucide-react";
 import BlacklistTab from "@/components/admin/security/BlacklistTab";
 import MiddlewareTab from "@/components/admin/security/MiddlewareTab";
+import AdminNotificationsBell from "@/components/admin/AdminNotificationsBell";
+import { notifyOnScanReport, notifyOnFindings } from "@/lib/security/notifications";
 import {
   RECOMMENDED_CSP,
   parseCsp,
@@ -1264,9 +1266,10 @@ export default function AdminSecurity() {
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
               <SidebarTrigger />
-              <h1 className="text-2xl font-bold ml-4 flex items-center gap-2">
+              <h1 className="text-2xl font-bold ml-4 flex items-center gap-2 flex-1">
                 <ShieldCheck className="h-6 w-6" /> Security
               </h1>
+              <AdminNotificationsBell />
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
