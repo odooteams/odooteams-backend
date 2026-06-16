@@ -222,6 +222,9 @@ function BlackBoxTab() {
       setResults([...all]);
     }
     setLoading(false);
+    const high = all.filter((p) => !p.pass && p.severity === "high").length;
+    const med = all.filter((p) => !p.pass && p.severity === "medium").length;
+    notifyOnFindings({ scanner: "Black-box probe", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
     toast.success("Black-box scan complete");
   };
 
@@ -336,6 +339,9 @@ function OwaspTab() {
       const list = routes.split("\n").map((r) => r.trim()).filter(Boolean);
       const out = await runOwaspAudit(baseUrl, list, { onProgress: setProgress });
       setFindings(out);
+      const high = out.filter((f) => !f.pass && f.severity === "high").length;
+      const med = out.filter((f) => !f.pass && f.severity === "medium").length;
+      notifyOnFindings({ scanner: "OWASP audit", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
       toast.success(`OWASP audit complete — ${out.length} checks`);
     } catch (e: any) {
       toast.error(e.message || "Audit failed");
@@ -719,6 +725,9 @@ function SqliTab() {
       const extras = extra.split(",").map((s) => s.trim()).filter(Boolean);
       const out = await runSqliFuzz(baseUrl, list, { extraParams: extras, onProgress: setProgress });
       setFindings(out);
+      const high = out.filter((f) => f.severity === "high").length;
+      const med = out.filter((f) => f.severity === "medium").length;
+      notifyOnFindings({ scanner: "SQLi fuzzer", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
       toast.success(`Fuzzing complete — ${out.length} signals`);
     } finally {
       setLoading(false);
@@ -816,6 +825,9 @@ function XssTab() {
         onProgress: setProgress,
       });
       setFindings(out);
+      const high = out.filter((f) => f.severity === "high").length;
+      const med = out.filter((f) => f.severity === "medium").length;
+      notifyOnFindings({ scanner: "XSS scanner", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
       toast.success(`XSS scan complete — ${out.length} reflections`);
     } finally {
       setLoading(false);
@@ -992,6 +1004,7 @@ function FullScanTab() {
         toast.error("Scan ran but failed to save: " + error.message);
       } else {
         toast.success("Full scan complete — saved to your account");
+        notifyOnScanReport(r, finalLabel).catch(() => {});
         fetchSaved();
       }
     } catch (e: any) {
