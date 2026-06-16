@@ -15,6 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server, Ban } from "lucide-react";
 import BlacklistTab from "@/components/admin/security/BlacklistTab";
 import MiddlewareTab from "@/components/admin/security/MiddlewareTab";
+import AdminNotificationsBell from "@/components/admin/AdminNotificationsBell";
+import { notifyOnScanReport, notifyOnFindings } from "@/lib/security/notifications";
 import {
   RECOMMENDED_CSP,
   parseCsp,
@@ -220,6 +222,9 @@ function BlackBoxTab() {
       setResults([...all]);
     }
     setLoading(false);
+    const high = all.filter((p) => !p.pass && p.severity === "high").length;
+    const med = all.filter((p) => !p.pass && p.severity === "medium").length;
+    notifyOnFindings({ scanner: "Black-box probe", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
     toast.success("Black-box scan complete");
   };
 
@@ -334,6 +339,9 @@ function OwaspTab() {
       const list = routes.split("\n").map((r) => r.trim()).filter(Boolean);
       const out = await runOwaspAudit(baseUrl, list, { onProgress: setProgress });
       setFindings(out);
+      const high = out.filter((f) => !f.pass && f.severity === "high").length;
+      const med = out.filter((f) => !f.pass && f.severity === "medium").length;
+      notifyOnFindings({ scanner: "OWASP audit", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
       toast.success(`OWASP audit complete — ${out.length} checks`);
     } catch (e: any) {
       toast.error(e.message || "Audit failed");
@@ -717,6 +725,9 @@ function SqliTab() {
       const extras = extra.split(",").map((s) => s.trim()).filter(Boolean);
       const out = await runSqliFuzz(baseUrl, list, { extraParams: extras, onProgress: setProgress });
       setFindings(out);
+      const high = out.filter((f) => f.severity === "high").length;
+      const med = out.filter((f) => f.severity === "medium").length;
+      notifyOnFindings({ scanner: "SQLi fuzzer", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
       toast.success(`Fuzzing complete — ${out.length} signals`);
     } finally {
       setLoading(false);
@@ -814,6 +825,9 @@ function XssTab() {
         onProgress: setProgress,
       });
       setFindings(out);
+      const high = out.filter((f) => f.severity === "high").length;
+      const med = out.filter((f) => f.severity === "medium").length;
+      notifyOnFindings({ scanner: "XSS scanner", highCount: high, mediumCount: med, target: baseUrl }).catch(() => {});
       toast.success(`XSS scan complete — ${out.length} reflections`);
     } finally {
       setLoading(false);
@@ -990,6 +1004,7 @@ function FullScanTab() {
         toast.error("Scan ran but failed to save: " + error.message);
       } else {
         toast.success("Full scan complete — saved to your account");
+        notifyOnScanReport(r, finalLabel).catch(() => {});
         fetchSaved();
       }
     } catch (e: any) {
@@ -1264,9 +1279,10 @@ export default function AdminSecurity() {
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
               <SidebarTrigger />
-              <h1 className="text-2xl font-bold ml-4 flex items-center gap-2">
+              <h1 className="text-2xl font-bold ml-4 flex items-center gap-2 flex-1">
                 <ShieldCheck className="h-6 w-6" /> Security
               </h1>
+              <AdminNotificationsBell />
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
