@@ -727,10 +727,11 @@ export default function AdminSEO() {
               <div className="max-w-7xl mx-auto space-y-6">
                 <Tabs defaultValue="dashboard">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
-                    <TabsList className="inline-flex w-max md:grid md:grid-cols-6 md:w-full max-w-5xl">
+                    <TabsList className="inline-flex w-max md:grid md:grid-cols-7 md:w-full max-w-6xl">
                       <TabsTrigger value="dashboard" className="whitespace-nowrap"><Activity className="h-4 w-4 mr-2" />Dashboard</TabsTrigger>
                       <TabsTrigger value="global" className="whitespace-nowrap"><Globe className="h-4 w-4 mr-2" />Global</TabsTrigger>
                       <TabsTrigger value="pages" className="whitespace-nowrap"><FileText className="h-4 w-4 mr-2" />Pages</TabsTrigger>
+                      <TabsTrigger value="content" className="whitespace-nowrap"><Package className="h-4 w-4 mr-2" />Content SEO</TabsTrigger>
                       <TabsTrigger value="internal" className="whitespace-nowrap"><LinkIcon className="h-4 w-4 mr-2" />Internal Links</TabsTrigger>
                       <TabsTrigger value="offpage" className="whitespace-nowrap"><ExternalLink className="h-4 w-4 mr-2" />Off-Page</TabsTrigger>
                       <TabsTrigger value="sitemap" className="whitespace-nowrap"><Search className="h-4 w-4 mr-2" />Sitemap</TabsTrigger>
@@ -739,6 +740,7 @@ export default function AdminSEO() {
                   <TabsContent value="dashboard" className="mt-6"><SEODashboard /></TabsContent>
                   <TabsContent value="global" className="mt-6"><GlobalSeoTab /></TabsContent>
                   <TabsContent value="pages" className="mt-6"><PerPageSeoTab /></TabsContent>
+                  <TabsContent value="content" className="mt-6"><ContentSeoTab /></TabsContent>
                   <TabsContent value="internal" className="mt-6"><InternalLinksTab /></TabsContent>
                   <TabsContent value="offpage" className="mt-6"><OffPageTab /></TabsContent>
                   <TabsContent value="sitemap" className="mt-6"><SitemapTab /></TabsContent>
