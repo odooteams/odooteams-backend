@@ -146,6 +146,7 @@ export type Database = {
       blogs: {
         Row: {
           author_id: string | null
+          canonical_url: string | null
           category_ar: string | null
           category_en: string | null
           content_ar: string
@@ -154,13 +155,17 @@ export type Database = {
           created_by: string | null
           excerpt_ar: string | null
           excerpt_en: string | null
+          focus_keyword_ar: string | null
+          focus_keyword_en: string | null
           id: string
           image: string | null
           is_featured: boolean | null
           is_published: boolean | null
           keywords_ar: string[] | null
           keywords_en: string[] | null
+          og_image: string | null
           published_at: string | null
+          robots: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
@@ -168,6 +173,7 @@ export type Database = {
           seo_title_ar: string | null
           seo_title_en: string | null
           slug: string
+          structured_data: Json | null
           tags: string[] | null
           tags_ar: string[] | null
           title_ar: string
@@ -177,6 +183,7 @@ export type Database = {
         }
         Insert: {
           author_id?: string | null
+          canonical_url?: string | null
           category_ar?: string | null
           category_en?: string | null
           content_ar: string
@@ -185,13 +192,17 @@ export type Database = {
           created_by?: string | null
           excerpt_ar?: string | null
           excerpt_en?: string | null
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           image?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
           keywords_ar?: string[] | null
           keywords_en?: string[] | null
+          og_image?: string | null
           published_at?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -199,6 +210,7 @@ export type Database = {
           seo_title_ar?: string | null
           seo_title_en?: string | null
           slug: string
+          structured_data?: Json | null
           tags?: string[] | null
           tags_ar?: string[] | null
           title_ar: string
@@ -208,6 +220,7 @@ export type Database = {
         }
         Update: {
           author_id?: string | null
+          canonical_url?: string | null
           category_ar?: string | null
           category_en?: string | null
           content_ar?: string
@@ -216,13 +229,17 @@ export type Database = {
           created_by?: string | null
           excerpt_ar?: string | null
           excerpt_en?: string | null
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           image?: string | null
           is_featured?: boolean | null
           is_published?: boolean | null
           keywords_ar?: string[] | null
           keywords_en?: string[] | null
+          og_image?: string | null
           published_at?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -230,6 +247,7 @@ export type Database = {
           seo_title_ar?: string | null
           seo_title_en?: string | null
           slug?: string
+          structured_data?: Json | null
           tags?: string[] | null
           tags_ar?: string[] | null
           title_ar?: string
@@ -450,6 +468,7 @@ export type Database = {
         Row: {
           author_ar: string | null
           author_en: string | null
+          canonical_url: string | null
           category_ar: string
           category_en: string
           contents_ar: string
@@ -457,18 +476,23 @@ export type Database = {
           created_at: string
           created_by: string | null
           download_url: string | null
+          focus_keyword_ar: string | null
+          focus_keyword_en: string | null
           id: string
           image: string | null
           is_active: boolean | null
           main_header_ar: string
           main_header_en: string
+          og_image: string | null
           published_date: string | null
+          robots: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
           seo_keywords_en: string | null
           seo_title_ar: string | null
           seo_title_en: string | null
+          structured_data: Json | null
           title_ar: string
           title_en: string
           updated_at: string
@@ -477,6 +501,7 @@ export type Database = {
         Insert: {
           author_ar?: string | null
           author_en?: string | null
+          canonical_url?: string | null
           category_ar: string
           category_en: string
           contents_ar: string
@@ -484,18 +509,23 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           download_url?: string | null
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           image?: string | null
           is_active?: boolean | null
           main_header_ar: string
           main_header_en: string
+          og_image?: string | null
           published_date?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
           seo_keywords_en?: string | null
           seo_title_ar?: string | null
           seo_title_en?: string | null
+          structured_data?: Json | null
           title_ar: string
           title_en: string
           updated_at?: string
@@ -504,6 +534,7 @@ export type Database = {
         Update: {
           author_ar?: string | null
           author_en?: string | null
+          canonical_url?: string | null
           category_ar?: string
           category_en?: string
           contents_ar?: string
@@ -511,18 +542,23 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           download_url?: string | null
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           image?: string | null
           is_active?: boolean | null
           main_header_ar?: string
           main_header_en?: string
+          og_image?: string | null
           published_date?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
           seo_keywords_en?: string | null
           seo_title_ar?: string | null
           seo_title_en?: string | null
+          structured_data?: Json | null
           title_ar?: string
           title_en?: string
           updated_at?: string
@@ -703,6 +739,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          canonical_url: string | null
           category_ar: string
           category_en: string
           client_name: string | null
@@ -712,25 +749,31 @@ export type Database = {
           created_by: string | null
           description_ar: string
           description_en: string
+          focus_keyword_ar: string | null
+          focus_keyword_en: string | null
           id: string
           images: string[] | null
           is_active: boolean | null
           is_featured: boolean | null
+          og_image: string | null
           processing_steps_ar: string | null
           processing_steps_en: string | null
           project_url: string | null
+          robots: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
           seo_keywords_en: string | null
           seo_title_ar: string | null
           seo_title_en: string | null
+          structured_data: Json | null
           technologies: string[] | null
           title_ar: string
           title_en: string
           updated_at: string
         }
         Insert: {
+          canonical_url?: string | null
           category_ar: string
           category_en: string
           client_name?: string | null
@@ -740,25 +783,31 @@ export type Database = {
           created_by?: string | null
           description_ar: string
           description_en: string
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           images?: string[] | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          og_image?: string | null
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
           project_url?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
           seo_keywords_en?: string | null
           seo_title_ar?: string | null
           seo_title_en?: string | null
+          structured_data?: Json | null
           technologies?: string[] | null
           title_ar: string
           title_en: string
           updated_at?: string
         }
         Update: {
+          canonical_url?: string | null
           category_ar?: string
           category_en?: string
           client_name?: string | null
@@ -768,19 +817,24 @@ export type Database = {
           created_by?: string | null
           description_ar?: string
           description_en?: string
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           images?: string[] | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          og_image?: string | null
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
           project_url?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
           seo_keywords_en?: string | null
           seo_title_ar?: string | null
           seo_title_en?: string | null
+          structured_data?: Json | null
           technologies?: string[] | null
           title_ar?: string
           title_en?: string
@@ -862,6 +916,7 @@ export type Database = {
       }
       services: {
         Row: {
+          canonical_url: string | null
           category_ar: string
           category_en: string
           created_at: string
@@ -869,25 +924,31 @@ export type Database = {
           details_ar: string
           details_en: string
           duration: string | null
+          focus_keyword_ar: string | null
+          focus_keyword_en: string | null
           id: string
           image: string | null
           is_active: boolean | null
           is_featured: boolean | null
           keywords: string[] | null
+          og_image: string | null
           price: number | null
           processing_steps_ar: string | null
           processing_steps_en: string | null
+          robots: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
           seo_keywords_en: string | null
           seo_title_ar: string | null
           seo_title_en: string | null
+          structured_data: Json | null
           title_ar: string
           title_en: string
           updated_at: string
         }
         Insert: {
+          canonical_url?: string | null
           category_ar: string
           category_en: string
           created_at?: string
@@ -895,25 +956,31 @@ export type Database = {
           details_ar: string
           details_en: string
           duration?: string | null
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           image?: string | null
           is_active?: boolean | null
           is_featured?: boolean | null
           keywords?: string[] | null
+          og_image?: string | null
           price?: number | null
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
           seo_keywords_en?: string | null
           seo_title_ar?: string | null
           seo_title_en?: string | null
+          structured_data?: Json | null
           title_ar: string
           title_en: string
           updated_at?: string
         }
         Update: {
+          canonical_url?: string | null
           category_ar?: string
           category_en?: string
           created_at?: string
@@ -921,20 +988,25 @@ export type Database = {
           details_ar?: string
           details_en?: string
           duration?: string | null
+          focus_keyword_ar?: string | null
+          focus_keyword_en?: string | null
           id?: string
           image?: string | null
           is_active?: boolean | null
           is_featured?: boolean | null
           keywords?: string[] | null
+          og_image?: string | null
           price?: number | null
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
+          robots?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
           seo_keywords_en?: string | null
           seo_title_ar?: string | null
           seo_title_en?: string | null
+          structured_data?: Json | null
           title_ar?: string
           title_en?: string
           updated_at?: string
