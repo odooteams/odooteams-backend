@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Search, Globe, FileText, Activity, Download, RefreshCw, Plus, Edit, Save, Link as LinkIcon, ExternalLink, Network as NetworkIcon, Copy } from 'lucide-react';
+import { Search, Globe, FileText, Activity, Download, RefreshCw, Plus, Edit, Save, Link as LinkIcon, ExternalLink, Network as NetworkIcon, Copy, Package } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import SEODashboard from '@/components/seo/SEODashboard';
@@ -20,6 +20,7 @@ import SerpPreview from '@/components/seo/SerpPreview';
 import RouteMapper from '@/components/seo/RouteMapper';
 import { analyzeInternalLinks, type InternalLinkReport } from '@/lib/seo/internalLinks';
 import { BACKLINK_PROSPECTS, OUTREACH_TEMPLATES, OFF_PAGE_CHECKLIST } from '@/lib/seo/offPage';
+import ContentSeoTab from '@/components/admin/seo/ContentSeoTab';
 
 // ---------- Global SEO Settings Tab ----------
 function GlobalSeoTab() {
