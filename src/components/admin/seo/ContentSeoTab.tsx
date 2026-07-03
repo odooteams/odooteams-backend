@@ -321,7 +321,7 @@ function EntityList({ table }: { table: EntityType }) {
 
   const load = async () => {
     setLoading(true);
-    const cols = 'id,title_en,title_ar,seo_title_en,seo_title_ar,seo_description_en,seo_description_ar,seo_keywords_en,seo_keywords_ar,focus_keyword_en,focus_keyword_ar,og_image,canonical_url,robots,structured_data,updated_at' +
+    const cols = 'id,title_en,title_ar,seo_title_en,seo_title_ar,seo_description_en,seo_description_ar,seo_keywords_en,seo_keywords_ar,focus_keyword_en,focus_keyword_ar,og_image,canonical_url,robots,structured_data,schema_type,updated_at' +
       (table === 'services' || table === 'blogs' || table === 'learn_resources' ? ',image' : '') +
       (table === 'projects' ? ',images' : '');
     const { data, error } = await (supabase as any).from(table).select(cols).order('updated_at', { ascending: false });
