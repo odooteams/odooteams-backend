@@ -116,6 +116,7 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
         canonical_url: form.canonical_url,
         robots: form.robots || 'index, follow',
         structured_data: form.structured_data,
+        schema_type: form.schema_type,
       };
       const { error } = await (supabase as any).from(table).update(payload).eq('id', form.id);
       if (error) throw error;
