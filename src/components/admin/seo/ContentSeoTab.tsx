@@ -130,10 +130,30 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
     }
   };
 
-  const titleEnLen = (form.seo_title_en || '').length;
-  const descEnLen = (form.seo_description_en || '').length;
-  const titleArLen = (form.seo_title_ar || '').length;
-  const descArLen = (form.seo_description_ar || '').length;
+  const schemaType = (form.schema_type as SchemaType) || (table === 'services' ? 'Service' : table === 'projects' ? 'CreativeWork' : 'Article');
+
+  const autoBuildJsonLd = () => {
+    const jsonEn = buildJsonLd({
+      type: schemaType,
+      locale: 'en',
+      name: form.seo_title_en || form.title_en || '',
+      description: form.seo_description_en || '',
+      url: form.canonical_url || suggestedCanonical,
+      image: form.og_image || (Array.isArray((form as any).images) ? (form as any).images?.[0] : (form as any).image) || null,
+      keywords: form.seo_keywords_en || form.focus_keyword_en,
+    });
+    const jsonAr = buildJsonLd({
+      type: schemaType,
+      locale: 'ar',
+      name: form.seo_title_ar || form.title_ar || '',
+      description: form.seo_description_ar || '',
+      url: form.canonical_url || suggestedCanonical,
+      image: form.og_image || (Array.isArray((form as any).images) ? (form as any).images?.[0] : (form as any).image) || null,
+      keywords: form.seo_keywords_ar || form.focus_keyword_ar,
+    });
+    setForm(f => ({ ...f, structured_data: [jsonEn, jsonAr] }));
+    toast.success(`JSON-LD (${schemaType}) generated for EN & AR — review & save`);
+  };
 
   return (
     <Dialog open onOpenChange={v => !v && onClose()}>
@@ -142,6 +162,7 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
           <DialogTitle className="flex items-center gap-2">
             SEO — {form.title_en || form.title_ar}
             <Badge variant="outline">{cfg.label}</Badge>
+            <Badge variant="secondary">{schemaType}</Badge>
             <Badge variant={scoreSeo(form) >= 80 ? 'default' : scoreSeo(form) >= 50 ? 'secondary' : 'destructive'}>
               Score {scoreSeo(form)}/100
             </Badge>
@@ -153,8 +174,36 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
             <Button variant="outline" size="sm" onClick={generate}>
               <Sparkles className="h-4 w-4 mr-2" /> Auto-fill from title
             </Button>
+            <Button variant="outline" size="sm" onClick={autoBuildJsonLd}>
+              <Sparkles className="h-4 w-4 mr-2" /> Build JSON-LD ({schemaType})
+            </Button>
             <span className="text-xs text-muted-foreground">Suggested slug: <code>{autoSlug}</code></span>
           </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Schema Type (schema.org)</Label>
+              <Select value={schemaType} onValueChange={v => setForm({ ...form, schema_type: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {SCHEMA_TYPES.map(t => (
+                    <SelectItem key={t.value} value={t.value}>{t.label} — <span className="text-muted-foreground">{t.description}</span></SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">Required fields: <code>{requiredFields(schemaType).join(', ')}</code></p>
+            </div>
+            <div className="space-y-2">
+              <Label>Canonical URL (self-reference)</Label>
+              <Input value={form.canonical_url || ''} onChange={e => setForm({ ...form, canonical_url: e.target.value })} placeholder={suggestedCanonical} />
+              <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+                <span>hreflang <code>en</code> → <code>{(form.canonical_url || suggestedCanonical) + '?lang=en'}</code></span>
+                <span>hreflang <code>ar</code> → <code>{(form.canonical_url || suggestedCanonical) + '?lang=ar'}</code></span>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, canonical_url: suggestedCanonical })}>Use suggested</Button>
+            </div>
+          </div>
+
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
