@@ -166,6 +166,7 @@ export type Database = {
           og_image: string | null
           published_at: string | null
           robots: string | null
+          schema_type: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
@@ -203,6 +204,7 @@ export type Database = {
           og_image?: string | null
           published_at?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -240,6 +242,7 @@ export type Database = {
           og_image?: string | null
           published_at?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -486,6 +489,7 @@ export type Database = {
           og_image: string | null
           published_date: string | null
           robots: string | null
+          schema_type: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
@@ -519,6 +523,7 @@ export type Database = {
           og_image?: string | null
           published_date?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -552,6 +557,7 @@ export type Database = {
           og_image?: string | null
           published_date?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -760,6 +766,7 @@ export type Database = {
           processing_steps_en: string | null
           project_url: string | null
           robots: string | null
+          schema_type: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
@@ -794,6 +801,7 @@ export type Database = {
           processing_steps_en?: string | null
           project_url?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -828,6 +836,7 @@ export type Database = {
           processing_steps_en?: string | null
           project_url?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -936,6 +945,7 @@ export type Database = {
           processing_steps_ar: string | null
           processing_steps_en: string | null
           robots: string | null
+          schema_type: string | null
           seo_description_ar: string | null
           seo_description_en: string | null
           seo_keywords_ar: string | null
@@ -968,6 +978,7 @@ export type Database = {
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null
@@ -1000,6 +1011,7 @@ export type Database = {
           processing_steps_ar?: string | null
           processing_steps_en?: string | null
           robots?: string | null
+          schema_type?: string | null
           seo_description_ar?: string | null
           seo_description_en?: string | null
           seo_keywords_ar?: string | null

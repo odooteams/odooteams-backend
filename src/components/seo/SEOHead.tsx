@@ -31,6 +31,12 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   const location = useLocation();
   // Generate clean canonical URL without query parameters
   const canonical = canonicalUrl || generateCanonicalUrl(location.pathname);
+  // Auto-generate hreflang alternates when none were provided by the page
+  const effectiveAlternates = alternateUrls.length ? alternateUrls : [
+    { hreflang: 'en', href: `${canonical}${canonical.includes('?') ? '&' : '?'}lang=en` },
+    { hreflang: 'ar', href: `${canonical}${canonical.includes('?') ? '&' : '?'}lang=ar` },
+    { hreflang: 'x-default', href: canonical },
+  ];
 
   // Default structured data for organization
   const organizationData = {
@@ -83,7 +89,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <link rel="canonical" href={canonical} />
       
       {/* Alternate URLs for i18n */}
-      {alternateUrls.map((alt, index) => (
+      {/* Alternate URLs for i18n (auto-derived if not provided) */}
+      {effectiveAlternates.map((alt, index) => (
         <link key={index} rel="alternate" hrefLang={alt.hreflang} href={alt.href} />
       ))}
       
