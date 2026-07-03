@@ -218,25 +218,26 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>SEO Title (EN) — <span className={titleEnLen > 60 || titleEnLen < 30 ? 'text-orange-500' : 'text-green-600'}>{titleEnLen}/60</span></Label>
-              <Input maxLength={70} value={form.seo_title_en || ''} onChange={e => setForm({ ...form, seo_title_en: e.target.value })} />
+              <Label className="flex items-center gap-2">SEO Title (EN) <LenBadge value={form.seo_title_en || ''} locale="en" kind="title" /></Label>
+              <Input maxLength={90} value={form.seo_title_en || ''} onChange={e => setForm({ ...form, seo_title_en: e.target.value })} />
             </div>
             <div className="space-y-2" dir="rtl">
-              <Label>عنوان SEO (AR) — <span className={titleArLen > 60 || titleArLen < 30 ? 'text-orange-500' : 'text-green-600'}>{titleArLen}/60</span></Label>
+              <Label className="flex items-center gap-2">عنوان SEO (AR) <LenBadge value={form.seo_title_ar || ''} locale="ar" kind="title" /></Label>
               <Input maxLength={70} value={form.seo_title_ar || ''} onChange={e => setForm({ ...form, seo_title_ar: e.target.value })} />
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Meta Description (EN) — <span className={descEnLen > 160 || descEnLen < 100 ? 'text-orange-500' : 'text-green-600'}>{descEnLen}/160</span></Label>
-              <Textarea rows={3} maxLength={170} value={form.seo_description_en || ''} onChange={e => setForm({ ...form, seo_description_en: e.target.value })} />
+              <Label className="flex items-center gap-2">Meta Description (EN) <LenBadge value={form.seo_description_en || ''} locale="en" kind="desc" /></Label>
+              <Textarea rows={3} maxLength={200} value={form.seo_description_en || ''} onChange={e => setForm({ ...form, seo_description_en: e.target.value })} />
             </div>
             <div className="space-y-2" dir="rtl">
-              <Label>وصف Meta (AR) — <span className={descArLen > 160 || descArLen < 100 ? 'text-orange-500' : 'text-green-600'}>{descArLen}/160</span></Label>
+              <Label className="flex items-center gap-2">وصف Meta (AR) <LenBadge value={form.seo_description_ar || ''} locale="ar" kind="desc" /></Label>
               <Textarea rows={3} maxLength={170} value={form.seo_description_ar || ''} onChange={e => setForm({ ...form, seo_description_ar: e.target.value })} />
             </div>
           </div>
+
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
