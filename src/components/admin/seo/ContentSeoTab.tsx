@@ -250,20 +250,12 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Open Graph / Social Image URL</Label>
-              <Input value={form.og_image || ''} onChange={e => setForm({ ...form, og_image: e.target.value })} placeholder="https://..." />
-              {form.og_image && <img src={form.og_image} alt="og preview" className="rounded border max-h-32 object-cover" />}
-            </div>
-            <div className="space-y-2">
-              <Label>Canonical URL</Label>
-              <Input value={form.canonical_url || ''} onChange={e => setForm({ ...form, canonical_url: e.target.value })} placeholder={suggestedCanonical} />
-              <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, canonical_url: suggestedCanonical })}>
-                Use suggested
-              </Button>
-            </div>
+          <div className="space-y-2">
+            <Label>Open Graph / Social Image URL</Label>
+            <Input value={form.og_image || ''} onChange={e => setForm({ ...form, og_image: e.target.value })} placeholder="https://..." />
+            {form.og_image && <img src={form.og_image} alt="og preview" className="rounded border max-h-32 object-cover" />}
           </div>
+
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -297,13 +289,17 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
           </div>
 
           <div className="border rounded-lg p-3 bg-muted/30">
-            <Label className="text-xs text-muted-foreground mb-2 block">Live SERP Preview (EN)</Label>
+            <Label className="text-xs text-muted-foreground mb-2 block">Live SERP Preview — locale-aware limits</Label>
             <SerpPreview data={{
               title_en: form.seo_title_en,
+              title_ar: form.seo_title_ar,
               description_en: form.seo_description_en,
+              description_ar: form.seo_description_ar,
+              canonical_url: form.canonical_url || suggestedCanonical,
               page_path: `${cfg.routePrefix}/${autoSlug}`,
             } as any} />
           </div>
+
         </div>
 
         <DialogFooter>
