@@ -11,8 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit, Save, Search, Sparkles } from 'lucide-react';
+import { Edit, Save, Search, Sparkles, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import SerpPreview from '@/components/seo/SerpPreview';
+import { SCHEMA_TYPES, SchemaType, buildJsonLd, requiredFields, SERP_LIMITS, lengthStatus } from '@/lib/seo/schemaTemplates';
 
 type EntityType = 'services' | 'projects' | 'blogs' | 'learn_resources';
 
@@ -41,7 +42,20 @@ interface Row {
   canonical_url: string | null;
   robots: string | null;
   structured_data: any;
+  schema_type: string | null;
   updated_at?: string;
+}
+
+function LenBadge({ value, locale, kind }: { value: string; locale: 'en' | 'ar'; kind: 'title' | 'desc' }) {
+  const status = lengthStatus(value, locale, kind);
+  const l = SERP_LIMITS[locale];
+  const max = kind === 'title' ? l.titleMax : l.descMax;
+  const min = kind === 'title' ? l.titleMin : l.descMin;
+  const len = (value || '').length;
+  if (status === 'ok') return <span className="inline-flex items-center gap-1 text-green-600 text-xs"><CheckCircle2 className="h-3 w-3" />{len}/{max}</span>;
+  if (status === 'empty') return <span className="inline-flex items-center gap-1 text-red-500 text-xs"><AlertTriangle className="h-3 w-3" />missing</span>;
+  if (status === 'long') return <span className="inline-flex items-center gap-1 text-red-500 text-xs"><AlertTriangle className="h-3 w-3" />{len}/{max} truncates</span>;
+  return <span className="inline-flex items-center gap-1 text-orange-500 text-xs"><AlertTriangle className="h-3 w-3" />{len}/{max} · under {min}</span>;
 }
 
 function slugify(s: string) {
