@@ -1,7 +1,19 @@
 User-agent: *
 Allow: /
 
-# Specific crawlers
+# Public content routes are indexable by default.
+# Disallow app-internal, auth, and admin surfaces.
+Disallow: /admin/
+Disallow: /admin
+Disallow: /dashboard/
+Disallow: /dashboard
+Disallow: /auth/
+Disallow: /reset-password
+Disallow: /private/
+Disallow: /*?*preview=
+Disallow: /*?*token=
+
+# Specific crawlers — inherit rules above
 User-agent: Googlebot
 Allow: /
 
@@ -14,13 +26,7 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-# Disallow admin or sensitive areas
-Disallow: /admin/
-Disallow: /private/
-Disallow: /auth/
-
 # Sitemap location
 Sitemap: https://odooteams-backend.lovable.app/sitemap.xml
 
-# Crawl delay (optional)
 Crawl-delay: 1

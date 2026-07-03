@@ -11,8 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit, Save, Search, Sparkles } from 'lucide-react';
+import { Edit, Save, Search, Sparkles, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import SerpPreview from '@/components/seo/SerpPreview';
+import { SCHEMA_TYPES, SchemaType, buildJsonLd, requiredFields, SERP_LIMITS, lengthStatus } from '@/lib/seo/schemaTemplates';
 
 type EntityType = 'services' | 'projects' | 'blogs' | 'learn_resources';
 
@@ -41,7 +42,20 @@ interface Row {
   canonical_url: string | null;
   robots: string | null;
   structured_data: any;
+  schema_type: string | null;
   updated_at?: string;
+}
+
+function LenBadge({ value, locale, kind }: { value: string; locale: 'en' | 'ar'; kind: 'title' | 'desc' }) {
+  const status = lengthStatus(value, locale, kind);
+  const l = SERP_LIMITS[locale];
+  const max = kind === 'title' ? l.titleMax : l.descMax;
+  const min = kind === 'title' ? l.titleMin : l.descMin;
+  const len = (value || '').length;
+  if (status === 'ok') return <span className="inline-flex items-center gap-1 text-green-600 text-xs"><CheckCircle2 className="h-3 w-3" />{len}/{max}</span>;
+  if (status === 'empty') return <span className="inline-flex items-center gap-1 text-red-500 text-xs"><AlertTriangle className="h-3 w-3" />missing</span>;
+  if (status === 'long') return <span className="inline-flex items-center gap-1 text-red-500 text-xs"><AlertTriangle className="h-3 w-3" />{len}/{max} truncates</span>;
+  return <span className="inline-flex items-center gap-1 text-orange-500 text-xs"><AlertTriangle className="h-3 w-3" />{len}/{max} · under {min}</span>;
 }
 
 function slugify(s: string) {
@@ -102,6 +116,7 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
         canonical_url: form.canonical_url,
         robots: form.robots || 'index, follow',
         structured_data: form.structured_data,
+        schema_type: form.schema_type,
       };
       const { error } = await (supabase as any).from(table).update(payload).eq('id', form.id);
       if (error) throw error;
@@ -115,10 +130,30 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
     }
   };
 
-  const titleEnLen = (form.seo_title_en || '').length;
-  const descEnLen = (form.seo_description_en || '').length;
-  const titleArLen = (form.seo_title_ar || '').length;
-  const descArLen = (form.seo_description_ar || '').length;
+  const schemaType = (form.schema_type as SchemaType) || (table === 'services' ? 'Service' : table === 'projects' ? 'CreativeWork' : 'Article');
+
+  const autoBuildJsonLd = () => {
+    const jsonEn = buildJsonLd({
+      type: schemaType,
+      locale: 'en',
+      name: form.seo_title_en || form.title_en || '',
+      description: form.seo_description_en || '',
+      url: form.canonical_url || suggestedCanonical,
+      image: form.og_image || (Array.isArray((form as any).images) ? (form as any).images?.[0] : (form as any).image) || null,
+      keywords: form.seo_keywords_en || form.focus_keyword_en,
+    });
+    const jsonAr = buildJsonLd({
+      type: schemaType,
+      locale: 'ar',
+      name: form.seo_title_ar || form.title_ar || '',
+      description: form.seo_description_ar || '',
+      url: form.canonical_url || suggestedCanonical,
+      image: form.og_image || (Array.isArray((form as any).images) ? (form as any).images?.[0] : (form as any).image) || null,
+      keywords: form.seo_keywords_ar || form.focus_keyword_ar,
+    });
+    setForm(f => ({ ...f, structured_data: [jsonEn, jsonAr] }));
+    toast.success(`JSON-LD (${schemaType}) generated for EN & AR — review & save`);
+  };
 
   return (
     <Dialog open onOpenChange={v => !v && onClose()}>
@@ -127,6 +162,7 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
           <DialogTitle className="flex items-center gap-2">
             SEO — {form.title_en || form.title_ar}
             <Badge variant="outline">{cfg.label}</Badge>
+            <Badge variant="secondary">{schemaType}</Badge>
             <Badge variant={scoreSeo(form) >= 80 ? 'default' : scoreSeo(form) >= 50 ? 'secondary' : 'destructive'}>
               Score {scoreSeo(form)}/100
             </Badge>
@@ -138,8 +174,36 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
             <Button variant="outline" size="sm" onClick={generate}>
               <Sparkles className="h-4 w-4 mr-2" /> Auto-fill from title
             </Button>
+            <Button variant="outline" size="sm" onClick={autoBuildJsonLd}>
+              <Sparkles className="h-4 w-4 mr-2" /> Build JSON-LD ({schemaType})
+            </Button>
             <span className="text-xs text-muted-foreground">Suggested slug: <code>{autoSlug}</code></span>
           </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Schema Type (schema.org)</Label>
+              <Select value={schemaType} onValueChange={v => setForm({ ...form, schema_type: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {SCHEMA_TYPES.map(t => (
+                    <SelectItem key={t.value} value={t.value}>{t.label} — <span className="text-muted-foreground">{t.description}</span></SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">Required fields: <code>{requiredFields(schemaType).join(', ')}</code></p>
+            </div>
+            <div className="space-y-2">
+              <Label>Canonical URL (self-reference)</Label>
+              <Input value={form.canonical_url || ''} onChange={e => setForm({ ...form, canonical_url: e.target.value })} placeholder={suggestedCanonical} />
+              <div className="flex flex-wrap gap-2 text-[11px] text-muted-foreground">
+                <span>hreflang <code>en</code> → <code>{(form.canonical_url || suggestedCanonical) + '?lang=en'}</code></span>
+                <span>hreflang <code>ar</code> → <code>{(form.canonical_url || suggestedCanonical) + '?lang=ar'}</code></span>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, canonical_url: suggestedCanonical })}>Use suggested</Button>
+            </div>
+          </div>
+
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -154,25 +218,26 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>SEO Title (EN) — <span className={titleEnLen > 60 || titleEnLen < 30 ? 'text-orange-500' : 'text-green-600'}>{titleEnLen}/60</span></Label>
-              <Input maxLength={70} value={form.seo_title_en || ''} onChange={e => setForm({ ...form, seo_title_en: e.target.value })} />
+              <Label className="flex items-center gap-2">SEO Title (EN) <LenBadge value={form.seo_title_en || ''} locale="en" kind="title" /></Label>
+              <Input maxLength={90} value={form.seo_title_en || ''} onChange={e => setForm({ ...form, seo_title_en: e.target.value })} />
             </div>
             <div className="space-y-2" dir="rtl">
-              <Label>عنوان SEO (AR) — <span className={titleArLen > 60 || titleArLen < 30 ? 'text-orange-500' : 'text-green-600'}>{titleArLen}/60</span></Label>
+              <Label className="flex items-center gap-2">عنوان SEO (AR) <LenBadge value={form.seo_title_ar || ''} locale="ar" kind="title" /></Label>
               <Input maxLength={70} value={form.seo_title_ar || ''} onChange={e => setForm({ ...form, seo_title_ar: e.target.value })} />
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Meta Description (EN) — <span className={descEnLen > 160 || descEnLen < 100 ? 'text-orange-500' : 'text-green-600'}>{descEnLen}/160</span></Label>
-              <Textarea rows={3} maxLength={170} value={form.seo_description_en || ''} onChange={e => setForm({ ...form, seo_description_en: e.target.value })} />
+              <Label className="flex items-center gap-2">Meta Description (EN) <LenBadge value={form.seo_description_en || ''} locale="en" kind="desc" /></Label>
+              <Textarea rows={3} maxLength={200} value={form.seo_description_en || ''} onChange={e => setForm({ ...form, seo_description_en: e.target.value })} />
             </div>
             <div className="space-y-2" dir="rtl">
-              <Label>وصف Meta (AR) — <span className={descArLen > 160 || descArLen < 100 ? 'text-orange-500' : 'text-green-600'}>{descArLen}/160</span></Label>
+              <Label className="flex items-center gap-2">وصف Meta (AR) <LenBadge value={form.seo_description_ar || ''} locale="ar" kind="desc" /></Label>
               <Textarea rows={3} maxLength={170} value={form.seo_description_ar || ''} onChange={e => setForm({ ...form, seo_description_ar: e.target.value })} />
             </div>
           </div>
+
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -185,20 +250,12 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Open Graph / Social Image URL</Label>
-              <Input value={form.og_image || ''} onChange={e => setForm({ ...form, og_image: e.target.value })} placeholder="https://..." />
-              {form.og_image && <img src={form.og_image} alt="og preview" className="rounded border max-h-32 object-cover" />}
-            </div>
-            <div className="space-y-2">
-              <Label>Canonical URL</Label>
-              <Input value={form.canonical_url || ''} onChange={e => setForm({ ...form, canonical_url: e.target.value })} placeholder={suggestedCanonical} />
-              <Button variant="ghost" size="sm" onClick={() => setForm({ ...form, canonical_url: suggestedCanonical })}>
-                Use suggested
-              </Button>
-            </div>
+          <div className="space-y-2">
+            <Label>Open Graph / Social Image URL</Label>
+            <Input value={form.og_image || ''} onChange={e => setForm({ ...form, og_image: e.target.value })} placeholder="https://..." />
+            {form.og_image && <img src={form.og_image} alt="og preview" className="rounded border max-h-32 object-cover" />}
           </div>
+
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -232,13 +289,17 @@ function Editor({ table, row, onSaved, onClose }: { table: EntityType; row: Row;
           </div>
 
           <div className="border rounded-lg p-3 bg-muted/30">
-            <Label className="text-xs text-muted-foreground mb-2 block">Live SERP Preview (EN)</Label>
+            <Label className="text-xs text-muted-foreground mb-2 block">Live SERP Preview — locale-aware limits</Label>
             <SerpPreview data={{
               title_en: form.seo_title_en,
+              title_ar: form.seo_title_ar,
               description_en: form.seo_description_en,
+              description_ar: form.seo_description_ar,
+              canonical_url: form.canonical_url || suggestedCanonical,
               page_path: `${cfg.routePrefix}/${autoSlug}`,
             } as any} />
           </div>
+
         </div>
 
         <DialogFooter>
@@ -260,7 +321,7 @@ function EntityList({ table }: { table: EntityType }) {
 
   const load = async () => {
     setLoading(true);
-    const cols = 'id,title_en,title_ar,seo_title_en,seo_title_ar,seo_description_en,seo_description_ar,seo_keywords_en,seo_keywords_ar,focus_keyword_en,focus_keyword_ar,og_image,canonical_url,robots,structured_data,updated_at' +
+    const cols = 'id,title_en,title_ar,seo_title_en,seo_title_ar,seo_description_en,seo_description_ar,seo_keywords_en,seo_keywords_ar,focus_keyword_en,focus_keyword_ar,og_image,canonical_url,robots,structured_data,schema_type,updated_at' +
       (table === 'services' || table === 'blogs' || table === 'learn_resources' ? ',image' : '') +
       (table === 'projects' ? ',images' : '');
     const { data, error } = await (supabase as any).from(table).select(cols).order('updated_at', { ascending: false });
