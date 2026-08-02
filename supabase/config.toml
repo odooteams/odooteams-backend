@@ -19,16 +19,52 @@ api_url = "http://127.0.0.1"
 
 [auth]
 enabled = true
-site_url = "http://127.0.0.1:3000"
-additional_redirect_urls = ["https://127.0.0.1:3000"]
+site_url = "https://odooteams.com"
+# Redirect allow-list — only these origins may receive auth callbacks.
+additional_redirect_urls = [
+  "https://odooteams.com/**",
+  "https://www.odooteams.com/**",
+  "https://odooteams-backend.lovable.app/**",
+  "http://localhost:8080/**"
+]
 jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
 enable_signup = true
 enable_anonymous_sign_ins = false
+enable_manual_linking = false
+minimum_password_length = 10
+password_requirements = "lower_upper_letters_digits_symbols"
 
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
-enable_confirmations = false
+enable_confirmations = true
+secure_password_change = true
+max_frequency = "60s"
+otp_length = 8
+otp_expiry = 600
+
+# Brute-force / abuse protection
+[auth.rate_limit]
+email_sent = 10
+sms_sent = 5
+anonymous_users = 5
+token_refresh = 150
+sign_in_sign_ups = 20
+token_verifications = 30
+
+# Multi-factor authentication
+[auth.mfa]
+max_enrolled_factors = 10
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[auth.mfa.phone]
+enroll_enabled = false
+verify_enabled = false
 
 [functions.create-backup]
 verify_jwt = false
