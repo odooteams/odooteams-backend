@@ -744,7 +744,10 @@ export default function AdminSEO() {
                   <TabsContent value="content" className="mt-6"><ContentSeoTab /></TabsContent>
                   <TabsContent value="internal" className="mt-6"><InternalLinksTab /></TabsContent>
                   <TabsContent value="offpage" className="mt-6"><OffPageTab /></TabsContent>
-                  <TabsContent value="sitemap" className="mt-6"><SitemapTab /></TabsContent>
+                  <TabsContent value="sitemap" className="mt-6 space-y-6">
+                    <SitemapRobotsPanel />
+                    <SitemapTab />
+                  </TabsContent>
                 </Tabs>
               </div>
             </main>
