@@ -21,6 +21,7 @@ import RouteMapper from '@/components/seo/RouteMapper';
 import { analyzeInternalLinks, type InternalLinkReport } from '@/lib/seo/internalLinks';
 import { BACKLINK_PROSPECTS, OUTREACH_TEMPLATES, OFF_PAGE_CHECKLIST } from '@/lib/seo/offPage';
 import ContentSeoTab from '@/components/admin/seo/ContentSeoTab';
+import SitemapRobotsPanel from '@/components/admin/seo/SitemapRobotsPanel';
 
 // ---------- Global SEO Settings Tab ----------
 function GlobalSeoTab() {
