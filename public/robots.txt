@@ -27,6 +27,6 @@ User-agent: facebookexternalhit
 Allow: /
 
 # Sitemap location
-Sitemap: https://odooteams-backend.lovable.app/sitemap.xml
+Sitemap: https://odooteams.com/sitemap.xml
 
 Crawl-delay: 1

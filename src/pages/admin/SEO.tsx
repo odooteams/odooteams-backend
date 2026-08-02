@@ -21,6 +21,7 @@ import RouteMapper from '@/components/seo/RouteMapper';
 import { analyzeInternalLinks, type InternalLinkReport } from '@/lib/seo/internalLinks';
 import { BACKLINK_PROSPECTS, OUTREACH_TEMPLATES, OFF_PAGE_CHECKLIST } from '@/lib/seo/offPage';
 import ContentSeoTab from '@/components/admin/seo/ContentSeoTab';
+import SitemapRobotsPanel from '@/components/admin/seo/SitemapRobotsPanel';
 
 // ---------- Global SEO Settings Tab ----------
 function GlobalSeoTab() {
@@ -743,7 +744,10 @@ export default function AdminSEO() {
                   <TabsContent value="content" className="mt-6"><ContentSeoTab /></TabsContent>
                   <TabsContent value="internal" className="mt-6"><InternalLinksTab /></TabsContent>
                   <TabsContent value="offpage" className="mt-6"><OffPageTab /></TabsContent>
-                  <TabsContent value="sitemap" className="mt-6"><SitemapTab /></TabsContent>
+                  <TabsContent value="sitemap" className="mt-6 space-y-6">
+                    <SitemapRobotsPanel />
+                    <SitemapTab />
+                  </TabsContent>
                 </Tabs>
               </div>
             </main>
