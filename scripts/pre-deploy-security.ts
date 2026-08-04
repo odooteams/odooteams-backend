@@ -188,6 +188,10 @@ async function main() {
   const dir = resolve('security-reports');
   mkdirSync(dir, { recursive: true });
   writeFileSync(resolve(dir, 'latest.json'), JSON.stringify(report, null, 2));
+  // Serve a copy so the admin Security Audit tab can read the baseline.
+  const publicDir = resolve('public/security-reports');
+  mkdirSync(publicDir, { recursive: true });
+  writeFileSync(resolve(publicDir, 'latest.json'), JSON.stringify(report, null, 2));
   appendFileSync(resolve(dir, 'history.jsonl'), JSON.stringify({ ranAt: report.ranAt, score, grade, counts }) + '\n');
 
   console.log(`\n[pre-deploy-security] Score ${score}/100 (grade ${grade}) — ${passed.length} checks passed, ${findings.length} findings`);
