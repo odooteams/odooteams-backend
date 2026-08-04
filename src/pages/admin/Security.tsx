@@ -1289,7 +1289,7 @@ export default function AdminSecurity() {
               <div className="max-w-7xl mx-auto space-y-6 min-w-0">
                 <Tabs defaultValue="full" className="w-full">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
-                    <TabsList className="inline-flex w-max md:grid md:grid-cols-13 md:w-full">
+                    <TabsList className="inline-flex w-max md:flex md:w-full">
                       <TabsTrigger value="full" className="whitespace-nowrap"><Rocket className="h-4 w-4 mr-2" />Full Scan</TabsTrigger>
                       <TabsTrigger value="audit" className="whitespace-nowrap"><RefreshCw className="h-4 w-4 mr-2" />Audit</TabsTrigger>
                       <TabsTrigger value="middleware" className="whitespace-nowrap"><Server className="h-4 w-4 mr-2" />Middleware</TabsTrigger>
