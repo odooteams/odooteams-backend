@@ -132,7 +132,12 @@ const PWAInstallPrompt = () => {
     <div className={`fixed bottom-20 left-4 right-4 bg-white border border-gray-200 rounded-lg shadow-xl p-4 z-50 max-w-sm mx-auto ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 bg-odoo-purple/10 p-2 rounded-full">
-          <Smartphone className="h-5 w-5 text-odoo-purple" />
+          <img
+            src="/lovable-uploads/e8433aef-9332-4de5-a325-42043909dbab.png"
+            alt="OdooTeams"
+            className="h-6 w-6 object-contain rounded"
+            loading="lazy"
+          />
         </div>
         
         <div className="flex-1">
