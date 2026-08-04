@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server, Ban } from "lucide-react";
 import BlacklistTab from "@/components/admin/security/BlacklistTab";
 import MiddlewareTab from "@/components/admin/security/MiddlewareTab";
+import AuditTab from "@/components/admin/security/AuditTab";
 import AdminNotificationsBell from "@/components/admin/AdminNotificationsBell";
 import { notifyOnScanReport, notifyOnFindings } from "@/lib/security/notifications";
 import {
