@@ -80,15 +80,31 @@ export function RichTextEditor({ value, onChange, placeholder, dir }: RichTextEd
         image: imageHandler,
       },
     },
-  }), [imageHandler]);
+    clipboard: { matchVisual: false },
+    history: { userOnly: true },
+  }), [imageHandler, instanceId]);
+
+  const handleChange = useCallback(
+    (html: string, _delta: unknown, source: string) => {
+      // Only propagate changes originating from this editor instance
+      if (source === 'api') return;
+      onChange(html);
+    },
+    [onChange]
+  );
 
   return (
-    <div className={`rich-editor-wrapper ${dir === 'rtl' ? 'rtl-editor' : ''}`}>
+    <div
+      id={`rte-${instanceId}`}
+      className={`rich-editor-wrapper ${dir === 'rtl' ? 'rtl-editor' : ''}`}
+      dir={dir || 'ltr'}
+    >
       <ReactQuill
+        key={instanceId}
         ref={quillRef}
         theme="snow"
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         modules={modules}
         formats={formats}
         placeholder={placeholder}
