@@ -204,8 +204,6 @@ export function TestimonialFormDialog({ open, onOpenChange, testimonial, onSucce
               <RichTextEditor
                 value={formData.testimonial_en}
                 onChange={(val) => setFormData({ ...formData, testimonial_en: val })}
-                rows={4}
-                required
               />
             </div>
             <div className="space-y-2">
@@ -213,9 +211,7 @@ export function TestimonialFormDialog({ open, onOpenChange, testimonial, onSucce
               <RichTextEditor
                 value={formData.testimonial_ar}
                 onChange={(val) => setFormData({ ...formData, testimonial_ar: val })}
-                rows={4}
                 dir="rtl"
-                required
               />
             </div>
           </div>

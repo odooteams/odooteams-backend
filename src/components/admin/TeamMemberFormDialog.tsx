@@ -246,7 +246,6 @@ export function TeamMemberFormDialog({ member, onSuccess }: TeamMemberFormDialog
             <RichTextEditor
               value={formData.bio_en}
               onChange={(val) => setFormData({ ...formData, bio_en: val })}
-              rows={3}
             />
           </div>
 
@@ -255,7 +254,6 @@ export function TeamMemberFormDialog({ member, onSuccess }: TeamMemberFormDialog
             <RichTextEditor
               value={formData.bio_ar}
               onChange={(val) => setFormData({ ...formData, bio_ar: val })}
-              rows={3}
               dir="rtl"
             />
           </div>

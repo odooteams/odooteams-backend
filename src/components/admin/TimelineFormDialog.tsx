@@ -167,8 +167,6 @@ export function TimelineFormDialog({ open, onOpenChange, event, onSuccess }: Tim
               <RichTextEditor
                 value={formData.description_en}
                 onChange={(val) => setFormData({ ...formData, description_en: val })}
-                rows={3}
-                required
               />
             </div>
             <div className="space-y-2">
@@ -177,9 +175,6 @@ export function TimelineFormDialog({ open, onOpenChange, event, onSuccess }: Tim
                 value={formData.description_ar}
                 onChange={(val) => setFormData({ ...formData, description_ar: val })}
                 dir="rtl"
-                rows={3}
-                dir="rtl"
-                required
               />
             </div>
           </div>
