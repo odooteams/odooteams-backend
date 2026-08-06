@@ -1,5 +1,6 @@
 
 import React from 'react';
+import RichText from '@/components/common/RichText';
 import { useLanguage } from '@/lib/LanguageContext';
 
 interface ServiceDescriptionProps {
@@ -16,9 +17,7 @@ const ServiceDescription: React.FC<ServiceDescriptionProps> = ({ fullDescription
         <h2 className="text-2xl font-bold mb-6 text-odoo-purple">
           {t('About this Service', 'عن هذه الخدمة')}
         </h2>
-        <p className="text-gray-700 mb-8 leading-relaxed">
-          {fullDescription}
-        </p>
+        <RichText className="text-gray-700 mb-8 leading-relaxed" html={fullDescription} />
         
         <h3 className="text-xl font-bold mb-4 text-odoo-purple">
           {t('Key Benefits', 'الفوائد الرئيسية')}

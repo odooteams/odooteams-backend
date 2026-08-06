@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { RichTextEditor } from './RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -216,11 +217,11 @@ export function ServiceFormDialog({ service, onSuccess }: ServiceFormDialogProps
 
               <div>
                 <Label htmlFor="details_en">Details (English)</Label>
-                <Textarea id="details_en" value={formData.details_en} onChange={(e) => setFormData({ ...formData, details_en: e.target.value })} required />
+                <RichTextEditor value={formData.details_en} onChange={(val) => setFormData({ ...formData, details_en: val })} placeholder="Write the service details in English..." />
               </div>
               <div>
                 <Label htmlFor="details_ar">Details (Arabic)</Label>
-                <Textarea id="details_ar" value={formData.details_ar} onChange={(e) => setFormData({ ...formData, details_ar: e.target.value })} required />
+                <RichTextEditor value={formData.details_ar} onChange={(val) => setFormData({ ...formData, details_ar: val })} placeholder="اكتب تفاصيل الخدمة بالعربية..." dir="rtl" />
               </div>
 
               <div>

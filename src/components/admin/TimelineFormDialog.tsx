@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { RichTextEditor } from './RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -163,23 +164,17 @@ export function TimelineFormDialog({ open, onOpenChange, event, onSuccess }: Tim
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="description_en">Description (English)</Label>
-              <Textarea
-                id="description_en"
+              <RichTextEditor
                 value={formData.description_en}
-                onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
-                rows={3}
-                required
+                onChange={(val) => setFormData({ ...formData, description_en: val })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description_ar">Description (Arabic)</Label>
-              <Textarea
-                id="description_ar"
+              <RichTextEditor
                 value={formData.description_ar}
-                onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
-                rows={3}
+                onChange={(val) => setFormData({ ...formData, description_ar: val })}
                 dir="rtl"
-                required
               />
             </div>
           </div>

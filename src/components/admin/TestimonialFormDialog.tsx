@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { RichTextEditor } from './RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -200,23 +201,17 @@ export function TestimonialFormDialog({ open, onOpenChange, testimonial, onSucce
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="testimonial_en">Testimonial (English)</Label>
-              <Textarea
-                id="testimonial_en"
+              <RichTextEditor
                 value={formData.testimonial_en}
-                onChange={(e) => setFormData({ ...formData, testimonial_en: e.target.value })}
-                rows={4}
-                required
+                onChange={(val) => setFormData({ ...formData, testimonial_en: val })}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="testimonial_ar">Testimonial (Arabic)</Label>
-              <Textarea
-                id="testimonial_ar"
+              <RichTextEditor
                 value={formData.testimonial_ar}
-                onChange={(e) => setFormData({ ...formData, testimonial_ar: e.target.value })}
-                rows={4}
+                onChange={(val) => setFormData({ ...formData, testimonial_ar: val })}
                 dir="rtl"
-                required
               />
             </div>
           </div>

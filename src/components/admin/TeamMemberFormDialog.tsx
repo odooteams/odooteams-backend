@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { RichTextEditor } from './RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -242,21 +243,17 @@ export function TeamMemberFormDialog({ member, onSuccess }: TeamMemberFormDialog
           {/* Bio Fields */}
           <div>
             <Label htmlFor="bio_en">Bio (English)</Label>
-            <Textarea
-              id="bio_en"
+            <RichTextEditor
               value={formData.bio_en}
-              onChange={(e) => setFormData({ ...formData, bio_en: e.target.value })}
-              rows={3}
+              onChange={(val) => setFormData({ ...formData, bio_en: val })}
             />
           </div>
 
           <div>
             <Label htmlFor="bio_ar">Bio (Arabic)</Label>
-            <Textarea
-              id="bio_ar"
+            <RichTextEditor
               value={formData.bio_ar}
-              onChange={(e) => setFormData({ ...formData, bio_ar: e.target.value })}
-              rows={3}
+              onChange={(val) => setFormData({ ...formData, bio_ar: val })}
               dir="rtl"
             />
           </div>

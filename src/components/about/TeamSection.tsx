@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import RichText from '@/components/common/RichText';
 import { useLanguage } from '@/lib/LanguageContext';
 import { teamQueries } from '@/lib/supabase/queries';
 import { Facebook, Linkedin, MessageSquare, Instagram, Twitter, Mail, Loader2 } from 'lucide-react';
@@ -149,9 +150,7 @@ const TeamSection = () => {
                 <p className="text-primary font-semibold mb-4 text-sm uppercase tracking-wide">
                   {language === 'en' ? member.position_en : member.position_ar}
                 </p>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {language === 'en' ? member.bio_en : member.bio_ar}
-                </p>
+                <RichText className="text-muted-foreground text-sm leading-relaxed" html={language === 'en' ? member.bio_en : member.bio_ar} />
               </div>
             </div>
           ))}

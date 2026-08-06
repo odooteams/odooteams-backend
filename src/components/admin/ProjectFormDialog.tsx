@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { RichTextEditor } from './RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -184,13 +185,13 @@ export function ProjectFormDialog({ project, onSuccess }: ProjectFormDialogProps
                   <Label>Category (AR)</Label>
                   <Input value={formData.category_ar} onChange={(e) => setFormData({ ...formData, category_ar: e.target.value })} required />
                 </div>
-                <div>
+                <div className="col-span-2">
                   <Label>Description (EN)</Label>
-                  <Textarea value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} required rows={3} />
+                  <RichTextEditor value={formData.description_en} onChange={(val) => setFormData({ ...formData, description_en: val })} placeholder="Write the project description in English..." />
                 </div>
-                <div>
+                <div className="col-span-2">
                   <Label>Description (AR)</Label>
-                  <Textarea value={formData.description_ar} onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })} required rows={3} />
+                  <RichTextEditor value={formData.description_ar} onChange={(val) => setFormData({ ...formData, description_ar: val })} placeholder="اكتب وصف المشروع بالعربية..." dir="rtl" />
                 </div>
                 <div>
                   <Label>Processing Steps (EN)</Label>

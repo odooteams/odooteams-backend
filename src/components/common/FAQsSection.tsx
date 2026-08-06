@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import RichText from '@/components/common/RichText';
 import { useFaqs } from "@/hooks/useFaqs";
 import { useLanguage } from "@/lib/LanguageContext";
 import { ChevronDown } from "lucide-react";
@@ -79,7 +80,7 @@ const FAQsSection: React.FC<FAQsSectionProps> = ({ categoryFilter = "", limit })
               </button>
               {openIdx === i && (
                 <div className="px-5 py-4 border-t text-gray-700 leading-relaxed animate-fade-in">
-                  {faq.contents}
+                  <RichText html={faq.contents} />
                 </div>
               )}
             </div>

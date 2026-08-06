@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import RichText from '@/components/common/RichText';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -68,7 +69,7 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
       <div className="container mx-auto px-4">
         <Badge className="mb-3">{project.category}</Badge>
         <h1 className="text-2xl md:text-4xl font-bold mb-4">{project.title}</h1>
-        <p className="text-muted-foreground text-base md:text-lg mb-6">{project.description}</p>
+        <RichText className="text-muted-foreground text-base md:text-lg mb-6" html={project.description} />
         
         <div className="flex flex-wrap gap-2 mb-6">
           {project.technologies.map((tech, index) => <Badge key={index} variant="outline" className="text-sm">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { RichTextEditor } from './RichTextEditor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -174,8 +175,8 @@ export function ResourceFormDialog({ resource, onSuccess }: ResourceFormDialogPr
                 <div><Label>Author (AR)</Label><Input value={formData.author_ar} onChange={(e) => setFormData({ ...formData, author_ar: e.target.value })} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><Label>Contents (EN)</Label><Textarea value={formData.contents_en} onChange={(e) => setFormData({ ...formData, contents_en: e.target.value })} required rows={5} /></div>
-                <div><Label>Contents (AR)</Label><Textarea value={formData.contents_ar} onChange={(e) => setFormData({ ...formData, contents_ar: e.target.value })} required rows={5} dir="rtl" /></div>
+                <div><Label>Contents (EN)</Label><RichTextEditor value={formData.contents_en} onChange={(val) => setFormData({ ...formData, contents_en: val })} placeholder="Write the resource content in English..." /></div>
+                <div><Label>Contents (AR)</Label><RichTextEditor value={formData.contents_ar} onChange={(val) => setFormData({ ...formData, contents_ar: val })} placeholder="اكتب محتوى المورد بالعربية..." dir="rtl" /></div>
               </div>
             </form>
           </TabsContent>
