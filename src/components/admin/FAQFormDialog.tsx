@@ -87,21 +87,20 @@ export function FAQFormDialog({ faq, onSuccess }: FAQFormDialogProps) {
 
           <div>
             <Label htmlFor="answer_en">Answer (English)</Label>
-            <Textarea
-              id="answer_en"
+            <RichTextEditor
               value={formData.answer_en}
-              onChange={(e) => setFormData({ ...formData, answer_en: e.target.value })}
-              required
+              onChange={(val) => setFormData({ ...formData, answer_en: val })}
+              placeholder="Write the answer in English..."
             />
           </div>
 
           <div>
             <Label htmlFor="answer_ar">Answer (Arabic)</Label>
-            <Textarea
-              id="answer_ar"
+            <RichTextEditor
               value={formData.answer_ar}
-              onChange={(e) => setFormData({ ...formData, answer_ar: e.target.value })}
-              required
+              onChange={(val) => setFormData({ ...formData, answer_ar: val })}
+              placeholder="اكتب الإجابة بالعربية..."
+              dir="rtl"
             />
           </div>
 

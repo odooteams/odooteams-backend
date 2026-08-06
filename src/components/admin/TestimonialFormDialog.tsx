@@ -201,20 +201,18 @@ export function TestimonialFormDialog({ open, onOpenChange, testimonial, onSucce
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="testimonial_en">Testimonial (English)</Label>
-              <Textarea
-                id="testimonial_en"
+              <RichTextEditor
                 value={formData.testimonial_en}
-                onChange={(e) => setFormData({ ...formData, testimonial_en: e.target.value })}
+                onChange={(val) => setFormData({ ...formData, testimonial_en: val })}
                 rows={4}
                 required
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="testimonial_ar">Testimonial (Arabic)</Label>
-              <Textarea
-                id="testimonial_ar"
+              <RichTextEditor
                 value={formData.testimonial_ar}
-                onChange={(e) => setFormData({ ...formData, testimonial_ar: e.target.value })}
+                onChange={(val) => setFormData({ ...formData, testimonial_ar: val })}
                 rows={4}
                 dir="rtl"
                 required

@@ -150,23 +150,20 @@ export function PolicyFormDialog({ policy, onSuccess, trigger }: PolicyFormDialo
 
           <div className="space-y-2">
             <Label htmlFor="content_en">Content (English)</Label>
-            <Textarea
-              id="content_en"
+            <RichTextEditor
               value={formData.content_en}
-              onChange={(e) => handleChange('content_en', e.target.value)}
-              rows={6}
-              required
+              onChange={(val) => handleChange('content_en', val)}
+              placeholder="Write the policy content in English..."
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="content_ar">Content (Arabic)</Label>
-            <Textarea
-              id="content_ar"
+            <RichTextEditor
               value={formData.content_ar}
-              onChange={(e) => handleChange('content_ar', e.target.value)}
-              rows={6}
-              required
+              onChange={(val) => handleChange('content_ar', val)}
+              placeholder="اكتب محتوى السياسة بالعربية..."
+              dir="rtl"
             />
           </div>
 

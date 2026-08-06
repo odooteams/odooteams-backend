@@ -243,20 +243,18 @@ export function TeamMemberFormDialog({ member, onSuccess }: TeamMemberFormDialog
           {/* Bio Fields */}
           <div>
             <Label htmlFor="bio_en">Bio (English)</Label>
-            <Textarea
-              id="bio_en"
+            <RichTextEditor
               value={formData.bio_en}
-              onChange={(e) => setFormData({ ...formData, bio_en: e.target.value })}
+              onChange={(val) => setFormData({ ...formData, bio_en: val })}
               rows={3}
             />
           </div>
 
           <div>
             <Label htmlFor="bio_ar">Bio (Arabic)</Label>
-            <Textarea
-              id="bio_ar"
+            <RichTextEditor
               value={formData.bio_ar}
-              onChange={(e) => setFormData({ ...formData, bio_ar: e.target.value })}
+              onChange={(val) => setFormData({ ...formData, bio_ar: val })}
               rows={3}
               dir="rtl"
             />
