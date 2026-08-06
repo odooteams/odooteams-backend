@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import RichText from '@/components/common/RichText';
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useLanguage } from '@/lib/LanguageContext';
@@ -118,7 +119,7 @@ const TestimonialsSlider = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="py-4">
-                        <p className="text-muted-foreground mb-4 line-clamp-4">{testimonialText}</p>
+                        <RichText className="text-muted-foreground mb-4 line-clamp-4" html={testimonialText} />
                       </CardContent>
                       <CardFooter className="border-t border-border pt-4 flex items-center">
                         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">

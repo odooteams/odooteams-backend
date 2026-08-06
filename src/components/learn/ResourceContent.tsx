@@ -1,5 +1,6 @@
 
 import React from 'react';
+import RichText from '@/components/common/RichText';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Download } from 'lucide-react';
 import { 
@@ -34,9 +35,7 @@ const ResourceContent: React.FC<ResourceContentProps> = ({
       <h2 className="text-2xl font-bold mb-6 text-odoo-purple">
         {t('Overview', 'نظرة عامة')}
       </h2>
-      <p className="text-gray-700 mb-8 leading-relaxed whitespace-pre-line">
-        {content}
-      </p>
+      <RichText className="text-gray-700 mb-8 leading-relaxed" html={content} />
       
       {/* Content sections from mainheaders */}
       {mainHeaders.length > 0 && (

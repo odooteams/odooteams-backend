@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import RichText from '@/components/common/RichText';
 import { useLanguage } from '@/lib/LanguageContext';
 import { timelineQueries } from '@/lib/supabase/queries';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -93,9 +94,7 @@ const TimelineSection = () => {
                     <h3 className="text-xl font-bold text-odoo-purple mb-2">
                       {language === 'en' ? item.title_en : item.title_ar}
                     </h3>
-                    <p className="text-gray-600">
-                      {language === 'en' ? item.description_en : item.description_ar}
-                    </p>
+                    <RichText className="text-gray-600" html={language === 'en' ? item.description_en : item.description_ar} />
                   </div>
                 </div>
               ))
@@ -140,9 +139,7 @@ const TimelineSection = () => {
                     <h3 className="text-lg font-bold text-odoo-purple mb-2 leading-tight">
                       {language === 'en' ? item.title_en : item.title_ar}
                     </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {language === 'en' ? item.description_en : item.description_ar}
-                    </p>
+                    <RichText className="text-gray-600 text-sm leading-relaxed" html={language === 'en' ? item.description_en : item.description_ar} />
                   </div>
                 </div>
               ))

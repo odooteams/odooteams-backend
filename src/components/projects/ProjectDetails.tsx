@@ -1,5 +1,6 @@
 
 import React from 'react';
+import RichText from '@/components/common/RichText';
 import { useLanguage } from '@/lib/LanguageContext';
 
 interface ProjectDetailsProps {
@@ -21,17 +22,17 @@ const ProjectDetailsSection: React.FC<ProjectDetailsProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4 text-odoo-purple">{t('The Challenge', 'التحدي')}</h3>
-            <p className="text-gray-700">{challenges}</p>
+            <RichText className="text-gray-700" html={challenges} />
           </div>
           
           <div>
             <h3 className="text-xl font-bold mb-4 text-odoo-purple">{t('Our Solution', 'الحل')}</h3>
-            <p className="text-gray-700">{solutions}</p>
+            <RichText className="text-gray-700" html={solutions} />
           </div>
           
           <div>
             <h3 className="text-xl font-bold mb-4 text-odoo-purple">{t('The Results', 'النتائج')}</h3>
-            <p className="text-gray-700">{results}</p>
+            <RichText className="text-gray-700" html={results} />
           </div>
         </div>
       </div>
