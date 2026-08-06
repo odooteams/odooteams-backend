@@ -1,4 +1,4 @@
-import { useRef, useMemo, useCallback } from 'react';
+import { useRef, useMemo, useCallback, useId } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,6 +19,8 @@ const formats = [
 
 export function RichTextEditor({ value, onChange, placeholder, dir }: RichTextEditorProps) {
   const quillRef = useRef<ReactQuill>(null);
+  // Unique id per instance so each editor gets its own isolated toolbar
+  const instanceId = useId().replace(/[^a-zA-Z0-9]/g, '');
 
   const imageHandler = useCallback(() => {
     const input = document.createElement('input');
