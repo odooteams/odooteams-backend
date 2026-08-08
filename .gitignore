@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Old upload folder (renamed to uploads)
+public/lovable-uploads
+lovable-uploads
+
+# Security reports (auto-generated)
+security-reports/
+public/security-reports/
+dist/security-reports/
