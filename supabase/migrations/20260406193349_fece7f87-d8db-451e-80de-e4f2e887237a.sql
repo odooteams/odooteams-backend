@@ -1,0 +1,15 @@
+ALTER TABLE public.projects
+ADD COLUMN IF NOT EXISTS seo_title_en text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_title_ar text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_description_en text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_description_ar text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_keywords_en text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_keywords_ar text DEFAULT NULL;
+
+ALTER TABLE public.learn_resources
+ADD COLUMN IF NOT EXISTS seo_title_en text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_title_ar text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_description_en text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_description_ar text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_keywords_en text DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS seo_keywords_ar text DEFAULT NULL;

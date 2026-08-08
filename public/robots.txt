@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# Public content routes are indexable by default.
+# Disallow app-internal, auth, and admin surfaces.
+Disallow: /admin/
+Disallow: /admin
+Disallow: /dashboard/
+Disallow: /dashboard
+Disallow: /auth/
+Disallow: /reset-password
+Disallow: /private/
+Disallow: /*?*preview=
+Disallow: /*?*token=
+
+# Specific crawlers — inherit rules above
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+# Sitemap location
+Sitemap: https://odooteams.com/sitemap.xml
+
+Crawl-delay: 1

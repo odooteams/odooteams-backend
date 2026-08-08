@@ -1,0 +1,39 @@
+{
+  "name": "OdooTeams - Professional Odoo Implementation Services",
+  "short_name": "OdooTeams",
+  "description": "Professional Odoo ERP implementation, customization, and support services for businesses",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#714B67",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/uploads/e8433aef-9332-4de5-a325-42043909dbab.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/uploads/e8433aef-9332-4de5-a325-42043909dbab.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity"
+  ],
+  "lang": "en",
+  "dir": "auto",
+  "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "/uploads/e8433aef-9332-4de5-a325-42043909dbab.png",
+      "sizes": "320x640",
+      "type": "image/png"
+    }
+  ]
+}
