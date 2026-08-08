@@ -11,6 +11,17 @@ export interface Profile {
   updated_at: string;
 }
 
+export interface Partner {
+  id: string;
+  name_en: string;
+  name_ar: string;
+  logo_url: string | null;
+  website_url: string | null;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+}
+
 export interface UserRole {
   id: string;
   user_id: string;

@@ -119,6 +119,39 @@ export const contentManagement = {
     if (error) throw error;
   },
 
+  // Partners
+  createPartner: async (partner: any) => {
+    const { data, error } = await supabase
+      .from('partners')
+      .insert(partner)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  updatePartner: async (id: string, updates: any) => {
+    const { data, error } = await supabase
+      .from('partners')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  deletePartner: async (id: string) => {
+    const { error } = await supabase
+      .from('partners')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  },
+
   // Projects
   createProject: async (project: any) => {
     const { data: { user } } = await supabase.auth.getUser();

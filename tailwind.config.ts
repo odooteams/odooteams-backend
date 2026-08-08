@@ -202,6 +202,14 @@ export default {
 						backgroundPosition: '200% 0'
 					}
 				},
+				'scroll': {
+					'0%': {
+						transform: 'translateX(0)'
+					},
+					'100%': {
+						transform: 'translateX(-50%)'
+					}
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -217,6 +225,7 @@ export default {
 				'slide-in-right': 'slide-in-right 0.5s ease-out',
 				'fade-in-delayed': 'fade-in-delayed 0.8s ease-out',
 				'shimmer': 'shimmer 2s infinite linear',
+				'scroll': 'scroll 30s linear infinite',
 			},
 			backgroundImage: {
 				'gradient-hero': 'linear-gradient(90deg, #410445 0%, #A5158C 100%)',

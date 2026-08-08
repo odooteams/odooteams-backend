@@ -37,6 +37,7 @@ import AdminPolicies from '@/pages/admin/Policies';
 import AdminSettings from '@/pages/admin/Settings';
 import AdminMessages from '@/pages/admin/Messages';
 import AdminTeamMembers from '@/pages/admin/TeamMembers';
+import AdminPartners from '@/pages/admin/Partners';
 import AdminTestimonials from '@/pages/admin/Testimonials';
 import AdminTimeline from '@/pages/admin/Timeline';
 import AdminChatbot from '@/pages/admin/Chatbot';
@@ -196,6 +197,14 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin>
                   <AdminTeamMembers />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/partners" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminPartners />
                 </ProtectedRoute>
               } 
             />

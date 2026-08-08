@@ -6,6 +6,7 @@ import RecentPosts from '@/components/home/RecentPosts';
 import AboutPreview from '@/components/home/AboutPreview';
 import TestimonialsSlider from '@/components/home/TestimonialsSlider';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
+import { PartnersSlider } from '@/components/home/PartnersSlider';
 import { useLanguage } from '@/lib/LanguageContext';
 import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
@@ -73,6 +74,11 @@ const Index = () => {
         <ScrollReveal variant="fade-up" duration={700}>
           <section id="blog">
             <RecentPosts />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section id="partners">
+            <PartnersSlider />
           </section>
         </ScrollReveal>
         <ScrollReveal variant="fade-up" duration={700} delay={100}>
