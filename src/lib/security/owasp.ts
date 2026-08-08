@@ -87,13 +87,17 @@ export async function runOwaspAudit(
   const base = baseUrl.replace(/\/$/, "");
 
   // ---------- A02 Cryptographic Failures (TLS, HSTS) ----------
+  const isHttps = base.startsWith("https://");
+  const isLocalhost = base.includes("localhost") || base.includes("127.0.0.1");
+  const passHttps = isHttps || isLocalhost;
+
   log("Checking TLS & HSTS…");
   out.push({
     category: "A02_CryptographicFailures",
     title: "HTTPS enforced",
-    pass: base.startsWith("https://"),
-    severity: "high",
-    detail: base.startsWith("https://") ? "Base URL uses HTTPS" : "Base URL is plain HTTP",
+    pass: passHttps,
+    severity: passHttps ? "info" : "high",
+    detail: passHttps ? (isLocalhost ? "Localhost exempted from HTTPS requirement" : "Base URL uses HTTPS") : "Base URL is plain HTTP",
     url: base,
   });
 
@@ -163,12 +167,26 @@ export async function runOwaspAudit(
     const r = await safeFetch(base + p, { method: "GET", mode: "cors" });
     if (!r) continue;
     if (r.type === "opaque") continue;
+    let isExposed = r.ok;
+    
+    if (isExposed) {
+      try {
+        const text = await r.text();
+        // If the response is just the Vite SPA fallback index.html, it's not actually exposed
+        if (text.toLowerCase().includes('<!doctype html>') || text.toLowerCase().includes('<html')) {
+          isExposed = false;
+        }
+      } catch {
+        // Ignore read errors
+      }
+    }
+
     out.push({
       category: "A01_BrokenAccessControl",
       title: `Sensitive path: ${p}`,
-      pass: !r.ok,
-      severity: r.ok ? "high" : "info",
-      detail: r.ok ? `HTTP ${r.status} — content reachable!` : `HTTP ${r.status}`,
+      pass: !isExposed,
+      severity: isExposed ? "high" : "info",
+      detail: isExposed ? `HTTP ${r.status} — content reachable!` : (r.ok ? `HTTP ${r.status} (SPA Fallback)` : `HTTP ${r.status}`),
       url: base + p,
     });
   }
