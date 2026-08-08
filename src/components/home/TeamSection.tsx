@@ -2,15 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Facebook, Linkedin, MessageSquare, Loader2, Instagram, Twitter, Mail } from 'lucide-react';
-import { fetchSheetData } from '@/lib/googleSheets';
-
-// Google Sheets configuration
-const GOOGLE_API_KEY = 'AIzaSyAXjI2Rt9WIZCY6FJeyV3IMRecFB6SOjRk';
-const SPREADSHEET_ID = '1TRUeWEKBY7L-htPsD7T3-VETj_i2ARPL25ixkrJtA98';
-const SHEET_NAME = 'team';
+import { teamQueries } from '@/lib/supabase/queries';
 
 interface TeamMember {
-  id: number;
+  id: string;
   name: { en: string; ar: string };
   title: { en: string; ar: string };
   bio: { en: string; ar: string };
@@ -33,30 +28,26 @@ const TeamSection = () => {
     const getTeamData = async () => {
       try {
         setLoading(true);
-        const data = await fetchSheetData(GOOGLE_API_KEY, SPREADSHEET_ID, SHEET_NAME);
+        const data = await teamQueries.getAll();
         
-        // Map the sheet data to our TeamMember interface
-        const teamMembers: TeamMember[] = data.map((row, index) => ({
-          id: index + 1,
+        const teamMembers: TeamMember[] = data.map((member) => ({
+          id: member.id,
           name: { 
-            en: row.Name_en || '', 
-            ar: row.Name_ar || '' 
+            en: member.name_en || '', 
+            ar: member.name_ar || '' 
           },
           title: { 
-            en: row.Position_en || '', 
-            ar: row.Position_ar || '' 
+            en: member.position_en || '', 
+            ar: member.position_ar || '' 
           },
           bio: { 
-            en: row.bio_en || '', 
-            ar: row.bio_ar || '' 
+            en: member.bio_en || '', 
+            ar: member.bio_ar || '' 
           },
-          image: row.image || '/placeholder.svg',
-          facebook: row.Facebook || '',
-          linkedin: row.LinkedIn || '',
-          twitter: row.Twitter || '',
-          instagram: row.Instagram || '',
-          whatsapp: row.WhatsApp || '',
-          email: row.Email || ''
+          image: member.image || '/placeholder.svg',
+          linkedin: member.linkedin_url || '',
+          twitter: member.twitter_url || '',
+          email: member.email || ''
         }));
         
         setTeam(teamMembers);
