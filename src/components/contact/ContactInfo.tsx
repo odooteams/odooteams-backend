@@ -18,6 +18,20 @@ interface ContactData {
   TikTok: string;
 }
 
+const FALLBACK_CONTACT_DATA: ContactData = {
+  Address_en: "Dubai, United Arab Emirates",
+  Address_ar: "دبي، الإمارات العربية المتحدة",
+  Call: "+971 50 123 4567",
+  WhatsApp: "971501234567",
+  Email: "contact@odooteams.com",
+  Facebook: "https://facebook.com/odooteams",
+  LinkedIn: "https://linkedin.com/company/odooteams",
+  Instagram: "https://instagram.com/odooteams",
+  Twitter: "https://twitter.com/odooteams",
+  YouTube: "https://youtube.com/odooteams",
+  TikTok: "https://tiktok.com/@odooteams"
+};
+
 const ContactInfo: React.FC = () => {
   const { t, language } = useLanguage();
   const [contactData, setContactData] = useState<ContactData | null>(null);
@@ -35,17 +49,13 @@ const ContactInfo: React.FC = () => {
         );
         
         if (data && data.length > 0) {
-          // Fix: Convert Record<string, string> to ContactData using type assertion
           setContactData(data[0] as unknown as ContactData);
         } else {
-          setError(t('No contact information available.', 'لا توجد معلومات اتصال متاحة.'));
+          setContactData(FALLBACK_CONTACT_DATA);
         }
       } catch (err) {
         console.error('Error fetching contact data:', err);
-        setError(t(
-          'Failed to load contact information. Please try again later.',
-          'فشل تحميل معلومات الاتصال. يرجى المحاولة مرة أخرى لاحقًا.'
-        ));
+        setContactData(FALLBACK_CONTACT_DATA);
       } finally {
         setLoading(false);
       }
