@@ -42,7 +42,7 @@ const Index = () => {
   ];
   
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="OdooTeams — Expert Odoo ERP Implementation Services"
         description="Expert Odoo ERP implementation, customization, and development services worldwide. Professional Odoo solutions with 24/7 support."

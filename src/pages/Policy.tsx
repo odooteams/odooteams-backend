@@ -71,7 +71,10 @@ export default function Policy() {
       />
       <TopHeader />
       <Navbar />
-      <div className="min-h-screen py-20 bg-gradient-to-b from-background to-muted/20">
+      <div 
+        className={`min-h-screen py-20 bg-gradient-to-b from-background to-muted/20 ${language === 'ar' ? 'rtl text-right' : 'ltr text-left'}`}
+        dir={language === 'ar' ? 'rtl' : 'ltr'}
+      >
         <div className="container max-w-4xl mx-auto px-4">
           <Button
             variant="ghost"

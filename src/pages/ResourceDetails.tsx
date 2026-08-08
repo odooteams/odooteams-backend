@@ -115,7 +115,7 @@ const ResourceDetails = () => {
   
   if (loading || error || !resource) {
     return (
-      <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+      <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
         <TopHeader />
         <Navbar />
         <ResourcesLoadingState 
@@ -146,7 +146,7 @@ const ResourceDetails = () => {
   };
 
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title={`${title} | OdooTeams Learn`}
         description={excerpt}

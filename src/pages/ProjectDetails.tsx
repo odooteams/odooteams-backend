@@ -51,7 +51,7 @@ const ProjectDetails = () => {
   ];
 
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title={`${project.title} - Odoo Project Case Study | OdooTeams`}
         description={`${project.description} View our successful Odoo project implementation with detailed case study and results.`}

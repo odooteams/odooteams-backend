@@ -37,7 +37,7 @@ const FAQs = () => {
   };
 
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="FAQs - Odoo ERP Questions Answered | OdooTeams"
         description="Find answers to frequently asked questions about Odoo ERP implementation, customization, pricing, and support from OdooTeams."

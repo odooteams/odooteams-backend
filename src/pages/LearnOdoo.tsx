@@ -93,7 +93,7 @@ const LearnOdoo = () => {
   };
   
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="Learn Odoo - Free ERP Tutorials & Resources | OdooTeams"
         description="Master Odoo ERP with free tutorials, guides, and learning resources. From beginner to advanced Odoo implementation and customization."

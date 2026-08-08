@@ -24,7 +24,7 @@ const Projects = () => {
   } = useProjects();
   
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="Our Projects - Odoo ERP Success Stories | OdooTeams"
         description="Explore OdooTeams' portfolio of successful Odoo ERP implementations across industries with custom solutions."

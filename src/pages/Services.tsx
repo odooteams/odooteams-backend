@@ -40,7 +40,7 @@ const Services = () => {
   ];
   
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="Odoo Services — Implementation & Customization | OdooTeams"
         description="Comprehensive Odoo ERP services: implementation, customization, training, and support tailored to your business needs."

@@ -32,7 +32,7 @@ const ServiceDetails = () => {
   ];
   
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title={service.seo_title || `${service.title} - Professional Odoo Service | OdooTeams`}
         description={service.seo_description || `${service.details} Get expert ${service.title.toLowerCase()} services with professional Odoo implementation and support.`}

@@ -21,7 +21,7 @@ const About = () => {
   const { dir } = useLanguage();
 
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="About OdooTeams - Expert Odoo ERP Consultants"
         description="Learn about OdooTeams, a leading Odoo ERP implementation partner. Discover our team, expertise, and commitment to delivering world-class business solutions."

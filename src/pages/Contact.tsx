@@ -20,7 +20,7 @@ const Contact = () => {
   const { dir } = useLanguage();
   
   return (
-    <div className={dir === 'rtl' ? 'rtl' : 'ltr'}>
+    <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
         title="Contact OdooTeams - Get a Free ERP Consultation"
         description="Contact OdooTeams for expert Odoo ERP implementation, customization, and support. Get a free consultation and transform your business today."
