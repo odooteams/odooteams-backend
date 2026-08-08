@@ -1,0 +1,118 @@
+
+# ================================================================
+# OdooTeams .htaccess — security + SEO + performance
+# ================================================================
+
+# Default character set
+AddDefaultCharset UTF-8
+
+# Disable directory listings (security)
+Options -Indexes -MultiViews
+
+# Protect sensitive files
+<FilesMatch "(^\.env|\.git|composer\.(json|lock)|package(-lock)?\.json|bun\.lock|\.sql|\.bak|\.log|\.md|tsconfig.*\.json|vite\.config\..*|\.htaccess)$">
+  Require all denied
+</FilesMatch>
+
+# Custom 404 (helps SEO by returning a useful page with correct status)
+ErrorDocument 404 /404.html
+
+# ----------- URL rewriting -----------
+RewriteEngine On
+
+# Force HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Canonical: redirect www -> non-www (SEO)
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+# Remove trailing slash (except root) — avoids duplicate-content
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Handle client-side routing for React SPA
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [QSA,L]
+
+# ----------- Security headers -----------
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://*.supabase.co https://cdn.gpteng.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+
+  # Remove server fingerprinting
+  Header unset X-Powered-By
+  Header unset Server
+
+  # SEO: cache HTML lightly so updates propagate
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "public, max-age=600, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ----------- Cache static assets -----------
+<IfModule mod_expires.c>
+  ExpiresActive on
+  ExpiresDefault                          "access plus 1 month"
+  ExpiresByType text/html                 "access plus 10 minutes"
+  ExpiresByType text/xml                  "access plus 1 hour"
+  ExpiresByType application/xml           "access plus 1 hour"
+  ExpiresByType application/json          "access plus 0 seconds"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/jpg                 "access plus 1 year"
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/gif                 "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+  ExpiresByType image/webp                "access plus 1 year"
+  ExpiresByType image/x-icon              "access plus 1 year"
+  ExpiresByType font/woff                 "access plus 1 year"
+  ExpiresByType font/woff2                "access plus 1 year"
+  ExpiresByType application/manifest+json "access plus 1 week"
+</IfModule>
+
+# Far-future cache for hashed assets
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|woff2?|ttf|otf|eot|svg|png|jpe?g|gif|webp|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# ----------- Compression -----------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css text/javascript
+  AddOutputFilterByType DEFLATE application/xml application/xhtml+xml application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml font/ttf font/otf application/font-woff application/font-woff2
+</IfModule>
+
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/plain text/html text/xml text/css text/javascript
+  AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json image/svg+xml
+</IfModule>
+
+# Proper MIME types
+<IfModule mod_mime.c>
+  AddType application/manifest+json   webmanifest
+  AddType image/webp                  webp
+  AddType image/svg+xml               svg svgz
+  AddType font/woff                   woff
+  AddType font/woff2                  woff2
+  AddType application/rss+xml         rss
+  AddType application/atom+xml        atom
+</IfModule>
+
+# Allow crawlers to read XML sitemaps & robots
+<FilesMatch "(sitemap.*\.xml|robots\.txt|llms\.txt|humans\.txt)$">
+  Require all granted
+</FilesMatch>
