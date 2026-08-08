@@ -86,7 +86,7 @@ const WhoWeAreSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className={`${dir === 'rtl' ? 'lg:order-2' : ''}`}>
             <img 
-              src={content?.image || '/lovable-uploads/e8433aef-9332-4de5-a325-42043909dbab.png'} 
+              src={content?.image || '/uploads/e8433aef-9332-4de5-a325-42043909dbab.png'} 
               alt={language === 'ar' ? content?.title_ar : content?.title_en} 
               className="rounded-lg shadow-xl w-full h-auto object-cover"
             />
