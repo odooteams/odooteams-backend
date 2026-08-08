@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Pencil, Sparkles, Search } from 'lucide-react';
-import { ImageUpload } from './ImageUpload';
+import { MultiImageUpload } from './MultiImageUpload';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
 
@@ -224,18 +224,14 @@ export function ProjectFormDialog({ project, onSuccess }: ProjectFormDialogProps
 
               <div>
                 <Label>Project Images</Label>
-                <p className="text-xs text-muted-foreground mb-2">Upload or paste image URLs (comma-separated for multiple)</p>
-                <ImageUpload
-                  value={formData.images.split(',').map((s: string) => s.trim()).filter(Boolean)[0] || ''}
-                  onChange={(url) => {
-                    const current = formData.images.split(',').map((s: string) => s.trim()).filter(Boolean);
-                    if (url && !current.includes(url)) {
-                      setFormData({ ...formData, images: [...current, url].join(', ') });
-                    }
-                  }}
+                <p className="text-xs text-muted-foreground mb-2">Upload up to 5 images (or paste comma-separated URLs below)</p>
+                <MultiImageUpload
+                  value={formData.images.split(',').map((s: string) => s.trim()).filter(Boolean)}
+                  onChange={(urls) => setFormData({ ...formData, images: urls.join(', ') })}
                   folder="projects"
+                  maxFiles={5}
                 />
-                <Input className="mt-2" value={formData.images} onChange={(e) => setFormData({ ...formData, images: e.target.value })} placeholder="https://example.com/img1.jpg, ..." />
+                <Input className="mt-4" value={formData.images} onChange={(e) => setFormData({ ...formData, images: e.target.value })} placeholder="https://example.com/img1.jpg, ..." />
               </div>
 
               <div>
