@@ -137,17 +137,14 @@ const TopHeader = () => {
             </div>
 
             {/* Language switcher */}
-            <button 
-              onClick={toggleLanguage} 
-              className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors p-1"
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors p-1 text-xs font-medium"
               aria-label={t('Switch to Arabic', 'Switch to English')}
             >
-              <img 
-                src={language === 'en' ? '/lovable-uploads/68c19eac-d969-40d2-9cfd-df3db46f59a5.png' : '/lovable-uploads/97aadb3f-bfe5-4f3f-b1f0-235706013355.png'} 
-                alt={language === 'en' ? 'English Flag' : 'Saudi Arabia Flag'} 
-                className="h-4 w-4 rounded-full object-cover"
-              />
-              <span className="text-xs font-medium">{language === 'en' ? 'AR' : 'EN'}</span>
+              <span className={language === 'ar' ? 'opacity-100' : 'opacity-60'}>Ar</span>
+              <span className="opacity-50">/</span>
+              <span className={language === 'en' ? 'opacity-100' : 'opacity-60'}>EN</span>
             </button>
           </div>
         </div>
