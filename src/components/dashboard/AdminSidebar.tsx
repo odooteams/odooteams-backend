@@ -87,7 +87,6 @@ const menuGroups: MenuGroup[] = [
     label: 'Team & Testimonials',
     items: [
       { title: 'Team Members', url: '/admin/team', icon: UsersRound },
-      { title: 'Partners', url: '/admin/partners', icon: Users },
       { title: 'Testimonials', url: '/admin/testimonials', icon: MessageCircle },
       { title: 'Timeline', url: '/admin/timeline', icon: Calendar },
     ]
