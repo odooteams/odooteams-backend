@@ -121,7 +121,7 @@ export const contentManagement = {
 
   // Partners
   createPartner: async (partner: any) => {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('partners')
       .insert(partner)
       .select()
@@ -132,7 +132,7 @@ export const contentManagement = {
   },
 
   updatePartner: async (id: string, updates: any) => {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('partners')
       .update(updates)
       .eq('id', id)
@@ -144,7 +144,7 @@ export const contentManagement = {
   },
 
   deletePartner: async (id: string) => {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('partners')
       .delete()
       .eq('id', id);

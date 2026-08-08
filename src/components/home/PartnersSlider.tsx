@@ -11,7 +11,7 @@ export function PartnersSlider() {
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from('partners')
           .select('*')
           .eq('is_active', true)
@@ -19,7 +19,7 @@ export function PartnersSlider() {
           .order('created_at', { ascending: false });
 
         if (!error && data) {
-          setPartners(data);
+          setPartners(data as Partner[]);
         }
       } catch (err) {
         console.error('Error fetching partners:', err);

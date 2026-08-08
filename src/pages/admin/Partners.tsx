@@ -36,14 +36,14 @@ export default function AdminPartners() {
   const loadPartners = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('partners')
         .select('*')
         .order('sort_order', { ascending: true })
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      setPartners(data || []);
+      setPartners((data as Partner[]) || []);
     } catch (error) {
       console.error('Error loading partners:', error);
       toast.error('Failed to load partners');
@@ -65,7 +65,7 @@ export default function AdminPartners() {
 
   const handleToggleActive = async (id: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('partners')
         .update({ is_active: !currentStatus })
         .eq('id', id);
