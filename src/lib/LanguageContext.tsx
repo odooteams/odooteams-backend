@@ -23,6 +23,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('language', lang);
   };
 
+  React.useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
+
   const t = (en: string, ar: string): string => {
     return language === 'en' ? en : ar;
   };
