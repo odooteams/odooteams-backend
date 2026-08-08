@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server, Ban } from "lucide-react";
+import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network, ListChecks, KeyRound, Database, Code2, Rocket, Server, Ban, Settings, Mail } from "lucide-react";
 import BlacklistTab from "@/components/admin/security/BlacklistTab";
 import MiddlewareTab from "@/components/admin/security/MiddlewareTab";
 import AuditTab from "@/components/admin/security/AuditTab";
@@ -932,6 +933,33 @@ function FullScanTab() {
   const [report, setReport] = useState<FullScanReport | null>(null);
   const [saved, setSaved] = useState<SavedScan[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
+  const [automationId, setAutomationId] = useState<string | null>(null);
+  const [automationEnabled, setAutomationEnabled] = useState(false);
+  const [emailAddresses, setEmailAddresses] = useState("info@odooteams.com");
+  const [savingSettings, setSavingSettings] = useState(false);
+
+  const fetchAutomation = async () => {
+    const { data } = await supabase.from("site_settings").select("*").eq("setting_key", "security_scan_automation").maybeSingle();
+    if (data && data.setting_value) {
+      setAutomationId(data.id);
+      const val = data.setting_value as any;
+      setAutomationEnabled(val.enabled || false);
+      if (val.emails) setEmailAddresses(val.emails);
+    }
+  };
+
+  const saveAutomation = async () => {
+    setSavingSettings(true);
+    const payload = { enabled: automationEnabled, emails: emailAddresses };
+    if (automationId) {
+      await supabase.from("site_settings").update({ setting_value: payload as any }).eq("id", automationId);
+    } else {
+      await supabase.from("site_settings").insert({ setting_key: "security_scan_automation", setting_type: "security", setting_value: payload as any });
+    }
+    setSavingSettings(false);
+    toast.success("Automation preferences saved");
+    fetchAutomation();
+  };
 
   const fetchSaved = async () => {
     if (!user?.id) return;
@@ -958,6 +986,7 @@ function FullScanTab() {
 
   useEffect(() => {
     fetchSaved();
+    fetchAutomation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
@@ -1049,10 +1078,45 @@ function FullScanTab() {
 
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Full Security Scan</CardTitle>
-        <CardDescription>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Settings className="h-6 w-6 text-primary" />
+            <div>
+              <CardTitle>Daily Automated Scan</CardTitle>
+              <CardDescription>Configure a daily background scan and receive email reports.</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="space-y-0.5">
+              <Label>Enable Automated Daily Scan</Label>
+              <p className="text-sm text-muted-foreground">Runs automatically every night (requires Edge Function setup).</p>
+            </div>
+            <Switch checked={automationEnabled} onCheckedChange={setAutomationEnabled} />
+          </div>
+          {automationEnabled && (
+            <div className="space-y-2 pt-2">
+              <Label>Recipient Email Address(es)</Label>
+              <Input value={emailAddresses} onChange={(e) => setEmailAddresses(e.target.value)} placeholder="info@odooteams.com" />
+              <p className="text-xs text-muted-foreground">Multiple emails can be separated by commas.</p>
+            </div>
+          )}
+        </CardContent>
+        <div className="flex justify-end p-6 pt-0">
+          <Button onClick={saveAutomation} disabled={savingSettings}>
+            {savingSettings ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : <Mail className="h-4 w-4 mr-2" />}
+            Save Preferences
+          </Button>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Manual Full Scan</CardTitle>
+          <CardDescription>
           Runs Headers + OWASP Top 10 + CSRF + SQLi + XSS + Black-box + Network/CDN against any URL and saves the consolidated report for later review.
         </CardDescription>
       </CardHeader>
@@ -1205,6 +1269,7 @@ function FullScanTab() {
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 }
 
@@ -1276,7 +1341,7 @@ export default function AdminSecurity() {
     <>
       <SEOHead title="Admin • Security" description="CSP diff, header tests and black-box security scan" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">

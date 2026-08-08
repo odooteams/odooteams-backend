@@ -57,6 +57,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/contact" />
   </url>
   <url>
+    <loc>https://odooteams.com/services/amazon-noon-advertising</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/services/amazon-noon-advertising?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/services/amazon-noon-advertising?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/amazon-noon-advertising" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/services/it-consulting-solutions</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/services/it-consulting-solutions?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/services/it-consulting-solutions?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/it-consulting-solutions" />
+  </url>
+  <url>
     <loc>https://odooteams.com/services/business-consultation</loc>
     <lastmod>2026-07-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -84,15 +102,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/odoo-implementation" />
   </url>
   <url>
-    <loc>https://odooteams.com/services/amazon-noon-advertising</loc>
-    <lastmod>2026-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/services/amazon-noon-advertising?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/services/amazon-noon-advertising?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/amazon-noon-advertising" />
-  </url>
-  <url>
     <loc>https://odooteams.com/services/digital-marketing-strategy</loc>
     <lastmod>2026-07-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -100,15 +109,6 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/services/digital-marketing-strategy?lang=en" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/services/digital-marketing-strategy?lang=ar" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/digital-marketing-strategy" />
-  </url>
-  <url>
-    <loc>https://odooteams.com/services/it-consulting-solutions</loc>
-    <lastmod>2026-07-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/services/it-consulting-solutions?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/services/it-consulting-solutions?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/it-consulting-solutions" />
   </url>
   <url>
     <loc>https://odooteams.com/projects/promo-steel</loc>

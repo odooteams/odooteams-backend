@@ -10,6 +10,7 @@ import { Settings as SettingsIcon, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { SettingFormDialog } from '@/components/admin/SettingFormDialog';
+import { SmtpSettingsCard } from '@/components/admin/SmtpSettingsCard';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -68,7 +69,7 @@ export default function AdminSettings() {
     <>
       <SEOHead title="Admin • Settings" description="Manage site settings" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
@@ -77,6 +78,8 @@ export default function AdminSettings() {
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <div className="max-w-6xl mx-auto space-y-6">
+                <SmtpSettingsCard />
+                
                 <Card>
                   <CardHeader>
                     <div className="flex items-center justify-between">

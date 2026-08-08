@@ -61,7 +61,7 @@ const menuGroups: MenuGroup[] = [
   {
     label: 'Analytics',
     items: [
-      { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
+      // { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
       { title: 'Visitors', url: '/admin/visitors', icon: Globe },
     ]
   },

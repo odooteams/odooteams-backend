@@ -10,6 +10,7 @@ import { FileText, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 import { ProjectFormDialog } from '@/components/admin/ProjectFormDialog';
 import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 import {
@@ -61,11 +62,27 @@ export default function AdminProjects() {
     }
   };
 
+  const handleToggleActive = async (id: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update({ is_active: !currentStatus })
+        .eq('id', id);
+        
+      if (error) throw error;
+      toast.success(`Project ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
+      loadProjects();
+    } catch (error) {
+      console.error('Error toggling project status:', error);
+      toast.error('Failed to update project status');
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • Projects" description="Create and manage projects" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
@@ -128,7 +145,12 @@ export default function AdminProjects() {
                               </TableCell>
                               <TableCell>{new Date(project.created_at).toLocaleDateString()}</TableCell>
                               <TableCell>
-                                <div className="flex gap-2">
+                                <div className="flex items-center gap-4">
+                                  <Switch 
+                                    checked={project.is_active}
+                                    onCheckedChange={() => handleToggleActive(project.id, project.is_active)}
+                                    aria-label="Toggle active status"
+                                  />
                                   <ProjectFormDialog project={project} onSuccess={loadProjects} />
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>

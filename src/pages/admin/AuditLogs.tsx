@@ -26,7 +26,7 @@ interface AuditLog {
 }
 
 export default function AuditLogs() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,6 +80,42 @@ export default function AuditLogs() {
     if (action.includes('create') || action.includes('insert')) return 'default';
     if (action.includes('update')) return 'secondary';
     return 'outline';
+  };
+
+  const formatAction = (action: string) => {
+    if (language === 'en') {
+      return action.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+    const arMap: Record<string, string> = {
+      'update_permissions': 'تحديث الصلاحيات',
+      'create_user': 'إنشاء مستخدم',
+      'delete_user': 'حذف مستخدم',
+      'update_user': 'تحديث مستخدم',
+      'login': 'تسجيل الدخول',
+      'logout': 'تسجيل الخروج',
+      'create_project': 'إنشاء مشروع',
+      'update_project': 'تحديث مشروع',
+      'delete_project': 'حذف مشروع',
+      'create_service': 'إنشاء خدمة',
+      'update_service': 'تحديث خدمة',
+      'delete_service': 'حذف خدمة',
+    };
+    return arMap[action] || action;
+  };
+
+  const formatEntity = (entity: string) => {
+    if (language === 'en') {
+      return entity.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+    const arMap: Record<string, string> = {
+      'user_permissions': 'صلاحيات المستخدم',
+      'users': 'المستخدمين',
+      'projects': 'المشاريع',
+      'services': 'الخدمات',
+      'blogs': 'المدونات',
+      'faqs': 'الأسئلة الشائعة',
+    };
+    return arMap[entity] || entity;
   };
 
   const filteredLogs = logs.filter(log => 
@@ -152,7 +188,7 @@ export default function AuditLogs() {
                               <TableCell className="whitespace-nowrap">
                                 <div className="flex items-center gap-2">
                                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                                  {format(new Date(log.created_at), 'MMM dd, yyyy HH:mm')}
+                                  <span dir="ltr">{format(new Date(log.created_at), 'MMM dd, yyyy HH:mm')}</span>
                                 </div>
                               </TableCell>
                               <TableCell>
@@ -163,16 +199,16 @@ export default function AuditLogs() {
                               </TableCell>
                               <TableCell>
                                 <Badge variant={getActionBadgeVariant(log.action)}>
-                                  {log.action}
+                                  {formatAction(log.action)}
                                 </Badge>
                               </TableCell>
                               <TableCell>
-                                <Badge variant="outline">{log.entity_type}</Badge>
+                                <Badge variant="outline">{formatEntity(log.entity_type)}</Badge>
                               </TableCell>
                               <TableCell className="max-w-[300px]">
                                 {log.entity_id && (
                                   <span className="text-xs text-muted-foreground truncate block">
-                                    ID: {log.entity_id.substring(0, 8)}...
+                                    {t('ID:', 'المعرف:')} {log.entity_id.substring(0, 8)}...
                                   </span>
                                 )}
                               </TableCell>

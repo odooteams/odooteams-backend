@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram, Youtube, MessageCircle } from 'lucide-react';
-import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContactData {
   Email: string;
@@ -21,16 +21,30 @@ const TopHeader = () => {
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          GOOGLE_SHEETS_CONFIG.SHEETS.CONTACT
-        );
-        if (data && data.length > 0) {
-          setContactData(data[0] as unknown as ContactData);
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('setting_key, setting_value')
+          .in('setting_key', ['contact_info', 'social_media']);
+          
+        if (error) throw error;
+        
+        if (data) {
+          const contact = (data.find(s => s.setting_key === 'contact_info')?.setting_value as any) || {};
+          const social = (data.find(s => s.setting_key === 'social_media')?.setting_value as any) || {};
+          
+          setContactData({
+            Email: contact.email || 'info@odooteams.com',
+            Call: contact.phone || '+201007419344',
+            WhatsApp: social.whatsapp || '201007419344',
+            Facebook: social.facebook || '',
+            Twitter: social.twitter || '',
+            LinkedIn: social.linkedin || '',
+            Instagram: social.instagram || '',
+            YouTube: social.youtube || ''
+          });
         }
       } catch (error) {
-        console.error('Error fetching contact info:', error);
+        console.error('Error fetching contact info from database:', error);
       }
     };
     fetchContactInfo();
@@ -59,7 +73,7 @@ const TopHeader = () => {
                 className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
               >
                 <Phone className="h-4 w-4" />
-                <span>{contactData.Call}</span>
+                <span dir="ltr">{contactData.Call}</span>
               </a>
             )}
           </div>

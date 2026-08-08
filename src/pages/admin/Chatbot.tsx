@@ -99,7 +99,7 @@ export default function AdminChatbot() {
     <>
       <SEOHead title="Admin • Chatbot" description="Manage chatbot responses" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">

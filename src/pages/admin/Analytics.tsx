@@ -37,7 +37,7 @@ export default function AdminAnalytics() {
     <>
       <SEOHead title="Admin • Analytics" description="View analytics and metrics" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center justify-between px-6 bg-background">

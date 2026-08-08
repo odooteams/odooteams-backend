@@ -130,7 +130,7 @@ export function SettingFormDialog({ setting, onSuccess }: SettingFormDialogProps
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{setting ? 'Edit Setting' : 'Create New Setting'}</DialogTitle>
         </DialogHeader>
@@ -193,7 +193,7 @@ export function SettingFormDialog({ setting, onSuccess }: SettingFormDialogProps
             <div className="space-y-3">
               {rows.map((row, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2 items-start border rounded-md p-3">
-                  <div className="col-span-12 md:col-span-4 space-y-1">
+                  <div className="col-span-12 md:col-span-3 space-y-1">
                     <Label className="text-xs">Field name</Label>
                     <Input
                       value={row.key}
@@ -227,7 +227,7 @@ export function SettingFormDialog({ setting, onSuccess }: SettingFormDialogProps
                       />
                     )}
                   </div>
-                  <div className="col-span-3 md:col-span-1 space-y-1">
+                  <div className="col-span-3 md:col-span-2 space-y-1">
                     <Label className="text-xs">Type</Label>
                     <Select
                       value={row.type}
@@ -238,9 +238,9 @@ export function SettingFormDialog({ setting, onSuccess }: SettingFormDialogProps
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="string">Text</SelectItem>
-                        <SelectItem value="textarea">Long</SelectItem>
-                        <SelectItem value="number">Num</SelectItem>
-                        <SelectItem value="boolean">Bool</SelectItem>
+                        <SelectItem value="textarea">Long text</SelectItem>
+                        <SelectItem value="number">Number</SelectItem>
+                        <SelectItem value="boolean">Boolean</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

@@ -103,7 +103,7 @@ export default function AdminTestimonials() {
     <>
       <SEOHead title="Admin • Testimonials" description="Manage testimonials" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">

@@ -10,6 +10,7 @@ import { Briefcase, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { contentManagement } from '@/lib/supabase/admin';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 import { ServiceFormDialog } from '@/components/admin/ServiceFormDialog';
 import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
 import {
@@ -61,11 +62,27 @@ export default function AdminServices() {
     }
   };
 
+  const handleToggleActive = async (id: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('services')
+        .update({ is_active: !currentStatus })
+        .eq('id', id);
+        
+      if (error) throw error;
+      toast.success(`Service ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
+      loadServices();
+    } catch (error) {
+      console.error('Error toggling service status:', error);
+      toast.error('Failed to update service status');
+    }
+  };
+
   return (
     <>
       <SEOHead title="Admin • Services" description="Create and manage services" />
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
@@ -130,7 +147,12 @@ export default function AdminServices() {
                               </TableCell>
                               <TableCell>{new Date(service.created_at).toLocaleDateString()}</TableCell>
                               <TableCell>
-                                <div className="flex gap-2">
+                                <div className="flex items-center gap-4">
+                                  <Switch 
+                                    checked={service.is_active}
+                                    onCheckedChange={() => handleToggleActive(service.id, service.is_active)}
+                                    aria-label="Toggle active status"
+                                  />
                                   <ServiceFormDialog service={service} onSuccess={loadServices} />
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>

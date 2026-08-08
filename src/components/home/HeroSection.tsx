@@ -62,6 +62,7 @@ const HeroSection = () => {
       {/* Carousel Container */}
       <Carousel 
         className="w-full h-full"
+        opts={{ direction: dir === 'rtl' ? 'rtl' : 'ltr', loop: true }}
         plugins={[autoplayPlugin.current]}
         onMouseEnter={autoplayPlugin.current.stop}
         onMouseLeave={autoplayPlugin.current.reset}
@@ -75,15 +76,10 @@ const HeroSection = () => {
                 <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16 lg:py-20 relative z-10 w-full">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
                     <div className={`text-white space-y-5 md:space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
-                      {/* Premium Badge */}
-                      <div className="inline-flex items-center px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md rounded-full border border-white/20 shadow-2xl animate-fade-in">
-                        <div className="w-2 h-2 bg-odoo-gold rounded-full mr-2 md:mr-3 animate-pulse"></div>
-                        <span className="text-xs md:text-sm font-semibold text-odoo-gold tracking-wide">✨ {t('Premium Odoo Solutions', 'حلول أودو المتميزة')}</span>
-                      </div>
-                      
+
                       {/* Main Heading */}
                       <div className="space-y-6">
-                        <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold leading-[1.15] animate-fade-in tracking-tight" style={{
+                        <h1 className={`text-3xl md:text-5xl lg:text-7xl font-bold ${dir === 'rtl' ? 'leading-[1.6]' : 'leading-[1.15]'} animate-fade-in tracking-tight`} style={{
                           animationDelay: '0.1s'
                         }}>
                           <span className="bg-gradient-to-r from-white via-white to-white/90 bg-clip-text text-transparent">

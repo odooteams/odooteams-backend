@@ -51,7 +51,7 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
   return <>
     {/* Full-width Image Carousel */}
     <section className="w-full">
-      <Carousel className="w-full">
+      <Carousel className="w-full" opts={{ direction: dir === 'rtl' ? 'rtl' : 'ltr' }}>
         <CarouselContent>
           {project.images.map((image, index) => <CarouselItem key={index}>
               <div className="h-[250px] md:h-[450px] w-full">
