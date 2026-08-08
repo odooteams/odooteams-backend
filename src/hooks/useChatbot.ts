@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLanguage } from '@/lib/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useMemo } from 'react';
 
 export interface ChatbotData {
   id: string;
@@ -29,25 +30,27 @@ export function useChatbot() {
     },
   });
 
-  const chatbotData: ChatbotData[] = (rawData || []).map((row: any) => {
-    const question = language === 'ar' 
-      ? (row.question_ar || row.question_en) 
-      : (row.question_en || row.question_ar);
-    
-    const answer = language === 'ar' 
-      ? (row.answer_ar || row.answer_en) 
-      : (row.answer_en || row.answer_ar);
+  const chatbotData: ChatbotData[] = useMemo(() => {
+    return (rawData || []).map((row: any) => {
+      const question = language === 'ar' 
+        ? (row.question_ar || row.question_en) 
+        : (row.question_en || row.question_ar);
+      
+      const answer = language === 'ar' 
+        ? (row.answer_ar || row.answer_en) 
+        : (row.answer_en || row.answer_ar);
 
-    // Use stored keywords or extract from question
-    const keywords = row.keywords || question.toLowerCase().split(' ').filter((word: string) => word.length > 2);
+      // Use stored keywords or extract from question
+      const keywords = row.keywords || question.toLowerCase().split(' ').filter((word: string) => word.length > 2);
 
-    return {
-      id: row.id,
-      question: question || '',
-      answer: answer || '',
-      keywords,
-    };
-  });
+      return {
+        id: row.id,
+        question: question || '',
+        answer: answer || '',
+        keywords,
+      };
+    });
+  }, [rawData, language]);
 
   // Function to increment usage count when a response is matched
   const incrementUsage = async (id: string) => {
