@@ -54,8 +54,8 @@ export function PartnersSlider() {
         {/* Left fade */}
         <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
 
-        <div className="flex w-full overflow-hidden">
-          <div className="flex animate-scroll hover:animation-paused" style={{ animationDirection: language === 'ar' ? 'reverse' : 'normal', gap: '4rem' }}>
+        <div className="flex w-full overflow-hidden" dir="ltr">
+          <div className="flex w-max animate-scroll hover:animation-paused" style={{ gap: '4rem' }}>
             {sliderItems.map((partner, index) => (
               <div 
                 key={`${partner.id}-${index}`} 
