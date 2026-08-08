@@ -16,6 +16,7 @@ import { ShieldCheck, ShieldAlert, FileSearch, Bug, RefreshCw, Download, Network
 import BlacklistTab from "@/components/admin/security/BlacklistTab";
 import MiddlewareTab from "@/components/admin/security/MiddlewareTab";
 import AuditTab from "@/components/admin/security/AuditTab";
+import AuthHardeningTab from "@/components/admin/security/AuthHardeningTab";
 import AdminNotificationsBell from "@/components/admin/AdminNotificationsBell";
 import { notifyOnScanReport, notifyOnFindings } from "@/lib/security/notifications";
 import {
@@ -1292,6 +1293,7 @@ export default function AdminSecurity() {
                     <TabsList className="inline-flex w-max md:flex md:w-full">
                       <TabsTrigger value="full" className="whitespace-nowrap"><Rocket className="h-4 w-4 mr-2" />Full Scan</TabsTrigger>
                       <TabsTrigger value="audit" className="whitespace-nowrap"><RefreshCw className="h-4 w-4 mr-2" />Audit</TabsTrigger>
+                      <TabsTrigger value="authguard" className="whitespace-nowrap"><KeyRound className="h-4 w-4 mr-2" />Auth Guard</TabsTrigger>
                       <TabsTrigger value="middleware" className="whitespace-nowrap"><Server className="h-4 w-4 mr-2" />Middleware</TabsTrigger>
                       <TabsTrigger value="blacklist" className="whitespace-nowrap"><Ban className="h-4 w-4 mr-2" />Blacklist</TabsTrigger>
                       <TabsTrigger value="owasp" className="whitespace-nowrap"><ListChecks className="h-4 w-4 mr-2" />OWASP</TabsTrigger>
@@ -1307,6 +1309,7 @@ export default function AdminSecurity() {
                   </div>
                   <TabsContent value="full" className="mt-6 min-w-0"><FullScanTab /></TabsContent>
                   <TabsContent value="audit" className="mt-6 min-w-0"><AuditTab /></TabsContent>
+                  <TabsContent value="authguard" className="mt-6 min-w-0"><AuthHardeningTab /></TabsContent>
                   <TabsContent value="middleware" className="mt-6 min-w-0"><MiddlewareTab /></TabsContent>
                   <TabsContent value="blacklist" className="mt-6 min-w-0"><BlacklistTab /></TabsContent>
                   <TabsContent value="owasp" className="mt-6 min-w-0"><OwaspTab /></TabsContent>

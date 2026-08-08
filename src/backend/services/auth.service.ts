@@ -5,12 +5,19 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { AppRole } from '../types/database';
+import { checkPasswordSafety, breachMessage } from '@/lib/security/pwned';
 
 export class AuthService {
   /**
    * Sign up a new user
    */
   static async signUp(email: string, password: string, fullName?: string) {
+    // Block breached / trivially weak passwords before hitting Supabase.
+    const safety = await checkPasswordSafety(password, [email, fullName || '']);
+    if (safety.breached || safety.weakReason) {
+      return { data: null, error: { message: breachMessage(safety), name: 'LeakedPasswordError' } as any };
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
