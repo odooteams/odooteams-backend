@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
 import { MapPin, Phone, Mail, Loader2, Facebook, Instagram, Twitter, Youtube, Linkedin, MessageSquare } from 'lucide-react';
-import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContactData {
   Address_en: string;
@@ -42,19 +42,42 @@ const ContactInfo: React.FC = () => {
     const fetchContact = async () => {
       try {
         setLoading(true);
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          GOOGLE_SHEETS_CONFIG.SHEETS.CONTACT
-        );
+        // Fetch from Supabase site_settings
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('setting_value')
+          .eq('is_active', true);
+          
+        if (error) throw error;
         
+        let foundData = null;
         if (data && data.length > 0) {
-          setContactData(data[0] as unknown as ContactData);
-        } else {
-          setContactData(FALLBACK_CONTACT_DATA);
+          // Look for contact data across settings
+          for (const setting of data) {
+            const val = setting.setting_value as any;
+            if (val && (val.Email || val.email || val.Call || val.phone || val.Address_en || val.address)) {
+              // Map dynamic keys to ContactData interface
+              foundData = {
+                Address_en: val.Address_en || val.address_en || val.address || FALLBACK_CONTACT_DATA.Address_en,
+                Address_ar: val.Address_ar || val.address_ar || val.address || FALLBACK_CONTACT_DATA.Address_ar,
+                Call: val.Call || val.call || val.phone || FALLBACK_CONTACT_DATA.Call,
+                WhatsApp: val.WhatsApp || val.whatsapp || val.Whatsapp || FALLBACK_CONTACT_DATA.WhatsApp,
+                Email: val.Email || val.email || FALLBACK_CONTACT_DATA.Email,
+                Facebook: val.Facebook || val.facebook || FALLBACK_CONTACT_DATA.Facebook,
+                LinkedIn: val.LinkedIn || val.linkedin || FALLBACK_CONTACT_DATA.LinkedIn,
+                Instagram: val.Instagram || val.instagram || FALLBACK_CONTACT_DATA.Instagram,
+                Twitter: val.Twitter || val.twitter || FALLBACK_CONTACT_DATA.Twitter,
+                YouTube: val.YouTube || val.youtube || FALLBACK_CONTACT_DATA.YouTube,
+                TikTok: val.TikTok || val.tiktok || FALLBACK_CONTACT_DATA.TikTok
+              };
+              break;
+            }
+          }
         }
+        
+        setContactData(foundData || FALLBACK_CONTACT_DATA);
       } catch (err) {
-        console.error('Error fetching contact data:', err);
+        console.error('Error fetching contact data from settings:', err);
         setContactData(FALLBACK_CONTACT_DATA);
       } finally {
         setLoading(false);
