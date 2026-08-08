@@ -95,7 +95,7 @@ export default function AuthHardeningTab() {
   const rescan = async () => {
     setRescanning(true);
     try {
-      const r = await runPreDeployAudit({ baseUrl: BASE_URL });
+      const r = await runPreDeployAudit(BASE_URL);
       setReport(r);
       toast.success(`Scan complete — score ${r.score}/100 (grade ${r.grade})`);
     } catch (e) {
