@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Mail, Lock, User, UserPlus } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, ShieldAlert, ShieldCheck, Loader2 } from 'lucide-react';
+import { checkPasswordSafety, breachMessage } from '@/lib/security/pwned';
 import SEOHead from '@/components/seo/SEOHead';
 
 export default function SignUp() {
@@ -14,6 +15,8 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [pwStatus, setPwStatus] = useState<'idle' | 'checking' | 'safe' | 'breached'>('idle');
+  const [pwMessage, setPwMessage] = useState('');
   const { signUp, user } = useAuth();
   const navigate = useNavigate();
 
@@ -23,6 +26,27 @@ export default function SignUp() {
     return null;
   }
 
+  // Live leaked-password check (debounced, k-anonymity — password never leaves the browser)
+  useEffect(() => {
+    if (!password) {
+      setPwStatus('idle');
+      setPwMessage('');
+      return;
+    }
+    setPwStatus('checking');
+    const t = setTimeout(async () => {
+      const result = await checkPasswordSafety(password, [email, fullName]);
+      if (result.breached || result.weakReason) {
+        setPwStatus('breached');
+        setPwMessage(breachMessage(result));
+      } else {
+        setPwStatus('safe');
+        setPwMessage(result.offline ? 'Strength checks passed (breach database unreachable).' : 'This password was not found in any known breach.');
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [password, email, fullName]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -31,12 +55,21 @@ export default function SignUp() {
       return;
     }
 
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters');
       return;
     }
 
     setIsLoading(true);
+    const safety = await checkPasswordSafety(password, [email, fullName]);
+    if (safety.breached || safety.weakReason) {
+      setIsLoading(false);
+      setPwStatus('breached');
+      setPwMessage(breachMessage(safety));
+      toast.error(breachMessage(safety));
+      return;
+    }
+
     const { error } = await signUp(email, password, fullName);
     setIsLoading(false);
 
@@ -110,16 +143,33 @@ export default function SignUp() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10"
                     required
-                    minLength={6}
+                    minLength={8}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Must be at least 6 characters
-                </p>
+                {pwStatus === 'checking' && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Loader2 className="h-3 w-3 animate-spin" /> Checking against breached password database...
+                  </p>
+                )}
+                {pwStatus === 'breached' && (
+                  <p className="text-xs text-destructive flex items-start gap-1">
+                    <ShieldAlert className="h-3 w-3 mt-0.5 shrink-0" /> {pwMessage}
+                  </p>
+                )}
+                {pwStatus === 'safe' && (
+                  <p className="text-xs text-primary flex items-start gap-1">
+                    <ShieldCheck className="h-3 w-3 mt-0.5 shrink-0" /> {pwMessage}
+                  </p>
+                )}
+                {pwStatus === 'idle' && (
+                  <p className="text-xs text-muted-foreground">
+                    At least 8 characters, with letters and numbers. Breached passwords are blocked.
+                  </p>
+                )}
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full" disabled={isLoading || pwStatus === 'breached' || pwStatus === 'checking'}>
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

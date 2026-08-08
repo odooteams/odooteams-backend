@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Lock, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { checkPasswordSafety, breachMessage } from '@/lib/security/pwned';
 import SEOHead from '@/components/seo/SEOHead';
 
 export default function ResetPassword() {
@@ -36,8 +37,8 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters');
       return;
     }
     if (password !== confirmPassword) {
@@ -46,6 +47,12 @@ export default function ResetPassword() {
     }
 
     setIsSubmitting(true);
+    const safety = await checkPasswordSafety(password);
+    if (safety.breached || safety.weakReason) {
+      setIsSubmitting(false);
+      toast.error(breachMessage(safety));
+      return;
+    }
     const { error } = await supabase.auth.updateUser({ password });
     setIsSubmitting(false);
 
