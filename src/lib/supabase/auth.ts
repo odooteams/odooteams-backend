@@ -1,9 +1,13 @@
 // Backend Authentication Utilities
 import { supabase } from "@/integrations/supabase/client";
+import { checkPasswordSafety, breachMessage } from "@/lib/security/pwned";
 
 export const authHelpers = {
   // Sign up new user
   signUp: async (email: string, password: string, userData?: { full_name?: string; phone?: string; company?: string }) => {
+    const safety = await checkPasswordSafety(password, [email, userData?.full_name || ""]);
+    if (safety.breached || safety.weakReason) throw new Error(breachMessage(safety));
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
