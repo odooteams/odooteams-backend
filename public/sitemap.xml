@@ -111,6 +111,15 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/services/digital-marketing-strategy" />
   </url>
   <url>
+    <loc>https://odooteams.com/projects/azhar-arabiya</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/projects/azhar-arabiya?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/projects/azhar-arabiya?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/projects/azhar-arabiya" />
+  </url>
+  <url>
     <loc>https://odooteams.com/projects/promo-steel</loc>
     <lastmod>2026-04-02</lastmod>
     <changefreq>yearly</changefreq>

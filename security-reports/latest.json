@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-08-08T16:50:35.170Z",
+  "ranAt": "2026-08-08T19:15:07.870Z",
   "score": 100,
   "grade": "A",
   "counts": {},
@@ -15,7 +15,7 @@
     "Permissions-Policy configured",
     "CSP does not allow 'unsafe-eval'",
     "robots.txt present",
-    "sitemap.xml contains 22 URLs",
+    "sitemap.xml contains 23 URLs",
     "MFA (TOTP) enabled",
     "Email OTP rate limit",
     "Redirect allow-list",
