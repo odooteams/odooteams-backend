@@ -148,9 +148,10 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
                 </h2>
               </Link>
 
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {featuredProject.description}
-              </p>
+              <div 
+                className="text-lg text-muted-foreground leading-relaxed [&>p]:mb-0"
+                dangerouslySetInnerHTML={{ __html: featuredProject.description }}
+              />
 
               {featuredProject.technologies && featuredProject.technologies.length > 0 && (
                 <div className="flex flex-wrap gap-3">
@@ -274,9 +275,10 @@ ${formData.message ? `*${t('Message:', 'الرسالة:')}* ${formData.message}`
                     </Link>
 
                     {/* Description */}
-                    <p className="text-muted-foreground line-clamp-3">
-                      {project.description}
-                    </p>
+                    <div 
+                      className="text-muted-foreground line-clamp-3 [&>p]:mb-0"
+                      dangerouslySetInnerHTML={{ __html: project.description }}
+                    />
 
                     {/* Technologies */}
                     {project.technologies && project.technologies.length > 0 && (
