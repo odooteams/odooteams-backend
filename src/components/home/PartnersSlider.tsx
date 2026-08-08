@@ -59,7 +59,7 @@ export function PartnersSlider() {
             {sliderItems.map((partner, index) => (
               <div 
                 key={`${partner.id}-${index}`} 
-                className="flex flex-col items-center justify-center min-w-[150px] md:min-w-[200px] grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
+                className="flex flex-col items-center justify-center min-w-[150px] md:min-w-[200px] transition-all duration-300 hover:scale-105"
               >
                 {partner.website_url ? (
                   <a href={partner.website_url} target="_blank" rel="noreferrer" className="flex flex-col items-center">
