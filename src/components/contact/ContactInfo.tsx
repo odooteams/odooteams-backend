@@ -42,40 +42,32 @@ const ContactInfo: React.FC = () => {
     const fetchContact = async () => {
       try {
         setLoading(true);
-        // Fetch from Supabase site_settings
         const { data, error } = await supabase
           .from('site_settings')
-          .select('setting_value')
+          .select('setting_key, setting_value')
+          .in('setting_key', ['contact_info', 'social_media'])
           .eq('is_active', true);
           
         if (error) throw error;
-        
-        let foundData = null;
-        if (data && data.length > 0) {
-          // Look for contact data across settings
-          for (const setting of data) {
-            const val = setting.setting_value as any;
-            if (val && (val.Email || val.email || val.Call || val.phone || val.Address_en || val.address)) {
-              // Map dynamic keys to ContactData interface
-              foundData = {
-                Address_en: val.Address_en || val.address_en || val.address || FALLBACK_CONTACT_DATA.Address_en,
-                Address_ar: val.Address_ar || val.address_ar || val.address || FALLBACK_CONTACT_DATA.Address_ar,
-                Call: val.Call || val.call || val.phone || FALLBACK_CONTACT_DATA.Call,
-                WhatsApp: val.WhatsApp || val.whatsapp || val.Whatsapp || FALLBACK_CONTACT_DATA.WhatsApp,
-                Email: val.Email || val.email || FALLBACK_CONTACT_DATA.Email,
-                Facebook: val.Facebook || val.facebook || FALLBACK_CONTACT_DATA.Facebook,
-                LinkedIn: val.LinkedIn || val.linkedin || FALLBACK_CONTACT_DATA.LinkedIn,
-                Instagram: val.Instagram || val.instagram || FALLBACK_CONTACT_DATA.Instagram,
-                Twitter: val.Twitter || val.twitter || FALLBACK_CONTACT_DATA.Twitter,
-                YouTube: val.YouTube || val.youtube || FALLBACK_CONTACT_DATA.YouTube,
-                TikTok: val.TikTok || val.tiktok || FALLBACK_CONTACT_DATA.TikTok
-              };
-              break;
-            }
-          }
-        }
-        
-        setContactData(foundData || FALLBACK_CONTACT_DATA);
+
+        const contact = data?.find(s => s.setting_key === 'contact_info')?.setting_value as any || {};
+        const social = data?.find(s => s.setting_key === 'social_media')?.setting_value as any || {};
+
+        const foundData: ContactData = {
+          Address_en: contact.address_en || FALLBACK_CONTACT_DATA.Address_en,
+          Address_ar: contact.address_ar || FALLBACK_CONTACT_DATA.Address_ar,
+          Call: contact.phone || FALLBACK_CONTACT_DATA.Call,
+          WhatsApp: social.whatsapp || FALLBACK_CONTACT_DATA.WhatsApp,
+          Email: contact.email || FALLBACK_CONTACT_DATA.Email,
+          Facebook: social.facebook || FALLBACK_CONTACT_DATA.Facebook,
+          LinkedIn: social.linkedin || FALLBACK_CONTACT_DATA.LinkedIn,
+          Instagram: social.instagram || FALLBACK_CONTACT_DATA.Instagram,
+          Twitter: social.twitter || FALLBACK_CONTACT_DATA.Twitter,
+          YouTube: social.youtube || FALLBACK_CONTACT_DATA.YouTube,
+          TikTok: social.tiktok || FALLBACK_CONTACT_DATA.TikTok,
+        };
+
+        setContactData(foundData);
       } catch (err) {
         console.error('Error fetching contact data from settings:', err);
         setContactData(FALLBACK_CONTACT_DATA);
@@ -85,7 +77,7 @@ const ContactInfo: React.FC = () => {
     };
     
     fetchContact();
-  }, [t]);
+  }, []);
   
   if (loading) {
     return (
