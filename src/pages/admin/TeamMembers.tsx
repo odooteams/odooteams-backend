@@ -7,14 +7,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users, Trash2 } from 'lucide-react';
+import { Users, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { teamQueries } from '@/lib/supabase/queries';
 import { TeamMemberFormDialog } from '@/components/admin/TeamMemberFormDialog';
 
 export default function AdminTeamMembers() {
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reordering, setReordering] = useState(false);
 
   useEffect(() => {
     loadMembers();
@@ -26,10 +28,12 @@ export default function AdminTeamMembers() {
       const { data, error } = await supabase
         .from('team_members')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: true });
 
       if (error) throw error;
       setMembers(data || []);
+      teamQueries.invalidateCache();
     } catch (error) {
       console.error('Error loading team members:', error);
       toast.error('Failed to load team members');
@@ -37,6 +41,35 @@ export default function AdminTeamMembers() {
       setLoading(false);
     }
   };
+
+  const moveMember = async (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= members.length || reordering) return;
+
+    const next = [...members];
+    [next[index], next[target]] = [next[target], next[index]];
+    setMembers(next);
+    setReordering(true);
+
+    try {
+      const updates = next.map((m, i) =>
+        supabase.from('team_members').update({ sort_order: i + 1 }).eq('id', m.id)
+      );
+      const results = await Promise.all(updates);
+      const failed = results.find((r) => r.error);
+      if (failed?.error) throw failed.error;
+      teamQueries.invalidateCache();
+      toast.success('Order updated');
+      loadMembers();
+    } catch (error) {
+      console.error('Error reordering members:', error);
+      toast.error('Failed to update order');
+      loadMembers();
+    } finally {
+      setReordering(false);
+    }
+  };
+
 
   const toggleActive = async (id: string, currentStatus: boolean) => {
     try {
@@ -118,7 +151,7 @@ export default function AdminTeamMembers() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {members.map((member) => (
+                          {members.map((member, index) => (
                             <TableRow key={member.id}>
                               <TableCell>
                                 <Avatar className="h-10 w-10">
@@ -139,7 +172,31 @@ export default function AdminTeamMembers() {
                                   {member.is_active ? 'Active' : 'Inactive'}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{member.sort_order}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  <span className="w-6 text-sm text-muted-foreground">{member.sort_order}</span>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7"
+                                    disabled={index === 0 || reordering}
+                                    onClick={() => moveMember(index, -1)}
+                                    aria-label="Move up"
+                                  >
+                                    <ArrowUp className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7"
+                                    disabled={index === members.length - 1 || reordering}
+                                    onClick={() => moveMember(index, 1)}
+                                    aria-label="Move down"
+                                  >
+                                    <ArrowDown className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
                               <TableCell>
                                 <div className="flex gap-2">
                                   <TeamMemberFormDialog member={member} onSuccess={loadMembers} />
@@ -150,6 +207,7 @@ export default function AdminTeamMembers() {
                               </TableCell>
                             </TableRow>
                           ))}
+
                         </TableBody>
                       </Table>
                     )}
