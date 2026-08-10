@@ -662,6 +662,39 @@ export type Database = {
         }
         Relationships: []
       }
+      partners: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          name_ar: string
+          name_en: string
+          sort_order: number | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name_ar: string
+          name_en: string
+          sort_order?: number | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          name_ar?: string
+          name_en?: string
+          sort_order?: number | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       policies: {
         Row: {
           content_ar: string
