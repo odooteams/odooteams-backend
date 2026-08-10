@@ -239,18 +239,68 @@ export const chatbotQueries = {
 // TEAM MEMBERS
 // ============================================
 
-export const teamQueries = {
-  getAll: async () => {
-    const { data, error } = await supabase
-      .from('team_members')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true });
-    
-    if (error) throw error;
-    return data as TeamMember[];
+const TEAM_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const TEAM_CACHE_KEY = 'cache:team_members:v1';
+let teamCache: { data: TeamMember[]; ts: number } | null = null;
+let teamInFlight: Promise<TeamMember[]> | null = null;
+
+const readTeamSessionCache = (): { data: TeamMember[]; ts: number } | null => {
+  try {
+    const raw = sessionStorage.getItem(TEAM_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
   }
 };
+
+export const teamQueries = {
+  getAll: async (options?: { force?: boolean }): Promise<TeamMember[]> => {
+    const now = Date.now();
+
+    if (!options?.force) {
+      if (teamCache && now - teamCache.ts < TEAM_CACHE_TTL) return teamCache.data;
+      const stored = readTeamSessionCache();
+      if (stored && now - stored.ts < TEAM_CACHE_TTL) {
+        teamCache = stored;
+        return stored.data;
+      }
+      if (teamInFlight) return teamInFlight;
+    }
+
+    teamInFlight = (async () => {
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+
+      if (error) throw error;
+      const rows = (data || []) as TeamMember[];
+      teamCache = { data: rows, ts: Date.now() };
+      try {
+        sessionStorage.setItem(TEAM_CACHE_KEY, JSON.stringify(teamCache));
+      } catch {
+        /* storage unavailable */
+      }
+      return rows;
+    })();
+
+    try {
+      return await teamInFlight;
+    } finally {
+      teamInFlight = null;
+    }
+  },
+  invalidateCache: () => {
+    teamCache = null;
+    try {
+      sessionStorage.removeItem(TEAM_CACHE_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
+};
+
 
 // ============================================
 // CONTACT SUBMISSIONS
