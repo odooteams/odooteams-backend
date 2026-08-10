@@ -7,9 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Users, Trash2 } from 'lucide-react';
+import { Users, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { teamQueries } from '@/lib/supabase/queries';
 import { TeamMemberFormDialog } from '@/components/admin/TeamMemberFormDialog';
 
 export default function AdminTeamMembers() {
