@@ -385,7 +385,7 @@ ${values.message ? `${t('Message:', 'الرسالة:')} ${values.message}` : ''}
         {isMobile ? (
           <div className="relative">
             <Carousel
-              plugins={[autoplayPlugin.current]}
+              plugins={[autoplayPlugin.current as any]}
               setApi={setCarouselApi}
               opts={{
                 align: "start",

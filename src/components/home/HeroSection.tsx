@@ -63,7 +63,7 @@ const HeroSection = () => {
       <Carousel 
         className="w-full h-full"
         opts={{ direction: dir === 'rtl' ? 'rtl' : 'ltr', loop: true }}
-        plugins={[autoplayPlugin.current]}
+        plugins={[autoplayPlugin.current as any]}
         onMouseEnter={autoplayPlugin.current.stop}
         onMouseLeave={autoplayPlugin.current.reset}
       >

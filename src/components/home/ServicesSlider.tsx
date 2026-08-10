@@ -66,7 +66,7 @@ const ServicesSlider = () => {
         </div>
 
         <Carousel
-          plugins={[plugin.current]}
+          plugins={[plugin.current as any]}
           className="w-full"
           opts={{
             align: "start",
