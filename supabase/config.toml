@@ -35,6 +35,8 @@ enable_anonymous_sign_ins = false
 enable_manual_linking = false
 minimum_password_length = 10
 password_requirements = "lower_upper_letters_digits_symbols"
+# Reject passwords present in the Have I Been Pwned breach corpus.
+password_hibp_enabled = true
 
 [auth.email]
 enable_signup = true
