@@ -151,7 +151,7 @@ export default function AdminTeamMembers() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {members.map((member) => (
+                          {members.map((member, index) => (
                             <TableRow key={member.id}>
                               <TableCell>
                                 <Avatar className="h-10 w-10">
@@ -172,7 +172,31 @@ export default function AdminTeamMembers() {
                                   {member.is_active ? 'Active' : 'Inactive'}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{member.sort_order}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  <span className="w-6 text-sm text-muted-foreground">{member.sort_order}</span>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7"
+                                    disabled={index === 0 || reordering}
+                                    onClick={() => moveMember(index, -1)}
+                                    aria-label="Move up"
+                                  >
+                                    <ArrowUp className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7"
+                                    disabled={index === members.length - 1 || reordering}
+                                    onClick={() => moveMember(index, 1)}
+                                    aria-label="Move down"
+                                  >
+                                    <ArrowDown className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
                               <TableCell>
                                 <div className="flex gap-2">
                                   <TeamMemberFormDialog member={member} onSuccess={loadMembers} />
@@ -183,6 +207,7 @@ export default function AdminTeamMembers() {
                               </TableCell>
                             </TableRow>
                           ))}
+
                         </TableBody>
                       </Table>
                     )}
