@@ -32,12 +32,12 @@ const TeamSection = () => {
 
         const teamMembers: TeamMember[] = data.map(member => ({
           id: member.id,
-          name_en: member.name_en,
-          name_ar: member.name_ar,
-          position_en: member.position_en,
-          position_ar: member.position_ar,
-          bio_en: member.bio_en || '',
-          bio_ar: member.bio_ar || '',
+          name_en: member.name_en || member.name_ar || '',
+          name_ar: member.name_ar || member.name_en || '',
+          position_en: member.position_en || member.position_ar || '',
+          position_ar: member.position_ar || member.position_en || '',
+          bio_en: member.bio_en || member.bio_ar || '',
+          bio_ar: member.bio_ar || member.bio_en || '',
           image: member.image || '/placeholder.svg',
           linkedin_url: member.linkedin_url || '',
           twitter_url: member.twitter_url || '',
@@ -55,7 +55,9 @@ const TeamSection = () => {
     };
     
     getTeamData();
-  }, [t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   if (loading) {
     return (
