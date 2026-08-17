@@ -34,6 +34,7 @@ import {
   Globe,
   ChevronDown,
   Archive,
+  Handshake,
   Search as SearchIcon
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
