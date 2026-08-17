@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,8 @@ export default function SignIn() {
   const [forgotSubmitting, setForgotSubmitting] = useState(false);
   const { signIn, user, isAdmin, authReady } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPath = (location.state as { from?: string } | null)?.from;
 
   // Load remembered email
   useEffect(() => {
@@ -35,10 +37,12 @@ export default function SignIn() {
   // Redirect if already logged in
   useEffect(() => {
     if (user && authReady) {
-      const redirectPath = isAdmin ? '/admin' : '/dashboard';
+      const redirectPath = fromPath && (isAdmin || !fromPath.startsWith('/admin'))
+        ? fromPath
+        : isAdmin ? '/admin' : '/dashboard';
       navigate(redirectPath, { replace: true });
     }
-  }, [user, isAdmin, navigate, authReady]);
+  }, [user, isAdmin, navigate, authReady, fromPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
