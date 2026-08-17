@@ -8,6 +8,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
   const { user, isAdmin, isLoading, authReady } = useAuth();
+  const location = useLocation();
 
   if (isLoading || !authReady) {
     return (
@@ -18,7 +19,13 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
   }
 
   if (!user) {
-    return <Navigate to="/auth/signin" replace />;
+    return (
+      <Navigate
+        to="/auth/signin"
+        replace
+        state={{ from: location.pathname + location.search }}
+      />
+    );
   }
 
   if (requireAdmin && !isAdmin) {
