@@ -8,6 +8,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
   const { user, isAdmin, isLoading, authReady } = useAuth();
+  const location = useLocation();
 
   if (isLoading || !authReady) {
     return (
