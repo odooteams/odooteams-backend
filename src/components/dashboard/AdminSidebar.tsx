@@ -34,6 +34,7 @@ import {
   Globe,
   ChevronDown,
   Archive,
+  Handshake,
   Search as SearchIcon
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -87,6 +88,7 @@ const menuGroups: MenuGroup[] = [
     label: 'Team & Testimonials',
     items: [
       { title: 'Team Members', url: '/admin/team', icon: UsersRound },
+      { title: 'Partners', url: '/admin/partners', icon: Handshake },
       { title: 'Testimonials', url: '/admin/testimonials', icon: MessageCircle },
       { title: 'Timeline', url: '/admin/timeline', icon: Calendar },
     ]
