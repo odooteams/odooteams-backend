@@ -1,0 +1,80 @@
+# OdooTeams - Full Knowledge Base & Technical Overview
+
+## 1. Company Overview
+**OdooTeams** is an international Odoo ERP consulting, software development, and digital transformation agency. We deliver enterprise-grade Odoo implementations, custom development, system integrations, migrations, and managed cloud infrastructure to businesses across the Middle East (UAE, Saudi Arabia, Qatar, Kuwait, Egypt) and globally.
+
+- **Website**: https://odooteams.com
+- **Official Contact**: contact@odooteams.com
+- **Primary Languages**: English (en), Arabic (ar)
+- **Supported Editions**: Odoo Community Edition & Odoo Enterprise Edition
+- **Supported Versions**: Odoo 14.0, 15.0, 16.0, 17.0, 18.0+
+- **Geographic Focus**: Global deployment with specialized GCC & MENA tax, legal, and compliance localizations.
+
+---
+
+## 2. Core Services & Deliverables
+
+### A. Odoo ERP Implementation
+- **End-to-End Methodology**: Gap analysis, Business Blueprint Document (BBD), workflow configuration, custom coding, pilot testing (UAT), end-user training, and post-go-live hypercare.
+- **Industry Solutions**: Retail & POS, Wholesale & Distribution, Manufacturing & Assembly, Construction & Contracting, Professional Services, Healthcare, Logistics & Freight.
+
+### B. Custom Odoo Development
+- Tailored Python models, ORM extensions, automated server actions, custom QWeb/XML views and reports.
+- Custom Odoo OWL (Odoo Web Library) frontend components and POS customizations.
+- Automated scheduled actions (Cron jobs), security access control lists (ir.model.access.csv), and record rules.
+
+### C. System Integration & APIs
+- **eCommerce**: Shopify, WooCommerce, Magento, BigCommerce, Amazon Seller Central, Noon marketplace.
+- **Payment Gateways**: Stripe, PayPal, HyperPay, PayTabs, Telr, Tabby, Tamara, Apple Pay, Google Pay.
+- **Logistics & Carriers**: DHL Express, FedEx, Aramex, SMSA Express, Zajil, Shipa.
+- **Hardware Integrations**: Biometric attendance devices (ZKTeco), POS thermal printers, barcode/RFID scanners, IoT boxes.
+- **Modern REST / GraphQL / JSON-RPC APIs**: Bi-directional data sync with legacy systems, mobile apps, and custom web portals.
+
+### D. Odoo Migration & Upgrades
+- Database schema migration between major Odoo versions (e.g., Odoo 14/15/16 to 17/18).
+- Community to Enterprise edition migration without data loss.
+- Custom module refactoring to match latest Odoo ORM and OWL frontend frameworks.
+- Automated data scrubbing, cleansing, and validation.
+
+### E. Regional Compliance & Localizations
+- **Saudi Arabia (KSA)**: ZATCA Phase 1 (QR codes) and Phase 2 (FATOORA portal API integration, cryptographic stamps, UUID generation, XML clearance and reporting).
+- **United Arab Emirates (UAE)**: Federal Tax Authority (FTA) 5% VAT compliant tax invoices, Corporate Tax 9% reporting structures, and standard FTA audit files (FAF).
+- **GCC HR & Payroll**: WPS (Wage Protection System) SIF file generation, GOSI deductions, UAE Gratuity and End of Service (EOSB) calculation formulas.
+- **Egypt**: ETA (Egyptian Tax Authority) e-Invoicing SDK integration and digital signature token integration.
+
+### F. Managed Hosting, DevOps & Security
+- Deployments across Odoo.sh, AWS (EC2, RDS, S3), Google Cloud Platform (GCP), DigitalOcean, and Dedicated Bare-Metal Servers.
+- Automated daily offsite backups with Point-in-Time Recovery (PITR).
+- Nginx reverse proxy with SSL termination, HTTP/2, Brotli compression, and fail2ban protection.
+- High Availability (HA) clusters with PostgreSQL streaming replication and PgBouncer connection pooling.
+
+---
+
+## 3. Frequently Asked Questions (FAQ)
+
+### Q: Why choose Odoo over SAP, Oracle, or Microsoft Dynamics?
+**A**: Odoo provides equal or superior functionality at a fraction of the licensing and implementation cost. It is fully modular, open-source friendly, highly customizable, and eliminates vendor lock-in.
+
+### Q: How long does a standard Odoo implementation take?
+**A**: Standard implementations for small-to-medium businesses typically take 4 to 8 weeks. Complex multi-company, manufacturing, or customized enterprise deployments take 2 to 4 months.
+
+### Q: Does OdooTeams support bilingual Arabic/English interfaces?
+**A**: Yes, full right-to-left (RTL) Arabic layout support, bilingual invoicing, dual-language product catalogues, and Arabic accounting reports are provided out of the box.
+
+### Q: How is ZATCA Phase 2 e-invoicing handled in Odoo?
+**A**: OdooTeams integrates directly with the ZATCA FATOORA API to sign invoices cryptographically, generate compliant UBL 2.1 XML invoices with embedded QR codes, and clear/report invoices in real-time.
+
+---
+
+## 4. Key Page URLs
+
+- **Homepage**: https://odooteams.com/
+- **About OdooTeams**: https://odooteams.com/about
+- **Services Catalog**: https://odooteams.com/services
+- **Projects & Case Studies**: https://odooteams.com/projects
+- **Learn Odoo Knowledge Hub**: https://odooteams.com/learn-odoo
+- **Frequently Asked Questions**: https://odooteams.com/faqs
+- **Contact & Free Consultation**: https://odooteams.com/contact
+
+---
+*Document standard: llmstxt.org - Maintained by OdooTeams Engineering & SEO Team.*

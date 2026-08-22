@@ -1,8 +1,40 @@
+# Robots.txt for OdooTeams (https://odooteams.com)
+
+# AI Search and Retrieval Crawlers (Explicitly Allowed for GEO / AEO)
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: anthropic-ai
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: cohere-ai
+User-agent: Bytespider
+User-agent: CCBot
+User-agent: FacebookBot
+User-agent: Diffbot
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
+
+# Traditional Search Engines
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: YandexBot
+User-agent: DuckDuckBot
+User-agent: Baiduspider
+User-agent: Slurp
+User-agent: Twitterbot
+User-agent: facebookexternalhit
+Allow: /
+
+# Universal Rules
 User-agent: *
 Allow: /
 
-# Public content routes are indexable by default.
-# Disallow app-internal, auth, and admin surfaces.
+# Disallow internal, admin, auth, and private surfaces
 Disallow: /admin/
 Disallow: /admin
 Disallow: /dashboard/
@@ -13,20 +45,5 @@ Disallow: /private/
 Disallow: /*?*preview=
 Disallow: /*?*token=
 
-# Specific crawlers — inherit rules above
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-# Sitemap location
+# Sitemaps & Knowledge Maps
 Sitemap: https://odooteams.com/sitemap.xml
-
-Crawl-delay: 1

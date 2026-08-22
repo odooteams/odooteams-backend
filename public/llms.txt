@@ -1,15 +1,45 @@
 # OdooTeams
 
-> Professional Odoo ERP implementation, customization, training, and development services worldwide.
+> Professional Odoo ERP implementation, customization, migration, training, and continuous support services worldwide with specialized MENA & GCC localizations.
 
-OdooTeams helps businesses adopt and scale Odoo ERP with expert implementation, custom module development, training, and ongoing support. The site is bilingual (English and Arabic).
+OdooTeams is a global enterprise solutions provider and certified Odoo development agency. We assist small, medium, and large enterprises in adopting, migrating to, and scaling Odoo ERP (Odoo Community & Enterprise editions, versions 14 through 18+). The platform supports bilingual operations in English and Arabic with localized business workflows.
 
-## Pages
+Full documentation and complete knowledge base available at: https://odooteams.com/llms-full.txt
 
-- [Home](/): Overview of OdooTeams services and value proposition.
-- [About](/about): Company background, team, and history.
-- [Services](/services): Catalog of Odoo implementation, customization, training, and support services.
-- [Projects](/projects): Portfolio of completed Odoo implementations.
-- [Learn Odoo](/learn-odoo): Free tutorials, guides, and learning resources for Odoo ERP.
-- [FAQs](/faqs): Answers to common questions about Odoo and our services.
-- [Contact](/contact): How to reach the OdooTeams team.
+## Key Services
+
+- [Full Odoo ERP Implementation](https://odooteams.com/services/odoo-implementation): End-to-end deployment including requirement analysis, business blueprinting, module configuration, data migration, user training, and go-live support.
+- [Custom Module Development](https://odooteams.com/services/custom-module-development): Tailored Python/XML Odoo module development, UI customization, workflows automation, and business logic extensions.
+- [Odoo Version Migration & Upgrades](https://odooteams.com/services/odoo-migration): Upgrading legacy Odoo databases (Community to Enterprise, or older versions to Odoo 17/18) with complete data integrity.
+- [Third-Party Integrations & APIs](https://odooteams.com/services/third-party-integrations): Bi-directional API connectors for Payment Gateways (Stripe, PayPal, HyperPay, PayTabs, Tabby, Tamara), eCommerce (Shopify, WooCommerce, Magento, Amazon), Shipping (DHL, FedEx, Aramex, SMSA), and CRM systems.
+- [GCC & MENA Localizations](https://odooteams.com/services/odoo-localization): Saudi ZATCA Phase 1 & 2 e-invoicing compliance, UAE Federal Tax Authority (FTA) 5% VAT & Corporate Tax accounting, Egyptian e-Invoice/e-Receipt SDK integration, and GCC WPS Payroll.
+- [Managed Odoo Hosting & DevOps](https://odooteams.com/services/odoo-hosting): Scalable cloud deployment on AWS, Google Cloud, DigitalOcean, and Odoo.sh with automated daily backups, SSL, staging environments, and 99.9% uptime SLA.
+- [Training & Knowledge Transfer](https://odooteams.com/services/odoo-training): Role-based training workshops for end-users, administrators, and developers in English and Arabic.
+- [24/7 SLA Support & Maintenance](https://odooteams.com/services/odoo-support): Dedicated bug fixing, performance monitoring, monthly maintenance, and on-demand functional consulting.
+
+## Core Modules & Functional Coverage
+
+- **Accounting & Finance**: General Ledger, Multi-currency, Bank Reconciliation, Asset Management, Budgeting, Analytic Accounts, ZATCA / FTA VAT Reporting.
+- **Supply Chain & Inventory**: Multi-warehouse, Barcode scanning, Lot & Serial tracking, Automated replenishment, Landed costs, Dropshipping.
+- **Sales & CRM**: Lead pipeline management, Quotations, Customer portal, Automated invoicing, Commission calculation.
+- **Manufacturing (MRP) & PLM**: Multi-level BOM, Work centers, Routing, Capacity planning, Quality control, Maintenance scheduling.
+- **Human Resources (HRMS)**: Employee master, Recruitment, Attendance (Biometric integration), Leave management, Payroll with GCC End of Service (EOS) & WPS compliance.
+- **Point of Sale (POS)**: Retail and Restaurant POS with offline caching, receipt printers, barcode readers, kitchen display systems, and multi-till management.
+- **eCommerce & Website Builder**: Odoo native shop with real-time stock sync, abandoned cart recovery, customer portal, and SEO optimization.
+
+## Quick Navigation
+
+- [Home](https://odooteams.com/): Comprehensive overview of OdooTeams services and case studies.
+- [About Us](https://odooteams.com/about): Company history, mission, leadership, and global reach.
+- [Services Catalog](https://odooteams.com/services): Catalog of implementation, development, and support offerings.
+- [Project Portfolio](https://odooteams.com/projects): Case studies and real-world ERP success stories across Retail, Manufacturing, Logistics, and Healthcare.
+- [Learn Odoo](https://odooteams.com/learn-odoo): Free educational guides, video tutorials, and technical articles for Odoo users and developers.
+- [Frequently Asked Questions](https://odooteams.com/faqs): Detailed answers to common questions about Odoo pricing, timeline, hosting, and implementation.
+- [Contact & Consultation](https://odooteams.com/contact): Request a free consultation or project quotation.
+
+## Contact Information
+
+- **Website**: https://odooteams.com
+- **Inquiries**: contact@odooteams.com
+- **Languages Supported**: English, Arabic (العربية)
+- **Headquarters / Regional Coverage**: United Arab Emirates, Saudi Arabia, Egypt, and Global Remote Services.
