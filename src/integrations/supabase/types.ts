@@ -884,6 +884,60 @@ export type Database = {
         }
         Relationships: []
       }
+      prompts: {
+        Row: {
+          category_ar: string
+          category_en: string
+          copies_count: number
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          image: string | null
+          is_active: boolean
+          name_ar: string
+          name_en: string
+          prompt_text: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category_ar?: string
+          category_en?: string
+          copies_count?: number
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name_ar: string
+          name_en: string
+          prompt_text: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category_ar?: string
+          category_en?: string
+          copies_count?: number
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name_ar?: string
+          name_en?: string
+          prompt_text?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       security_events: {
         Row: {
           created_at: string
