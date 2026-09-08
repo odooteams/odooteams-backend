@@ -2,10 +2,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
+import { useHomepageContent } from '@/hooks/useHomepageContent';
 import { Facebook, Linkedin, MessageSquare, MapPin, Phone, Mail } from 'lucide-react';
 
 const Footer = () => {
   const { t, dir } = useLanguage();
+  const hc = useHomepageContent();
   
   return (
     <footer className={`bg-odoo-purple text-white mt-16 hidden md:block ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
@@ -17,10 +19,7 @@ const Footer = () => {
               <span className="text-2xl font-bold text-white">Odoo<span className="text-odoo-gold">Teams</span></span>
             </Link>
             <p className="mt-4 text-gray-200">
-              {t(
-                'Professional Odoo implementation services to help your business grow.',
-                'خدمات احترافية لتنفيذ أودو لمساعدة عملك على النمو.'
-              )}
+              {t(hc.footer_tagline_en, hc.footer_tagline_ar)}
             </p>
             <div className="flex items-center space-x-4 mt-6 space-x-reverse:rtl">
               <a href="https://facebook.com" className="hover:text-odoo-gold transition duration-300" aria-label="Facebook">
@@ -47,6 +46,9 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/learn-odoo" className="hover:text-odoo-gold transition duration-300">{t('Learn Odoo', 'تعلم أودو')}</Link>
+              </li>
+              <li>
+                <Link to="/prompts" className="hover:text-odoo-gold transition duration-300">{t('Al Prompts', 'آل برومبتس')}</Link>
               </li>
               <li>
                 <Link to="/about" className="hover:text-odoo-gold transition duration-300">{t('About Us', 'من نحن')}</Link>
@@ -125,7 +127,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-          <p>© {new Date().getFullYear()} {t('OdooTeams', 'فريق مطورين اودو')}. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</p>
+          <p>© {new Date().getFullYear()} {t(hc.footer_copyright_en, hc.footer_copyright_ar)}. {t('All rights reserved.', 'جميع الحقوق محفوظة.')}</p>
         </div>
       </div>
     </footer>

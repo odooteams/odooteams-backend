@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useSlider } from '@/hooks/useSlider';
 import Autoplay from "embla-carousel-autoplay";
+import { useHomepageContent } from '@/hooks/useHomepageContent';
 
 const HeroSection = () => {
   const { t, dir } = useLanguage();
   const { sliderData, loading, error } = useSlider();
+  const hc = useHomepageContent();
   const autoplayPlugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
   const [scrollY, setScrollY] = useState(0);
@@ -87,7 +89,7 @@ const HeroSection = () => {
                           </span>
                           <br />
                           <span className="bg-gradient-to-r from-odoo-gold to-yellow-300 bg-clip-text text-transparent">
-                            {t('with Odoo Excellence', 'بتميز أودو')}
+                            {t(hc.hero_highlight_en, hc.hero_highlight_ar)}
                           </span>
                         </h1>
                         
@@ -102,14 +104,14 @@ const HeroSection = () => {
                       <div className="flex flex-col sm:flex-row gap-3 md:gap-6 pt-3 md:pt-6 animate-fade-in" style={{
                         animationDelay: '0.4s'
                       }}>
-                        <Link to="/services" className="group relative bg-gradient-to-r from-odoo-gold to-yellow-400 hover:from-yellow-300 hover:to-odoo-gold text-odoo-purple font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-2xl hover:shadow-odoo-gold/30 transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
-                          <span className="relative z-10 text-sm md:text-lg">{t('Explore Services', 'استكشف الخدمات')}</span>
+                        <Link to={hc.hero_cta_primary_link || "/services"} className="group relative bg-gradient-to-r from-odoo-gold to-yellow-400 hover:from-yellow-300 hover:to-odoo-gold text-odoo-purple font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-2xl hover:shadow-odoo-gold/30 transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
+                          <span className="relative z-10 text-sm md:text-lg">{t(hc.hero_cta_primary_en, hc.hero_cta_primary_ar)}</span>
                           <Arrow className="ml-3 md:ml-4 h-5 w-5 md:h-6 md:w-6 group-hover:translate-x-2 transition-transform duration-300" />
                           <div className="absolute inset-0 bg-white/30 rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </Link>
                         
-                        <Link to="/contact" className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/20 hover:border-white/50 text-white font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
-                          <span className="relative z-10 text-sm md:text-lg">{t('Get Started', 'ابدأ الآن')}</span>
+                        <Link to={hc.hero_cta_secondary_link || "/contact"} className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white/20 hover:border-white/50 text-white font-bold py-3.5 md:py-5 px-6 md:px-10 rounded-xl md:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 flex items-center justify-center transform hover:scale-[1.02] hover:-translate-y-2">
+                          <span className="relative z-10 text-sm md:text-lg">{t(hc.hero_cta_secondary_en, hc.hero_cta_secondary_ar)}</span>
                           <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </Link>
                       </div>
@@ -119,18 +121,18 @@ const HeroSection = () => {
                         animationDelay: '0.6s'
                       }}>
                         <div className="text-center group">
-                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">200+</div>
-                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Projects', 'مشاريع')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">{hc.stat_projects_value}</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t(hc.stat_projects_en, hc.stat_projects_ar)}</div>
                         </div>
                         <div className="w-px h-10 md:h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
                         <div className="text-center group">
-                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">50+</div>
-                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Clients', 'عملاء')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">{hc.stat_clients_value}</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t(hc.stat_clients_en, hc.stat_clients_ar)}</div>
                         </div>
                         <div className="w-px h-10 md:h-16 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
                         <div className="text-center group">
-                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">5+</div>
-                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t('Years', 'سنوات')}</div>
+                          <div className="text-2xl md:text-4xl font-bold text-odoo-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform duration-300">{hc.stat_years_value}</div>
+                          <div className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider font-medium">{t(hc.stat_years_en, hc.stat_years_ar)}</div>
                         </div>
                       </div>
                     </div>
