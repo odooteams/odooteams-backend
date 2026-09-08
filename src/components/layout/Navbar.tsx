@@ -48,6 +48,7 @@ const Navbar = () => {
     { to: '/services', label: t('Services', 'الخدمات'), sectionId: 'services' },
     { to: '/projects', label: t('Projects', 'المشاريع'), sectionId: 'projects' },
     { to: '/learn-odoo', label: t('Learn Odoo', 'تعلم أودو') },
+    { to: '/prompts', label: t('Al Prompts', 'آل برومبتس') },
     { to: '/about', label: t('About Us', 'من نحن'), hideInTablet: true },
     { to: '/contact', label: t('Contact Us', 'اتصل بنا'), hideInTablet: true },
   ];

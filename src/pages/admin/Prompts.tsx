@@ -75,7 +75,7 @@ export default function AdminPrompts() {
 
   return (
     <SidebarProvider>
-      <SEOHead title="Al Prompts | Admin" description="Manage the public prompts library." noindex />
+      <SEOHead title="Al Prompts | Admin" description="Manage the public prompts library." />
       <div className="min-h-screen flex w-full bg-muted/30">
         <AdminSidebar />
         <main className="flex-1 p-4 md:p-8 overflow-x-hidden">

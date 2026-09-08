@@ -46,6 +46,10 @@ import AdminAuditLogs from '@/pages/admin/AuditLogs';
 import AdminBackups from '@/pages/admin/Backups';
 import AdminSEO from '@/pages/admin/SEO';
 import AdminSecurity from '@/pages/admin/Security';
+import Prompts from '@/pages/Prompts';
+import AdminPrompts from '@/pages/admin/Prompts';
+import AdminPromptStats from '@/pages/admin/PromptStats';
+import AdminHomepageContent from '@/pages/admin/HomepageContent';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
 import './App.css';
@@ -70,6 +74,7 @@ function App() {
             <Route path="/projects/:slug" element={<ProjectDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faqs" element={<FAQs />} />
+            <Route path="/prompts" element={<Prompts />} />
             <Route path="/learn-odoo" element={<LearnOdoo />} />
             <Route path="/learn-odoo/:id" element={<ResourceDetails />} />
             <Route path="/policy/:slug" element={<Policy />} />

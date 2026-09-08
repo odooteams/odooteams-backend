@@ -49,6 +49,9 @@ const Footer = () => {
                 <Link to="/learn-odoo" className="hover:text-odoo-gold transition duration-300">{t('Learn Odoo', 'تعلم أودو')}</Link>
               </li>
               <li>
+                <Link to="/prompts" className="hover:text-odoo-gold transition duration-300">{t('Al Prompts', 'آل برومبتس')}</Link>
+              </li>
+              <li>
                 <Link to="/about" className="hover:text-odoo-gold transition duration-300">{t('About Us', 'من نحن')}</Link>
               </li>
               <li>
