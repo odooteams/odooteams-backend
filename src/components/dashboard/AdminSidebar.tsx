@@ -66,6 +66,7 @@ const menuGroups: MenuGroup[] = [
     items: [
       // { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
       { title: 'Visitors', url: '/admin/visitors', icon: Globe },
+      { title: 'Prompt Stats', url: '/admin/prompts-stats', icon: BarChart3 },
     ]
   },
   {
@@ -84,6 +85,8 @@ const menuGroups: MenuGroup[] = [
       { title: 'Blogs', url: '/admin/blogs', icon: FileEdit },
       { title: 'Resources', url: '/admin/resources', icon: BookOpen },
       { title: 'FAQs', url: '/admin/faqs', icon: HelpCircle },
+      { title: 'Al Prompts', url: '/admin/prompts', icon: Sparkles },
+      { title: 'Homepage Content', url: '/admin/homepage', icon: LayoutTemplate },
     ]
   },
   {
