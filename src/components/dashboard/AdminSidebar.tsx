@@ -37,7 +37,6 @@ import {
   Handshake,
   Sparkles,
   LayoutTemplate,
-  BarChart3 as PromptChart,
   Search as SearchIcon
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
