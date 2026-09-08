@@ -286,6 +286,30 @@ function App() {
               } 
             />
             <Route 
+              path="/admin/prompts" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminPrompts />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/prompts-stats" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminPromptStats />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/homepage" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminHomepageContent />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
               path="/admin/settings" 
               element={
                 <ProtectedRoute requireAdmin>
