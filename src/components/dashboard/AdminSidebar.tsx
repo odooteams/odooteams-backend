@@ -37,7 +37,8 @@ import {
   Handshake,
   Sparkles,
   LayoutTemplate,
-  Search as SearchIcon
+  Search as SearchIcon,
+  TrendingUp,
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState } from 'react';
@@ -65,6 +66,7 @@ const menuGroups: MenuGroup[] = [
     label: 'Analytics',
     items: [
       // { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
+      { title: 'Traffic', url: '/admin/traffic', icon: TrendingUp },
       { title: 'Visitors', url: '/admin/visitors', icon: Globe },
       { title: 'Prompt Stats', url: '/admin/prompts-stats', icon: BarChart3 },
     ]

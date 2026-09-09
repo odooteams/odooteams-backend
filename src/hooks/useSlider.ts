@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface SliderData {
   title_en: string;
@@ -15,31 +15,46 @@ export interface SliderData {
   image6_url: string;
 }
 
+/**
+ * Hero slider content, stored in site_settings under the `hero_slider` key
+ * as a JSON array of slides. Returns an empty list when nothing is configured,
+ * so the hero falls back to its built-in slide.
+ */
 export const useSlider = () => {
   const [sliderData, setSliderData] = useState<SliderData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadSliderData = async () => {
       try {
         setLoading(true);
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          GOOGLE_SHEETS_CONFIG.SHEETS.SLIDER
-        );
-        setSliderData(data as unknown as SliderData[]);
+        const { data, error: dbError } = await supabase
+          .from('site_settings')
+          .select('setting_value')
+          .eq('setting_key', 'hero_slider')
+          .maybeSingle();
+
+        if (dbError) throw dbError;
+        if (cancelled) return;
+
+        const value = data?.setting_value as unknown;
+        setSliderData(Array.isArray(value) ? (value as SliderData[]) : []);
         setError(null);
       } catch (err) {
         console.error('Error loading slider data:', err);
-        setError('Failed to load slider data');
+        if (!cancelled) setError('Failed to load slider data');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     loadSliderData();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { sliderData, loading, error };
