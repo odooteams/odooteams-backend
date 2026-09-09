@@ -49,6 +49,7 @@ import AdminSecurity from '@/pages/admin/Security';
 import Prompts from '@/pages/Prompts';
 import AdminPrompts from '@/pages/admin/Prompts';
 import AdminPromptStats from '@/pages/admin/PromptStats';
+import AdminTraffic from '@/pages/admin/Traffic';
 import AdminHomepageContent from '@/pages/admin/HomepageContent';
 import Policy from '@/pages/Policy';
 import NotFound from '@/pages/NotFound';
