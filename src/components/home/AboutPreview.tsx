@@ -86,16 +86,13 @@ const AboutPreview = () => {
                   {language === 'en' ? teamLeader.name.en : teamLeader.name.ar}
                 </h3>
                 <p className="text-muted-foreground mb-3">{language === 'en' ? teamLeader.title.en : teamLeader.title.ar}</p>
-                <p className="text-foreground/80 mb-4">
-                  {language === 'en' ? teamLeader.bio.en : teamLeader.bio.ar}
-                </p>
-                
+                <RichText
+                  html={language === 'en' ? teamLeader.bio.en : teamLeader.bio.ar}
+                  dir={dir === 'rtl' ? 'rtl' : 'ltr'}
+                  className="text-foreground/80 mb-4"
+                />
+
                 <div className="flex items-center gap-4">
-                  {teamLeader.facebook && (
-                    <a href={teamLeader.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Facebook">
-                      <Facebook className="h-5 w-5" />
-                    </a>
-                  )}
                   {teamLeader.linkedin && (
                     <a href={teamLeader.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="LinkedIn">
                       <Linkedin className="h-5 w-5" />
@@ -104,16 +101,6 @@ const AboutPreview = () => {
                   {teamLeader.twitter && (
                     <a href={teamLeader.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Twitter">
                       <Twitter className="h-5 w-5" />
-                    </a>
-                  )}
-                  {teamLeader.instagram && (
-                    <a href={teamLeader.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="Instagram">
-                      <Instagram className="h-5 w-5" />
-                    </a>
-                  )}
-                  {teamLeader.whatsapp && (
-                    <a href={`https://wa.me/${teamLeader.whatsapp}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition duration-300" aria-label="WhatsApp">
-                      <MessageSquare className="h-5 w-5" />
                     </a>
                   )}
                   {teamLeader.email && (
