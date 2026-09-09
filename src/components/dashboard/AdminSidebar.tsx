@@ -38,6 +38,7 @@ import {
   Sparkles,
   LayoutTemplate,
   Search as SearchIcon
+  TrendingUp,
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useState } from 'react';

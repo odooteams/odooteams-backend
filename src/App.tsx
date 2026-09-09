@@ -303,6 +303,14 @@ function App() {
               } 
             />
             <Route 
+              path="/admin/traffic" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AdminTraffic />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
               path="/admin/homepage" 
               element={
                 <ProtectedRoute requireAdmin>
