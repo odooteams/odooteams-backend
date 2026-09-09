@@ -1,78 +1,55 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/LanguageContext';
-import { ArrowRight, ArrowLeft, Facebook, Linkedin, MessageSquare, Instagram, Twitter, Mail } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Linkedin, Twitter, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { fetchSheetData, GOOGLE_SHEETS_CONFIG } from '@/lib/googleSheets';
+import { teamQueries } from '@/lib/supabase/queries';
+import RichText from '@/components/common/RichText';
 
-interface TeamMember {
-  id: number;
+interface TeamLeader {
   name: { en: string; ar: string };
   title: { en: string; ar: string };
   bio: { en: string; ar: string };
   image: string;
-  facebook?: string;
   linkedin?: string;
   twitter?: string;
-  instagram?: string;
-  whatsapp?: string;
   email?: string;
 }
 
 const AboutPreview = () => {
   const { t, dir, language } = useLanguage();
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
-  const [teamLeader, setTeamLeader] = useState<TeamMember | null>(null);
-  const [loading, setLoading] = useState(true);
-  
+  const [teamLeader, setTeamLeader] = useState<TeamLeader | null>(null);
+
   useEffect(() => {
+    let cancelled = false;
+
     const getTeamData = async () => {
       try {
-        setLoading(true);
-        const data = await fetchSheetData(
-          GOOGLE_SHEETS_CONFIG.API_KEY,
-          GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID,
-          GOOGLE_SHEETS_CONFIG.SHEETS.TEAM
-        );
-        
-        if (data && data.length > 0) {
-          // Get the team leader (first entry or entry marked as leader)
-          const leader = data.find(member => member.isLeader === 'true') || data[0];
-          
-          const teamLeader: TeamMember = {
-            id: 1,
-            name: { 
-              en: leader.Name_en || '', 
-              ar: leader.Name_ar || '' 
-            },
-            title: { 
-              en: leader.Position_en || '', 
-              ar: leader.Position_ar || '' 
-            },
-            bio: { 
-              en: leader.bio_en || '', 
-              ar: leader.bio_ar || '' 
-            },
-            image: leader.image || '/placeholder.svg',
-            facebook: leader.Facebook || '',
-            linkedin: leader.LinkedIn || '',
-            twitter: leader.Twitter || '',
-            instagram: leader.Instagram || '',
-            whatsapp: leader.WhatsApp || '',
-            email: leader.Email || ''
-          };
-          
-          setTeamLeader(teamLeader);
-        }
+        const members = await teamQueries.getAll();
+        if (cancelled || !members.length) return;
+
+        const leader = members[0];
+        setTeamLeader({
+          name: { en: leader.name_en || '', ar: leader.name_ar || '' },
+          title: { en: leader.position_en || '', ar: leader.position_ar || '' },
+          bio: { en: leader.bio_en || '', ar: leader.bio_ar || '' },
+          image: leader.image || '/placeholder.svg',
+          linkedin: leader.linkedin_url || '',
+          twitter: leader.twitter_url || '',
+          email: leader.email || '',
+        });
       } catch (err) {
         console.error('Error fetching team leader data:', err);
-      } finally {
-        setLoading(false);
       }
     };
-    
+
     getTeamData();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+  
   
   return (
     <section className={`py-20 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
