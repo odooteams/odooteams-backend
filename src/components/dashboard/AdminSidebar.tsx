@@ -37,7 +37,7 @@ import {
   Handshake,
   Sparkles,
   LayoutTemplate,
-  Search as SearchIcon
+  Search as SearchIcon,
   TrendingUp,
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
