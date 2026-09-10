@@ -47,7 +47,7 @@ const HeroSection = () => {
     slide.image5_url,
     slide.image6_url
   ].filter(img => img && img.trim() !== '');
-  return <section className="relative overflow-hidden min-h-[100svh] flex items-center">
+  return <section className="relative overflow-x-hidden flex items-center">
       {/* Parallax gradient background */}
       <div className="absolute inset-0 bg-gradient-hero" style={{ transform: `translateY(${scrollY * 0.3}px)` }}></div>
       <div className="absolute inset-0 bg-black/10"></div>
@@ -75,8 +75,8 @@ const HeroSection = () => {
             return (
               <CarouselItem key={slideIndex}>
                 {/* Content */}
-                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-16 lg:py-20 relative z-10 w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-24 pb-24 md:pt-28 md:pb-28 relative z-10 w-full">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
                     <div className={`text-white space-y-5 md:space-y-10 ${dir === 'rtl' ? 'lg:order-2' : ''}`}>
 
                       {/* Main Heading */}
@@ -152,7 +152,7 @@ const HeroSection = () => {
                           <img 
                             src={slide.main_image_url} 
                             alt={t('Professional ERP Solutions', 'حلول تخطيط موارد المؤسسة المهنية')}
-                            className="w-full h-[500px] object-cover transform hover:scale-105 transition-transform duration-700"
+                            className="w-full h-[360px] xl:h-[420px] object-cover transform hover:scale-105 transition-transform duration-700"
                           />
                           {/* Floating elements */}
                           <div className="absolute top-6 right-6 bg-white/20 backdrop-blur-md rounded-2xl p-4 animate-fade-in" style={{animationDelay: '0.8s'}}>
@@ -176,13 +176,13 @@ const HeroSection = () => {
                   </div>
                   
                   {/* ERP/App Systems Images Grid */}
-                  <div className="mt-8 md:mt-20 mb-8 md:mb-16">
+                  <div className="mt-8 md:mt-12">
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4 opacity-80">
                       {gridImages.map((src, index) => (
                         <div key={index} className="relative group overflow-hidden rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/30 transition-all duration-500 animate-fade-in hover:scale-110 hover:-translate-y-2" style={{
                           animationDelay: `${0.8 + index * 0.1}s`
                         }}>
-                          <img src={src} alt={`ERP System ${index + 1}`} className="w-full h-24 md:h-32 object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <img src={src} alt={`ERP System ${index + 1}`} className="w-full h-20 md:h-24 object-cover group-hover:scale-110 transition-transform duration-500" />
                           <div className="absolute inset-0 bg-gradient-to-t from-odoo-purple/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                           <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"></div>
                         </div>
