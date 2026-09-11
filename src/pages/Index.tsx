@@ -7,6 +7,8 @@ import AboutPreview from '@/components/home/AboutPreview';
 import TestimonialsSlider from '@/components/home/TestimonialsSlider';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
 import { PartnersSlider } from '@/components/home/PartnersSlider';
+import ContactForm from '@/components/contact/ContactForm';
+import ContactInfo from '@/components/contact/ContactInfo';
 import { useLanguage } from '@/lib/LanguageContext';
 import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
@@ -84,6 +86,27 @@ const Index = () => {
         <ScrollReveal variant="fade-up" duration={700} delay={100}>
           <section id="testimonials">
             <TestimonialsSlider />
+          </section>
+        </ScrollReveal>
+        <ScrollReveal variant="fade-up" duration={700}>
+          <section id="contact" className="py-16 bg-muted/40">
+            <div className="container mx-auto px-4">
+              <div className="text-center max-w-2xl mx-auto mb-10">
+                <h2 className="text-3xl font-bold mb-3">
+                  {t('Get in Touch', 'تواصل معنا')}
+                </h2>
+                <p className="text-muted-foreground">
+                  {t(
+                    'Tell us about your project and our Odoo experts will get back to you shortly.',
+                    'أخبرنا عن مشروعك وسيتواصل معك خبراء أودو لدينا قريبًا.'
+                  )}
+                </p>
+              </div>
+              <div className="grid gap-8 lg:grid-cols-2 items-start">
+                <ContactForm />
+                <ContactInfo />
+              </div>
+            </div>
           </section>
         </ScrollReveal>
       </main>
