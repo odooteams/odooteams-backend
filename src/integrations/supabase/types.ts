@@ -1458,6 +1458,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_prompt_copies: { Args: { _prompt_id: string }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "user"
