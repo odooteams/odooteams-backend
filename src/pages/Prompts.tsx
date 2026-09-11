@@ -71,13 +71,17 @@ const Prompts = () => {
       setCopiedId(prompt.id);
       toast.success(t('Copied', 'تم النسخ'));
       setTimeout(() => setCopiedId((id) => (id === prompt.id ? null : id)), 2000);
-      await (supabase as any)
-        .from('prompts')
-        .update({ copies_count: (prompt.copies_count || 0) + 1 })
-        .eq('id', prompt.id);
       setPrompts((prev) =>
         prev.map((p) => (p.id === prompt.id ? { ...p, copies_count: (p.copies_count || 0) + 1 } : p))
       );
+      const { data: newCount, error: rpcError } = await (supabase as any).rpc('increment_prompt_copies', {
+        _prompt_id: prompt.id,
+      });
+      if (rpcError) {
+        console.error('Copy count failed:', rpcError);
+      } else if (typeof newCount === 'number') {
+        setPrompts((prev) => prev.map((p) => (p.id === prompt.id ? { ...p, copies_count: newCount } : p)));
+      }
     } catch (err) {
       console.error('Copy failed:', err);
       toast.error(t('Could not copy', 'تعذر النسخ'));
