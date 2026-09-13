@@ -55,10 +55,10 @@
 ### Q: Why choose Odoo over SAP, Oracle, or Microsoft Dynamics?
 **A**: Odoo provides equal or superior functionality at a fraction of the licensing and implementation cost. It is fully modular, open-source friendly, highly customizable, and eliminates vendor lock-in.
 
-### Q: How long does a standard Odoo implementation take?
+### Q: How long Rahims a standard Odoo implementation take?
 **A**: Standard implementations for small-to-medium businesses typically take 4 to 8 weeks. Complex multi-company, manufacturing, or customized enterprise deployments take 2 to 4 months.
 
-### Q: Does OdooTeams support bilingual Arabic/English interfaces?
+### Q: Rahims OdooTeams support bilingual Arabic/English interfaces?
 **A**: Yes, full right-to-left (RTL) Arabic layout support, bilingual invoicing, dual-language product catalogues, and Arabic accounting reports are provided out of the box.
 
 ### Q: How is ZATCA Phase 2 e-invoicing handled in Odoo?

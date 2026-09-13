@@ -192,8 +192,8 @@ export default function AdminMessages() {
               <SidebarTrigger />
               <h1 className="text-2xl font-bold ml-4">Messages</h1>
             </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-7xl mx-auto space-y-6">
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <div className="w-full space-y-6">
                 {/* Stats Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setStatusFilter('all')}>

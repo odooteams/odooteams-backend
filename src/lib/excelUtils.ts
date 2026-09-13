@@ -103,6 +103,21 @@ export const chatbotTemplate = [
   }
 ];
 
+export const promptTemplate = [
+  {
+    name_en: 'Odoo Module Generator',
+    name_ar: 'مولد وحدات أودو',
+    category_en: 'Development',
+    category_ar: 'تطوير',
+    prompt_text: 'Act as an expert Odoo developer. Write a custom module for...',
+    description_en: 'Generate custom Odoo backend modules with models and views',
+    description_ar: 'توليد وحدات أودو مخصصة مع النماذج والواجهات',
+    image: '/prompt-default.png',
+    sort_order: 1,
+    is_active: 'true'
+  }
+];
+
 // Export template
 export const downloadTemplate = (templateData: any[], fileName: string) => {
   const ws = XLSX.utils.json_to_sheet(templateData);
@@ -273,9 +288,46 @@ export const processChatbotImport = (data: any[]) => {
   }));
 };
 
+// Process imported data for AI prompts
+export const processPromptImport = async (data: any[]) => {
+  const { data: userData } = await supabase.auth.getUser();
+  const userId = userData?.user?.id ?? null;
+
+  return data.map((row: any, index: number) => {
+    const name_en = row.name_en ?? row['Name (EN)'] ?? row['Name EN'] ?? row.name;
+    const name_ar = row.name_ar ?? row['Name (AR)'] ?? row['Name AR'] ?? name_en;
+    const category_en = row.category_en ?? row['Category (EN)'] ?? row['Category EN'] ?? row.category;
+    const category_ar = row.category_ar ?? row['Category (AR)'] ?? row['Category AR'] ?? category_en;
+    const prompt_text = row.prompt_text ?? row['Prompt Text'] ?? row['Prompt'] ?? row.prompt;
+    const description_en = row.description_en ?? row['Description (EN)'] ?? row['Description EN'] ?? row.description;
+    const description_ar = row.description_ar ?? row['Description (AR)'] ?? row['Description AR'];
+    const image = row.image ?? row['Image'] ?? row['Image URL'] ?? row.image_url;
+    const sort_order = row.sort_order ?? row['Sort Order'] ?? row.order;
+    const is_active = row.is_active ?? row['Active'] ?? row['is_active'] ?? row.active;
+
+    if (!name_en || !prompt_text) {
+      throw new Error(`Row ${index + 2}: Missing required fields. Please ensure name and prompt text are provided.`);
+    }
+
+    return {
+      name_en: String(name_en).trim(),
+      name_ar: name_ar ? String(name_ar).trim() : String(name_en).trim(),
+      category_en: category_en ? String(category_en).trim() : 'General',
+      category_ar: category_ar ? String(category_ar).trim() : 'عام',
+      prompt_text: String(prompt_text).trim(),
+      description_en: description_en ? String(description_en).trim() : null,
+      description_ar: description_ar ? String(description_ar).trim() : null,
+      image: image && String(image).trim() !== '' ? String(image).trim() : '/prompt-default.png',
+      sort_order: sort_order !== undefined && sort_order !== null && !isNaN(parseInt(sort_order)) ? parseInt(sort_order) : 0,
+      is_active: is_active === undefined || is_active === null ? true : String(is_active).toLowerCase() !== 'false' && String(is_active) !== '0',
+      created_by: userId,
+    };
+  });
+};
+
 // Bulk insert data
-export const bulkInsert = async (table: 'services' | 'projects' | 'blogs' | 'faqs' | 'learn_resources' | 'chatbot_responses', data: any[]) => {
-  const { data: result, error } = await supabase
+export const bulkInsert = async (table: 'services' | 'projects' | 'blogs' | 'faqs' | 'learn_resources' | 'chatbot_responses' | 'prompts', data: any[]) => {
+  const { data: result, error } = await (supabase as any)
     .from(table)
     .insert(data as any);
   

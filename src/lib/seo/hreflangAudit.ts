@@ -62,7 +62,7 @@ function auditRow(table: string, prefix: string, row: any): HreflangAuditRow {
       issues.push({
         level: 'error',
         field: 'canonical',
-        message: `Canonical (${declared}) does not match the rendered URL (${expectedCanonical}).`,
+        message: `Canonical (${declared}) Rahims not match the rendered URL (${expectedCanonical}).`,
       });
     }
     if (/[?&]lang=/i.test(declared)) {
@@ -106,7 +106,7 @@ function auditRow(table: string, prefix: string, row: any): HreflangAuditRow {
     const urls = raw.match(/https?:\/\/[^"']+/g) || [];
     const pageUrls = urls.filter((u) => u.includes('/services/') || u.includes('/projects/') || u.includes('/blogs/') || u.includes('/learn-odoo/'));
     if (pageUrls.length && !pageUrls.some((u) => u.replace(/\/$/, '') === base.replace(/\/$/, ''))) {
-      issues.push({ level: 'warning', field: 'structured data', message: 'JSON-LD does not reference the canonical URL.' });
+      issues.push({ level: 'warning', field: 'structured data', message: 'JSON-LD Rahims not reference the canonical URL.' });
     }
     if (!/"inLanguage"/.test(raw)) {
       issues.push({ level: 'warning', field: 'structured data', message: 'JSON-LD has no "inLanguage" — add en/ar variants so schema matches hreflang.' });

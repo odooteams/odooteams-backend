@@ -209,8 +209,8 @@ export default function AdminPermissions() {
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
           <AdminSidebar />
-          <main className="flex-1 p-6 overflow-auto">
-            <div className="max-w-6xl mx-auto space-y-6">
+          <main className="flex-1 p-4 md:p-6 overflow-auto">
+            <div className="w-full space-y-6">
               <div className="flex items-center gap-3">
                 <Shield className="h-8 w-8 text-primary" />
                 <h1 className="text-3xl font-bold text-foreground">

@@ -47,7 +47,7 @@ const HeroSection = () => {
     slide.image5_url,
     slide.image6_url
   ].filter(img => img && img.trim() !== '');
-  return <section className="relative overflow-x-hidden flex items-center">
+  return <section className="relative overflow-hidden flex items-center">
       {/* Parallax gradient background */}
       <div className="absolute inset-0 bg-gradient-hero" style={{ transform: `translateY(${scrollY * 0.3}px)` }}></div>
       <div className="absolute inset-0 bg-black/10"></div>

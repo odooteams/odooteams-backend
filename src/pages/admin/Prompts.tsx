@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import SEOHead from '@/components/seo/SEOHead';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from '@/components/dashboard/AdminSidebar';
@@ -22,10 +22,39 @@ import { Trash2, Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { PromptFormDialog, type PromptItem } from '@/components/admin/PromptFormDialog';
+import { ExcelImportExport } from '@/components/admin/ExcelImportExport';
+
+const ITEMS_PER_PAGE = 10;
 
 export default function AdminPrompts() {
   const [prompts, setPrompts] = useState<PromptItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(prompts.length / ITEMS_PER_PAGE);
+  const safeCurrentPage = Math.min(currentPage, Math.max(1, totalPages));
+
+  const paginatedPrompts = useMemo(
+    () => prompts.slice((safeCurrentPage - 1) * ITEMS_PER_PAGE, safeCurrentPage * ITEMS_PER_PAGE),
+    [prompts, safeCurrentPage]
+  );
+
+  const exportData = useMemo(
+    () =>
+      prompts.map((p) => ({
+        name_en: p.name_en,
+        name_ar: p.name_ar,
+        category_en: p.category_en,
+        category_ar: p.category_ar,
+        prompt_text: p.prompt_text,
+        description_en: p.description_en || '',
+        description_ar: p.description_ar || '',
+        image: p.image || '',
+        sort_order: p.sort_order,
+        is_active: p.is_active ? 'true' : 'false',
+      })),
+    [prompts]
+  );
 
   const loadPrompts = async () => {
     setLoading(true);
@@ -75,15 +104,16 @@ export default function AdminPrompts() {
 
   return (
     <SidebarProvider>
-      <SEOHead title="Al Prompts | Admin" description="Manage the public prompts library." />
+      <SEOHead title="AI Prompts | Admin" description="Manage the public prompts library." />
       <div className="min-h-screen flex w-full bg-muted/30">
         <AdminSidebar />
         <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex flex-wrap items-center gap-3 mb-6">
             <SidebarTrigger />
             <Sparkles className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">Al Prompts</h1>
-            <div className="ms-auto">
+            <h1 className="text-2xl font-bold">AI Prompts</h1>
+            <div className="ms-auto flex items-center gap-2 flex-wrap">
+              <ExcelImportExport type="prompts" data={exportData} onImportComplete={loadPrompts} />
               <PromptFormDialog onSuccess={loadPrompts} />
             </div>
           </div>
@@ -100,71 +130,113 @@ export default function AdminPrompts() {
               ) : prompts.length === 0 ? (
                 <p className="text-muted-foreground py-8 text-center">No prompts yet. Add your first one.</p>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Image</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Prompt</TableHead>
-                      <TableHead>Copies</TableHead>
-                      <TableHead>Order</TableHead>
-                      <TableHead>Active</TableHead>
-                      <TableHead className="text-end">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {prompts.map((p) => (
-                      <TableRow key={p.id}>
-                        <TableCell>
-                          {p.image ? (
-                            <img src={p.image} alt={p.name_en} className="h-10 w-10 rounded object-cover" />
-                          ) : (
-                            <div className="h-10 w-10 rounded bg-muted" />
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div className="font-medium">{p.name_en}</div>
-                          <div className="text-xs text-muted-foreground" dir="rtl">{p.name_ar}</div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{p.category_en}</Badge>
-                          <div className="text-xs text-muted-foreground mt-1" dir="rtl">{p.category_ar}</div>
-                        </TableCell>
-                        <TableCell className="max-w-[280px]">
-                          <p className="text-xs text-muted-foreground line-clamp-2">{p.prompt_text}</p>
-                        </TableCell>
-                        <TableCell>{p.copies_count || 0}</TableCell>
-                        <TableCell>{p.sort_order}</TableCell>
-                        <TableCell>
-                          <Switch checked={p.is_active} onCheckedChange={() => handleToggleActive(p)} />
-                        </TableCell>
-                        <TableCell className="text-end whitespace-nowrap">
-                          <PromptFormDialog prompt={p} onSuccess={loadPrompts} />
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete this prompt?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This will permanently remove "{p.name_en}" from the public prompts page.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(p.id)}>Delete</AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </TableCell>
+                <>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Image</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Prompt</TableHead>
+                        <TableHead>Copies</TableHead>
+                        <TableHead>Order</TableHead>
+                        <TableHead>Active</TableHead>
+                        <TableHead className="text-end">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedPrompts.map((p) => (
+                        <TableRow key={p.id}>
+                          <TableCell>
+                            <img
+                              src={p.image || '/prompt-default.png'}
+                              alt={p.name_en}
+                              className="h-10 w-10 rounded object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/prompt-default.png';
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">{p.name_en}</div>
+                            <div className="text-xs text-muted-foreground" dir="rtl">{p.name_ar}</div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">{p.category_en}</Badge>
+                            <div className="text-xs text-muted-foreground mt-1" dir="rtl">{p.category_ar}</div>
+                          </TableCell>
+                          <TableCell className="max-w-[280px]">
+                            <p className="text-xs text-muted-foreground line-clamp-2">{p.prompt_text}</p>
+                          </TableCell>
+                          <TableCell>{p.copies_count || 0}</TableCell>
+                          <TableCell>{p.sort_order}</TableCell>
+                          <TableCell>
+                            <Switch checked={p.is_active} onCheckedChange={() => handleToggleActive(p)} />
+                          </TableCell>
+                          <TableCell className="text-end whitespace-nowrap">
+                            <PromptFormDialog prompt={p} onSuccess={loadPrompts} />
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete this prompt?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This will permanently remove "{p.name_en}" from the public prompts page.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDelete(p.id)}>Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {totalPages > 1 && (
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 pt-4 border-t">
+                      <p className="text-sm text-muted-foreground">
+                        Showing {(safeCurrentPage - 1) * ITEMS_PER_PAGE + 1} to{' '}
+                        {Math.min(safeCurrentPage * ITEMS_PER_PAGE, prompts.length)} of {prompts.length} prompts
+                      </p>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          disabled={safeCurrentPage === 1}
+                        >
+                          Previous
+                        </Button>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                          <Button
+                            key={pageNum}
+                            variant={safeCurrentPage === pageNum ? 'default' : 'outline'}
+                            size="sm"
+                            className="w-9"
+                            onClick={() => setCurrentPage(pageNum)}
+                          >
+                            {pageNum}
+                          </Button>
+                        ))}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          disabled={safeCurrentPage === totalPages}
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>

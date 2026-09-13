@@ -1351,8 +1351,8 @@ export default function AdminSecurity() {
               </h1>
               <AdminNotificationsBell />
             </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-7xl mx-auto space-y-6 min-w-0">
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <div className="w-full space-y-6 min-w-0">
                 <Tabs defaultValue="full" className="w-full">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
                     <TabsList className="inline-flex w-max md:flex md:w-full">

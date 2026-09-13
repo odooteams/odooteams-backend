@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { fetchLearnResources, LearnResource } from '@/lib/learnResources';
+import { fetchLearnResources, LearnResource, getResourceSlug } from '@/lib/learnResources';
 import ResourcesLoadingState from '@/components/learn/ResourcesLoadingState';
 import ResourceBreadcrumb from '@/components/learn/ResourceBreadcrumb';
 import ResourceHero from '@/components/learn/ResourceHero';
@@ -15,7 +15,8 @@ import RelatedResources from '@/components/learn/RelatedResources';
 import SEOHead from '@/components/seo/SEOHead';
 
 const ResourceDetails = () => {
-  const { id } = useParams();
+  const { slug, id } = useParams();
+  const navigate = useNavigate();
   const { language, dir } = useLanguage();
   const [resource, setResource] = useState<LearnResource | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,12 +28,22 @@ const ResourceDetails = () => {
       try {
         setLoading(true);
         const data = await fetchLearnResources();
+        const paramKey = (slug || id || '').toLowerCase().trim();
         
-        // Find the resource with the matching id
-        const foundResource = data.find(item => item.id === id);
+        // Find the resource with the matching slug or id
+        const foundResource = data.find(item => {
+          const itemSlug = getResourceSlug(item).toLowerCase();
+          return itemSlug === paramKey || item.id.toLowerCase() === paramKey || (item.slug && item.slug.toLowerCase() === paramKey);
+        });
         
         if (foundResource) {
           setResource(foundResource);
+
+          // If accessed via raw ID / UUID, upgrade browser URL to readable name slug
+          const canonicalSlug = getResourceSlug(foundResource);
+          if (canonicalSlug && paramKey !== canonicalSlug.toLowerCase()) {
+            navigate(`/open-source/${canonicalSlug}`, { replace: true });
+          }
           
           // Get 3 related resources from the same category
           const related = data
@@ -40,7 +51,7 @@ const ResourceDetails = () => {
               const sameCategory = language === 'en' 
                 ? item.category_en === foundResource.category_en
                 : item.category_ar === foundResource.category_ar;
-              return sameCategory && item.id !== id;
+              return sameCategory && item.id !== foundResource.id;
             })
             .slice(0, 3);
             
@@ -63,7 +74,7 @@ const ResourceDetails = () => {
     };
     
     loadResource();
-  }, [id, language]);
+  }, [slug, id, language, navigate]);
   
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
@@ -148,7 +159,7 @@ const ResourceDetails = () => {
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
-        title={`${title} | OdooTeams Learn`}
+        title={`${title} | OdooTeams Open Source`}
         description={excerpt}
         image={resource.image || undefined}
         article

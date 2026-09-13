@@ -45,10 +45,10 @@ const Footer = () => {
                 <Link to="/services" className="hover:text-odoo-gold transition duration-300">{t('Services', 'الخدمات')}</Link>
               </li>
               <li>
-                <Link to="/learn-odoo" className="hover:text-odoo-gold transition duration-300">{t('Learn Odoo', 'تعلم أودو')}</Link>
+                <Link to="/open-source" className="hover:text-odoo-gold transition duration-300">{t('Open Source', 'مشاريع مفتوحة المصدر')}</Link>
               </li>
               <li>
-                <Link to="/prompts" className="hover:text-odoo-gold transition duration-300">{t('Al Prompts', 'آل برومبتس')}</Link>
+                <Link to="/prompts" className="hover:text-odoo-gold transition duration-300">{t('AI Prompts', 'برومبتات الذكاء الاصطناعي')}</Link>
               </li>
               <li>
                 <Link to="/about" className="hover:text-odoo-gold transition duration-300">{t('About Us', 'من نحن')}</Link>

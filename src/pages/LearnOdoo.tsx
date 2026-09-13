@@ -7,7 +7,7 @@ import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PWAInstallPrompt from '@/components/common/PWAInstallPrompt';
 import Pagination from '@/components/services/Pagination';
-import { fetchLearnResources, LearnResource } from '@/lib/learnResources';
+import { fetchLearnResources, LearnResource, getResourceSlug } from '@/lib/learnResources';
 import LearnHeroSection from '@/components/learn/LearnHeroSection';
 import ResourcesList from '@/components/learn/ResourcesList';
 import ResourcesLoadingState from '@/components/learn/ResourcesLoadingState';
@@ -95,27 +95,27 @@ const LearnOdoo = () => {
   return (
     <div className={dir === 'rtl' ? 'rtl' : 'ltr'} dir={dir}>
       <SEOHead
-        title="Learn Odoo - Free ERP Tutorials & Resources | OdooTeams"
-        description="Master Odoo ERP with free tutorials, guides, and learning resources. From beginner to advanced Odoo implementation and customization."
-        keywords="learn Odoo, Odoo tutorials, ERP training, Odoo guides, Odoo resources, free Odoo learning"
+        title="Open Source Projects & Code | OdooTeams"
+        description="Explore open source Odoo projects and repositories. Request source code access or download directly."
+        keywords="open source Odoo, Odoo project code, Odoo github, ERP open source, Odoo modules free"
         structuredData={[
           createBreadcrumbStructuredData([
             { name: 'Home', url: 'https://odooteams.com' },
-            { name: 'Learn Odoo', url: 'https://odooteams.com/learn-odoo' }
+            { name: 'Open Source', url: 'https://odooteams.com/open-source' }
           ]),
           {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: "Odoo Learning Resources",
+            name: "Open Source Odoo Projects",
             itemListElement: resources.slice(0, 50).map((r, i) => ({
               "@type": "ListItem",
               position: i + 1,
-              url: `https://odooteams.com/learn-odoo/${r.id}`,
+              url: `https://odooteams.com/open-source/${getResourceSlug(r)}`,
               name: language === 'en' ? r.title_en : r.title_ar,
             })),
           },
         ]}
-        alternateUrls={generateAlternateUrls('/learn-odoo')}
+        alternateUrls={generateAlternateUrls('/open-source')}
       />
       <TopHeader />
       <Navbar />

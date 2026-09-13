@@ -33,12 +33,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/projects" />
   </url>
   <url>
-    <loc>https://odooteams.com/learn-odoo</loc>
+    <loc>https://odooteams.com/open-source</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/learn-odoo?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/learn-odoo?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/learn-odoo" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source" />
   </url>
   <url>
     <loc>https://odooteams.com/faqs</loc>
@@ -183,21 +183,93 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/blogs/top-5-web-development-trends-in-2024" />
   </url>
   <url>
-    <loc>https://odooteams.com/learn-odoo/getting-started-with-odoo</loc>
-    <lastmod>2025-10-20</lastmod>
+    <loc>https://odooteams.com/open-source/ai-copilot-smart-assistant-for-odoo-erp-operations</loc>
+    <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/learn-odoo/getting-started-with-odoo?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/learn-odoo/getting-started-with-odoo?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/learn-odoo/getting-started-with-odoo" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/ai-copilot-smart-assistant-for-odoo-erp-operations?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/ai-copilot-smart-assistant-for-odoo-erp-operations?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/ai-copilot-smart-assistant-for-odoo-erp-operations" />
   </url>
   <url>
-    <loc>https://odooteams.com/learn-odoo/web-development-best-practices</loc>
+    <loc>https://odooteams.com/open-source/omnichannel-payment-gateway-paytabs-moyasar-apple-pay</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/omnichannel-payment-gateway-paytabs-moyasar-apple-pay?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/omnichannel-payment-gateway-paytabs-moyasar-apple-pay?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/omnichannel-payment-gateway-paytabs-moyasar-apple-pay" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/b2b-wholesale-self-service-portal-instant-quotation-builder</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/b2b-wholesale-self-service-portal-instant-quotation-builder?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/b2b-wholesale-self-service-portal-instant-quotation-builder?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/b2b-wholesale-self-service-portal-instant-quotation-builder" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/odoo-saudi-zatca-e-invoicing-integration-phase-2</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/odoo-saudi-zatca-e-invoicing-integration-phase-2?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/odoo-saudi-zatca-e-invoicing-integration-phase-2?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/odoo-saudi-zatca-e-invoicing-integration-phase-2" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/whatsapp-business-cloud-api-automated-crm-messaging</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/whatsapp-business-cloud-api-automated-crm-messaging?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/whatsapp-business-cloud-api-automated-crm-messaging?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/whatsapp-business-cloud-api-automated-crm-messaging" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/smart-mobile-barcode-multi-warehouse-scanner</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/smart-mobile-barcode-multi-warehouse-scanner?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/smart-mobile-barcode-multi-warehouse-scanner?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/smart-mobile-barcode-multi-warehouse-scanner" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/gcc-hr-automated-payroll-with-wps-file-generator</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/gcc-hr-automated-payroll-with-wps-file-generator?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/gcc-hr-automated-payroll-with-wps-file-generator?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/gcc-hr-automated-payroll-with-wps-file-generator" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/interactive-restaurant-cafe-kitchen-display-system-kds</loc>
+    <lastmod>2026-09-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/interactive-restaurant-cafe-kitchen-display-system-kds?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/interactive-restaurant-cafe-kitchen-display-system-kds?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/interactive-restaurant-cafe-kitchen-display-system-kds" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/web-development-best-practices</loc>
     <lastmod>2025-10-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/learn-odoo/web-development-best-practices?lang=en" />
-    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/learn-odoo/web-development-best-practices?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/learn-odoo/web-development-best-practices" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/web-development-best-practices?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/web-development-best-practices?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/web-development-best-practices" />
+  </url>
+  <url>
+    <loc>https://odooteams.com/open-source/getting-started-with-odoo</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odooteams.com/open-source/getting-started-with-odoo?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://odooteams.com/open-source/getting-started-with-odoo?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odooteams.com/open-source/getting-started-with-odoo" />
   </url>
 </urlset>

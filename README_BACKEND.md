@@ -62,8 +62,8 @@ const featuredProjects = await projectsQueries.getFeatured();
 
 // Submit contact form
 const submission = await contactQueries.create({
-  full_name: 'John Doe',
-  email: 'john@example.com',
+  full_name: 'Hafez Rahim',
+  email: 'Hafez@example.com',
   phone: '+1234567890',
   message: 'I need help with...'
 });
@@ -105,7 +105,7 @@ import { authHelpers } from '@/lib/supabase';
 
 // Sign up
 await authHelpers.signUp('user@example.com', 'password123', {
-  full_name: 'John Doe',
+  full_name: 'Hafez Rahim',
   phone: '+1234567890',
   company: 'Acme Corp'
 });
@@ -118,7 +118,7 @@ const user = await authHelpers.getCurrentUser();
 
 // Update profile
 await authHelpers.updateProfile(user.id, {
-  full_name: 'John Smith',
+  full_name: 'Hafez Smith',
   avatar_url: 'https://...'
 });
 ```

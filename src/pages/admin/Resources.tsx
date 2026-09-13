@@ -63,25 +63,25 @@ export default function AdminResources() {
 
   return (
     <>
-      <SEOHead title="Admin • Resources" description="Manage learning resources" />
+      <SEOHead title="Admin • Open Source Projects" description="Manage open source projects and code" />
       <SidebarProvider>
         <div className="h-screen flex w-full overflow-hidden">
           <AdminSidebar />
           <div className="flex-1 flex flex-col">
             <header className="h-16 border-b flex items-center px-6 bg-background">
               <SidebarTrigger />
-              <h1 className="text-2xl font-bold ml-4">Resources</h1>
+              <h1 className="text-2xl font-bold ml-4">Open Source Projects & Code</h1>
             </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-6xl mx-auto space-y-6">
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <div className="w-full space-y-6">
                 <Card>
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <BookOpen className="h-6 w-6 text-primary" />
                         <div>
-                          <CardTitle>Manage Resources</CardTitle>
-                          <CardDescription>View and manage learning resources</CardDescription>
+                          <CardTitle>Manage Open Source Projects & Code</CardTitle>
+                          <CardDescription>Publish open source projects, repository links, and code files</CardDescription>
                         </div>
                       </div>
                       <div className="flex gap-2">

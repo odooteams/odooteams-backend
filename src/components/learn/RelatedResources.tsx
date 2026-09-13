@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/LanguageContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { LearnResource } from '@/lib/learnResources';
+import { LearnResource, getResourceSlug } from '@/lib/learnResources';
 
 interface RelatedResourcesProps {
   relatedResources: LearnResource[];
@@ -21,7 +21,7 @@ const RelatedResources: React.FC<RelatedResourcesProps> = ({ relatedResources })
     <section className="py-12">
       <div className="container mx-auto px-4">
         <h2 className="text-2xl font-bold mb-6 text-odoo-purple">
-          {t('Related Resources', 'موارد ذات صلة')}
+          {t('Related Projects & Code', 'مشاريع وأكواد ذات صلة')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {relatedResources.map((relResource, index) => {
@@ -57,8 +57,8 @@ const RelatedResources: React.FC<RelatedResourcesProps> = ({ relatedResources })
                   <p className="text-gray-600 mb-6 line-clamp-3">
                     {relContent.substring(0, 120)}...
                   </p>
-                  <Link to={`/learn-odoo/${relResource.id}`} className="text-odoo-purple font-medium hover:text-odoo-magenta transition-colors flex items-center">
-                    {t('View Resource', 'عرض المورد')}
+                  <Link to={`/open-source/${getResourceSlug(relResource)}`} className="text-odoo-purple font-medium hover:text-odoo-magenta transition-colors flex items-center">
+                    {t('View Project', 'عرض المشروع')}
                     {dir === 'rtl' ? (
                       <ChevronLeft className="h-4 w-4 mr-2" />
                     ) : (

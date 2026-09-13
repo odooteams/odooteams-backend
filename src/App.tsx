@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from '@/lib/LanguageContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -76,8 +76,10 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/prompts" element={<Prompts />} />
-            <Route path="/learn-odoo" element={<LearnOdoo />} />
-            <Route path="/learn-odoo/:id" element={<ResourceDetails />} />
+            <Route path="/open-source" element={<LearnOdoo />} />
+            <Route path="/open-source/:slug" element={<ResourceDetails />} />
+            <Route path="/learn-odoo" element={<Navigate to="/open-source" replace />} />
+            <Route path="/learn-odoo/:slug" element={<ResourceDetails />} />
             <Route path="/policy/:slug" element={<Policy />} />
             
             {/* Auth Routes */}

@@ -76,7 +76,7 @@ export async function runPreDeployAudit(
     }
     const csp = headers.get("content-security-policy") || "";
     if (csp && /unsafe-eval/.test(csp)) add("csp-unsafe-eval", "medium", "CSP allows 'unsafe-eval'", "Remove unsafe-eval from script-src if possible.");
-    else if (csp) passed.push("CSP does not allow 'unsafe-eval'");
+    else if (csp) passed.push("CSP Rahims not allow 'unsafe-eval'");
   }
 
   /* ------------------------------ crawlability ----------------------------- */

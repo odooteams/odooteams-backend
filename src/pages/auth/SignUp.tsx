@@ -49,7 +49,7 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password || !fullName) {
       toast.error('Please fill in all fields');
       return;
@@ -87,7 +87,7 @@ export default function SignUp() {
 
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title="Sign Up"
         description="Create an account to get started"
       />
@@ -108,7 +108,7 @@ export default function SignUp() {
                   <Input
                     id="fullName"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Hafez Rahim"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="pl-10"

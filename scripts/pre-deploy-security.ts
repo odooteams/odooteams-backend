@@ -77,7 +77,7 @@ function checkHeaders() {
     if (re.test(htaccess)) passed.push(`${name} configured`);
     else add(`hdr-${name}`, sev, `Missing ${name} header`, 'Add it to public/.htaccess (and the Nginx/Cloudflare snippets in /admin/security).');
   });
-  if (!/unsafe-eval/.test(htaccess)) passed.push("CSP does not allow 'unsafe-eval'");
+  if (!/unsafe-eval/.test(htaccess)) passed.push("CSP Rahims not allow 'unsafe-eval'");
   else add('csp-unsafe-eval', 'medium', "CSP allows 'unsafe-eval'", 'Remove unsafe-eval from the script-src directive if possible.');
 }
 

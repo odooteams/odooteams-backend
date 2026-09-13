@@ -18,8 +18,8 @@ const ResourceBreadcrumb: React.FC<ResourceBreadcrumbProps> = ({ title }) => {
             {t('Home', 'الرئيسية')}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
-          <Link to="/learn-odoo" className="text-gray-500 hover:text-odoo-purple">
-            {t('Learn Odoo', 'تعلم أودو')}
+          <Link to="/open-source" className="text-gray-500 hover:text-odoo-purple">
+            {t('Open Source', 'مشاريع مفتوحة المصدر')}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <span className="text-odoo-purple font-medium">{title}</span>

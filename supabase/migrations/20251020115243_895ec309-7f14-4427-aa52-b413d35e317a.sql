@@ -12,7 +12,7 @@ INSERT INTO public.projects (title_en, title_ar, category_en, category_ar, descr
 -- Insert default FAQs
 INSERT INTO public.faqs (question_en, question_ar, answer_en, answer_ar, category_en, category_ar, is_active, sort_order) VALUES
 ('What is Odoo ERP?', 'ما هو نظام أودو؟', 'Odoo is an open-source ERP system that helps businesses manage operations including sales, inventory, accounting, HR, and more.', 'أودو هو نظام تخطيط موارد المؤسسات مفتوح المصدر يساعد الشركات على إدارة العمليات بما في ذلك المبيعات والمخزون والمحاسبة والموارد البشرية والمزيد.', 'General', 'عام', true, 1),
-('How long does implementation take?', 'كم تستغرق عملية التطبيق؟', 'Implementation typically takes 2-4 months depending on the complexity and number of modules required.', 'عادة ما يستغرق التطبيق من 2 إلى 4 أشهر حسب التعقيد وعدد الوحدات المطلوبة.', 'Implementation', 'التطبيق', true, 2),
+('How long Rahims implementation take?', 'كم تستغرق عملية التطبيق؟', 'Implementation typically takes 2-4 months depending on the complexity and number of modules required.', 'عادة ما يستغرق التطبيق من 2 إلى 4 أشهر حسب التعقيد وعدد الوحدات المطلوبة.', 'Implementation', 'التطبيق', true, 2),
 ('Do you provide training?', 'هل تقدمون التدريب؟', 'Yes, we provide comprehensive training for administrators and end-users as part of our implementation service.', 'نعم، نقدم تدريبًا شاملاً للمسؤولين والمستخدمين النهائيين كجزء من خدمة التطبيق.', 'Support', 'الدعم', true, 3);
 
 -- Insert default learn resources

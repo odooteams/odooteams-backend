@@ -126,8 +126,8 @@ const { data: services, error } = await ContentService.getServices();
 import { ContactService } from '@/backend';
 
 const { data, error } = await ContactService.submitContact({
-  full_name: "John Doe",
-  email: "john@example.com",
+  full_name: "Hafez Rahim",
+  email: "Hafez@example.com",
   message: "Hello!"
 });
 ```

@@ -50,16 +50,21 @@ export function PromptFormDialog({ prompt, onSuccess }: PromptFormDialogProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const payload = {
+      ...formData,
+      image: formData.image?.trim() || '/prompt-default.png',
+    };
+
     try {
       if (prompt) {
-        const { error } = await (supabase as any).from('prompts').update(formData).eq('id', prompt.id);
+        const { error } = await (supabase as any).from('prompts').update(payload).eq('id', prompt.id);
         if (error) throw error;
         toast.success('Prompt updated successfully');
       } else {
         const { data: userData } = await supabase.auth.getUser();
         const { error } = await (supabase as any)
           .from('prompts')
-          .insert({ ...formData, created_by: userData?.user?.id ?? null });
+          .insert({ ...payload, created_by: userData?.user?.id ?? null });
         if (error) throw error;
         toast.success('Prompt created successfully');
       }

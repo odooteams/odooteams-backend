@@ -81,8 +81,8 @@ export default function AdminPromptStats() {
               <SidebarTrigger />
               <h1 className="text-2xl font-bold ml-4">Prompt Analytics</h1>
             </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-6xl mx-auto space-y-6">
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <div className="w-full space-y-6">
                 {loading ? (
                   <div className="flex justify-center py-20">
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

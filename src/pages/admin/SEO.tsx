@@ -724,11 +724,11 @@ export default function AdminSEO() {
               <SidebarTrigger />
               <h1 className="text-2xl font-bold ml-4">SEO Management</h1>
             </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-7xl mx-auto space-y-6">
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <div className="w-full space-y-6">
                 <Tabs defaultValue="dashboard">
                   <div className="w-full overflow-x-auto -mx-1 px-1 pb-1">
-                    <TabsList className="inline-flex w-max md:grid md:grid-cols-7 md:w-full max-w-6xl">
+                    <TabsList className="inline-flex w-max md:grid md:grid-cols-7 md:w-full">
                       <TabsTrigger value="dashboard" className="whitespace-nowrap"><Activity className="h-4 w-4 mr-2" />Dashboard</TabsTrigger>
                       <TabsTrigger value="global" className="whitespace-nowrap"><Globe className="h-4 w-4 mr-2" />Global</TabsTrigger>
                       <TabsTrigger value="pages" className="whitespace-nowrap"><FileText className="h-4 w-4 mr-2" />Pages</TabsTrigger>

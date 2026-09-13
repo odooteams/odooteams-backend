@@ -41,8 +41,8 @@ export default function AdminUsers() {
               <SidebarTrigger />
               <h1 className="text-2xl font-bold ml-4">Users</h1>
             </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <div className="max-w-6xl mx-auto space-y-6">
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <div className="w-full space-y-6">
                 <Card>
                   <CardHeader>
                     <div className="flex items-center gap-3">

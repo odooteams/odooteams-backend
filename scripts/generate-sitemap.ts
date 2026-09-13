@@ -32,7 +32,7 @@ const staticEntries: SitemapEntry[] = [
   { path: '/about', changefreq: 'weekly', priority: '0.9' },
   { path: '/services', changefreq: 'weekly', priority: '0.9' },
   { path: '/projects', changefreq: 'weekly', priority: '0.8' },
-  { path: '/learn-odoo', changefreq: 'weekly', priority: '0.8' },
+  { path: '/open-source', changefreq: 'weekly', priority: '0.8' },
   { path: '/faqs', changefreq: 'monthly', priority: '0.7' },
   { path: '/contact', changefreq: 'yearly', priority: '0.6' },
 ];
@@ -64,7 +64,7 @@ const SOURCES = [
   { table: 'services', flag: 'is_active', prefix: '/services', changefreq: 'monthly' as const, priority: '0.7' },
   { table: 'projects', flag: 'is_active', prefix: '/projects', changefreq: 'yearly' as const, priority: '0.6' },
   { table: 'blogs', flag: 'is_published', prefix: '/blogs', changefreq: 'monthly' as const, priority: '0.6' },
-  { table: 'learn_resources', flag: 'is_active', prefix: '/learn-odoo', changefreq: 'monthly' as const, priority: '0.6' },
+  { table: 'learn_resources', flag: 'is_active', prefix: '/open-source', changefreq: 'monthly' as const, priority: '0.6' },
 ];
 
 async function loadDynamic(): Promise<{ entries: SitemapEntry[]; errors: string[] }> {
