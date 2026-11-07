@@ -15,7 +15,6 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PWAInstallPrompt from '@/components/common/PWAInstallPrompt';
-import StickyContact from '@/components/common/StickyContact';
 import SEOHead from '@/components/seo/SEOHead';
 import { createLocalBusinessStructuredData } from '@/components/seo/StructuredData';
 import { useAutomaticSitemapGeneration } from '@/components/seo/SitemapGenerator';
@@ -110,7 +109,6 @@ const Index = () => {
           </section>
         </ScrollReveal>
       </main>
-      <StickyContact />
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />

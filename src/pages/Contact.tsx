@@ -6,7 +6,6 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PWAInstallPrompt from '@/components/common/PWAInstallPrompt';
-import StickyContact from '@/components/common/StickyContact';
 import ContactHero from '@/components/contact/ContactHero';
 import ContactForm from '@/components/contact/ContactForm';
 import ContactInfo from '@/components/contact/ContactInfo';
@@ -55,7 +54,6 @@ const Contact = () => {
           <ContactFAQ />
         </ScrollReveal>
       </main>
-      <StickyContact />
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
