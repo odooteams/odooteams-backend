@@ -4,7 +4,6 @@ import TopHeader from '@/components/layout/TopHeader';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import StickyContact from '@/components/common/StickyContact';
 import SEOHead from '@/components/seo/SEOHead';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -208,7 +207,6 @@ const Prompts = () => {
 
       <Footer />
       <BottomNavigation />
-      <StickyContact />
     </div>
   );
 };

@@ -7,7 +7,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNavigation from "@/components/layout/BottomNavigation";
 import PWAInstallPrompt from "@/components/common/PWAInstallPrompt";
-import StickyContact from "@/components/common/StickyContact";
 import useFaqs from "@/hooks/useFaqs";
 import SEOHead from '@/components/seo/SEOHead';
 import { createBreadcrumbStructuredData } from '@/components/seo/StructuredData';
@@ -69,7 +68,6 @@ const FAQs = () => {
           <FAQsSection categoryFilter={activeCategory} />
         </div>
       </main>
-      <StickyContact />
       <Footer />
       <BottomNavigation />
       <PWAInstallPrompt />
