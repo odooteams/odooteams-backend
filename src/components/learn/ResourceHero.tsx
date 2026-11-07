@@ -4,7 +4,6 @@ import { useLanguage } from '@/lib/LanguageContext';
 import { Calendar, Download, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LearnResource } from '@/lib/learnResources';
-import { RequestCodeDialog } from './RequestCodeDialog';
 
 interface ResourceHeroProps {
   resource: LearnResource;
@@ -65,12 +64,7 @@ const ResourceHero: React.FC<ResourceHeroProps> = ({ resource, formatDate, handl
               {content.slice(0, 200)}...
             </p>
             
-            <div className="flex flex-wrap items-center gap-3">
-              <RequestCodeDialog 
-                projectTitle={title}
-                projectCategory={category}
-                downloadUrl={resource.download_url}
-              />
+            <div className="flex flex-wrap gap-3">
               {resource.download_url && (
                 <a 
                   href={resource.download_url}
@@ -79,7 +73,7 @@ const ResourceHero: React.FC<ResourceHeroProps> = ({ resource, formatDate, handl
                   className="bg-odoo-gold hover:bg-yellow-400 text-odoo-purple font-medium py-2 px-6 rounded inline-flex items-center transition-colors"
                 >
                   <Download className="h-5 w-5 mr-2 ml-reverse:rtl" />
-                  <span>{language === 'en' ? 'Download Direct' : 'تحميل مباشر'}</span>
+                  <span>{language === 'en' ? 'Download' : 'تحميل'}</span>
                 </a>
               )}
               <Button 
